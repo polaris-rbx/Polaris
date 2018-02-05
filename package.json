@@ -1,0 +1,9 @@
+{
+	"name": "polaris",
+	"version": "3.0.0",
+	"main": "main.js",
+	"private": true,
+	"description": "The new class based Polaris bot. Private.",
+	"author": "Neztore"
+
+}
