@@ -3,12 +3,15 @@ let Polaris = require("../../util/client.js");
 class linkAccountCommand extends Polaris.command {
 	constructor(client){
 		super(client);
-		this.description = "Simple ping command to retrieve bot latency.";
+		this.description = "Creates an account link to allow for role retrieval.";
 		this.aliases = ["verify", "link"];
 		this.group = "Roblox account verification";
 	}
-	async execute(msg) {
-		console.log("A");
+	async execute(msg, args) {
+		//If no username, prompt for it.
+		//If there is an existing link 
+		//
+		//
 
 	}
 
