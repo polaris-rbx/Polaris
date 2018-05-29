@@ -6,6 +6,7 @@
 	"description": "The new class based Polaris bot. Private.",
 	"author": "Neztore",
 	"dependencies": {
+		"eris": "^0.8.6",
 		"raven": "^2.6.2",
 		"rethinkdbdash": "^2.3.31"
 	}
