@@ -50,7 +50,7 @@ class linkAccountCommand extends Polaris.command {
 		let code = generateCode();
 		msg.channel.sendInfo(msg.author, {
 			title: "Account link code",
-			description: `You are linking account with account \`${username}\` with UserID \`${robloxId}\`.\nPlease place the following code in your ROBLOX profile. It can be in your ROBLOX status or description.\n**This request will time-out after five minutes**\n\`${code}\``
+			description: `You are linking account with account \`${username}\` with UserID \`${robloxId}\`.\nPlease place the following code in your ROBLOX profile - It can be in your ROBLOX status or description - do \`.done\` once it is there.\n**This request will time-out after five minutes**\n\`${code}\``
 		});
 
 		this.client.linkQueue.set(msg.author.id, {

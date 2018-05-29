@@ -74,7 +74,7 @@ class helpCommand extends Polaris.command {
 		//Turn that into an embed.
 		var embed = {
 			tite: "Help menu",
-			description: "Listed below is all of Polaris' commands. Need more help? Join our [Discord](https://discord.gg/eVyVK5J).",
+			description: "Listed below is all of Polaris' commands. Need more help? Join our [Discord](https://discord.gg/eVyVK5J). do `.settings` to set up.",
 			fields: []
 		};
 
