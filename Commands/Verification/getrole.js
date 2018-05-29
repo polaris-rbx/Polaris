@@ -43,26 +43,37 @@ class getRoleCommand extends Polaris.command {
 		var failedMsg = "";
 
 		this.member = member;
+		//Var to store pos of binds that relate to deleted roles. It'll only delete one broken bind per run, but that's better than none.
+		var bindToDelete;
 		//binds
 		for (let current of settings.binds) {
-			let rank = await rbx.getRankInGroup(current.group, robloxId);
+			if (member.guild.roles.get(current.role)) {
+				let rank = await rbx.getRankInGroup(current.group, robloxId);
 
-			if (current.exclusive) {
+				if (current.exclusive) {
 
-				if (rank === current.rank) {
-					this.rolesToGive[current.role] = current.role;
-				} else {
-					this.rolesToRemove[current.role] = current.role;
+					if (rank === current.rank) {
+						this.rolesToGive[current.role] = current.role;
+					} else {
+						this.rolesToRemove[current.role] = current.role;
+					}
+
+				}  else {
+
+					if (rank >= parseInt(current.rank)) {
+						this.rolesToGive[current.role] = current.role;
+					} else {
+						this.rolesToRemove[current.role] = current.role;
+					}
 				}
-
-			}  else {
-
-				if (rank >= parseInt(current.rank)) {
-					this.rolesToGive[current.role] = current.role;
-				} else {
-					this.rolesToRemove[current.role] = current.role;
-				}
+			} else {
+				bindToDelete = current;
 			}
+		}
+
+		if (bindToDelete) {
+			settings.binds.splice(bindToDelete, 1);
+			this.client.db.updateSetting(member.guild.id, {binds: settings.binds});
 		}
 
 		//ranks to roles

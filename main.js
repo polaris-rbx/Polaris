@@ -1,12 +1,13 @@
 "use strict";
 //const settings = require("./settings.json");
-var Raven = require('raven');
+const Raven = require('raven');
 Raven.config('https://655dab4235f64421bae085050790fd21:efe96e46a2024cb28aef989abb687893@sentry.io/242368').install();
 
-var Polaris = require("./util/client.js");
-var client = new Polaris.client("Mzc1NDA4MzEzNzI0MDQzMjc4.DNvZwg.BGCQ7pMFNrfBUzLAgKJR8Dp_WDY", Raven, {maxShards: "auto"});
+const settings = require("./settings.json");
+const Polaris = require("./util/client.js");
+const client = new Polaris.client(settings.token, Raven, {maxShards: "auto"});
 
-var probe = require('pmx').probe();
+const probe = require('pmx').probe();
 
 
 //Raven error catcher, for anything that isn't caught normally. Shouldn't really be used.
