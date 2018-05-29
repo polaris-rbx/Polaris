@@ -27,7 +27,10 @@ class Database {
 	}
 	async getLink(discordId){
 		var link = await this.users.get(discordId).run();
-		return link.robloxId;
+		if (link) {
+			return link.robloxId;
+		} else return;
+
 
 	}
 
