@@ -42,8 +42,6 @@ function importUsers(where) {
 	});
 
 }
-
-
 function importServers(where) {
 	const servers = require(where);
 
@@ -66,6 +64,6 @@ function importServers(where) {
 			id: guildId,
 			binds: binds,
 			mainGroup: mainGroup,
-		}).then(() => console.log(`Added user ${guildId}`)).catch(e => console.error(`Failed to add user ${guildId}} | Error: ${e}`));
+		}).then(() => console.log(`Added server ${guildId}`)).catch(e => console.error(`Failed to add server ${guildId}} | Error: ${e}`));
 	});
 }

@@ -27,14 +27,15 @@ class doneCommand extends Polaris.command {
 			this.client.linkQueue.delete(msg.author.id);
 
 			//Check for existing link and update
-			if (this.client.db.users.get(msg.author.id)) {
+			if (await this.client.db.getLink(msg.author.id)) {
+				console.log("Updating for user " + msg.author.username);
 				await this.client.db.users.get(msg.author.id).update({
 					robloxId: robloxId,
-					discordId: msg.author.id
 
 				}).run();
+				return;
 			}
-
+			console.log("Inserting for user " + msg.author.username);
 			await this.client.db.users.insert({
 				robloxId: robloxId,
 				discordId: msg.author.id
