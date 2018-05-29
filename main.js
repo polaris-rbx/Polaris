@@ -13,10 +13,7 @@ var probe = require('pmx').probe();
 Raven.context(function () {
 
 	var accountLinks = 0;
-	var servers = 0;
-
 	async function updateValues(){
-		servers = client.guilds.size;
 		accountLinks = await client.db.users.count().run();
 
 	}
@@ -33,7 +30,7 @@ Raven.context(function () {
 	probe.metric({
 		name    : 'Guilds',
 		value   : function() {
-			return servers;
+			return client.guilds.size;
 		}
 	});
 
