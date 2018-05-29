@@ -4,6 +4,9 @@
 	"main": "main.js",
 	"private": true,
 	"description": "The new class based Polaris bot. Private.",
-	"author": "Neztore"
-
+	"author": "Neztore",
+	"dependencies": {
+		"raven": "^2.6.2",
+		"rethinkdbdash": "^2.3.31"
+	}
 }
