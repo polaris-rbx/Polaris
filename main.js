@@ -4,7 +4,7 @@ var Raven = require('raven');
 Raven.config('https://655dab4235f64421bae085050790fd21:efe96e46a2024cb28aef989abb687893@sentry.io/242368').install();
 
 var Polaris = require("./util/client.js");
-var client = new Polaris.client("MzE0Nzc2OTUyNTQ2NTI1MTg2.DTKxZQ.mQhYOKQAuhUd4YpyMcCkegsPY94", Raven);
+var client = new Polaris.client("Mzc1NDA4MzEzNzI0MDQzMjc4.DNvZwg.BGCQ7pMFNrfBUzLAgKJR8Dp_WDY", Raven, {maxShards: "auto"});
 
 //Raven error catcher, for anything that isn't caught normally. Shouldn't really be used.
 Raven.context(function () {
@@ -22,7 +22,24 @@ Raven.context(function () {
 
 	});
 
+	client.on("guildMemberAdd", async function(guild, member) {
+		const settings = await client.db.getSettings(guild.id);
+		if (settings.autoVerify) {
+			var rbxId = await client.db.getLink(member.id);
+			if (settings && rbxId) {
+				var res = await client.commands.getrole.giveRoles(settings, member, rbxId);
+				if (res) {
+					res.title = "Welcome to " + guild.name;
+					res.description = "I have made added the following roles as you are already verified.";
+					var DMChannel = await member.user.getDMChannel();
+					DMChannel.sendSuccess(member.user, res);
+				}
 
+			}
+		}
+
+
+	});
 
 	client.on("messageCreate", (message) => {
 		//Command handler
@@ -42,5 +59,11 @@ Raven.context(function () {
 		}
 	});
 
+	process.on('unhandledRejection', (reason, p) => {
+		client.logError(reason, p);
+		console.log("ERROR FOUND: " + reason + "\nAT PROMISE: " + p);
+
+
+	});
 
 }); //Ends context

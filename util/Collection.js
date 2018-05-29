@@ -1,11 +1,8 @@
-
-class Collection extends Map {
+module.exports = class Collection extends Map {
 	constructor(iterable) {
 		super(iterable);
 
 	}
-
-
 
 	/**
 	 * Obtains the first value(s) in this collection.
@@ -176,4 +173,4 @@ class Collection extends Map {
 		return new this.constructor(this);
 	}
 
-}
+};

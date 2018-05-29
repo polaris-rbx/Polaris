@@ -2,6 +2,7 @@
 var Eris = require("eris");
 var erisExtensions = require("./erisExtensions.js");
 var db = require("./db.js");
+const Collection = require("./Collection.js");
 
 const path = require('path');
 const fs = require('fs');
@@ -26,16 +27,20 @@ class Command {
 
 
 	process(message, args) {
+		//DM allowed check
+		if (!message.channel.guild) {
+			if (this.permissions.length !== 0 || this.guildOnly) return message.channel.sendError(message.author, "That command is guild only!");
+		}
+
 		for (var counter in this.permissions) {
 			if (!message.member.permission.has(this.permissions[counter])) {
-				return message.channel.sendError(message, {title: "Error", description: `The \`${this.name}\` command requires permission \`${this.permissions[counter]}\` permission`});
+				return message.channel.sendError(message.author, {title: "Error", description: `The \`${this.name}\` command requires permission \`${this.permissions[counter]}\` permission`});
 			}
 		}
-		//DM allowed check
-		if (!message.guild) {
-			if (this.permissions.length != 0) return message.channel.sendError(message.author, "That command is guild only!");
-			if (this.guildOnly) return message.channel.sendError(message.author, "That command is guild only!");
-		}
+
+		if (!message.member && this.guildOnly) {
+			console.log("MEMBER IS NULL. Content: " + message.content + " id: " + message.id);
+			return message.channel.sendError(message.author, "I couldn't find your guildMember. Please switch to `Online`, `Idle` or `DnD`.");}
 		//Add in some useful info for bug tracking
 		this.client.Raven.setContext({
 			user: {
@@ -57,7 +62,7 @@ class Command {
 				}
 			});
 			this.client.Raven.captureException(e);
-			console.log(e);
+			console.log("COMMAND GENERAL CATCH: " + e);
 		}
 	}
 
@@ -71,13 +76,15 @@ module.exports.command = Command;
 
 //CLIENT CLASS, BASE CLIENT CLASS.
 module.exports.client = class client extends Eris.Client {
-	constructor(token, Raven){
-		super(token);
+	constructor(token, Raven, options){
+		super(token, options);
 		//Provide RAVEN and Eris libs
 		this.Raven = Raven;
 		this.eris = Eris;
 		//Provides DB
 		this.db = new db(this);
+		//For linkaccount and done.
+		this.linkQueue = new Collection();
 
 		this.start();
 	}
@@ -120,6 +127,8 @@ module.exports.client = class client extends Eris.Client {
 		this.Raven.mergeContext({
 			extra: obj
 		});
+		console.log(err);
+		this.Raven.captureException(err);
 	}
 
 
