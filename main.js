@@ -6,8 +6,34 @@ Raven.config('https://655dab4235f64421bae085050790fd21:efe96e46a2024cb28aef989ab
 var Polaris = require("./util/client.js");
 var client = new Polaris.client("Mzc1NDA4MzEzNzI0MDQzMjc4.DNvZwg.BGCQ7pMFNrfBUzLAgKJR8Dp_WDY", Raven, {maxShards: "auto"});
 
+var probe = require('pmx').probe();
+
+
 //Raven error catcher, for anything that isn't caught normally. Shouldn't really be used.
 Raven.context(function () {
+
+	var accountLinks = 0;
+	var servers = 0;
+	async function updateValues(){
+		accountLinks = await client.db.users.count().run();
+		servers = client.guilds.size;
+	}
+	setInterval(updateValues, 600000);
+	updateValues();
+
+	probe.metric({
+		name    : 'Account links',
+		value   : function() {
+			return accountLinks;
+		}
+	});
+
+	probe.metric({
+		name    : 'Guilds',
+		value   : function() {
+			return servers;
+		}
+	});
 
 	client.on("ready", () => {
 		console.log(`Bot now running on ${client.guilds.size} servers`);

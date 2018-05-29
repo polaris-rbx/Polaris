@@ -7,6 +7,7 @@
 	"author": "Neztore",
 	"dependencies": {
 		"eris": "^0.8.6",
+		"pmx": "^1.6.4",
 		"raven": "^2.6.2",
 		"rethinkdbdash": "^2.3.31"
 	}
