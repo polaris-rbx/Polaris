@@ -35,7 +35,7 @@ class linkAccountCommand extends Polaris.command {
 		}
 		//ALREADY EXIST CHECK
 		var current = await this.client.db.users.get(msg.author.id);
-		if (current.robloxId) {
+		if (current) {
 			var user = await rbx.getUsernameFromId(current.robloxId);
 
 			var opt = await msg.channel.restrictedPrompt(msg.author, {title: "Continuing will overwrite", description: `Continuing will over-write your current link with user \`${user}\` and ID \`${current.robloxId}\`.\nDo you wish to continue?`}, ["Yes", "No"]);

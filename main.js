@@ -14,9 +14,11 @@ Raven.context(function () {
 
 	var accountLinks = 0;
 	var servers = 0;
+
 	async function updateValues(){
-		accountLinks = await client.db.users.count().run();
 		servers = client.guilds.size;
+		accountLinks = await client.db.users.count().run();
+
 	}
 	setInterval(updateValues, 600000);
 	updateValues();
