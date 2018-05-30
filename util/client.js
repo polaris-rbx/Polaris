@@ -40,7 +40,7 @@ class Command {
 
 		if (!message.member && this.guildOnly) {
 			console.log("MEMBER IS NULL. Content: " + message.content + " id: " + message.id);
-			return message.channel.sendError(message.author, "I couldn't find your guildMember. Please switch to `Online`, `Idle` or `DnD`.");}
+			return message.channel.sendError(message.author, "I couldn't find your guildMember. Please switch to `Online`, `Idle` or `DnD`. If issue persists, join our discord.");}
 		//Add in some useful info for bug tracking
 		this.client.Raven.setContext({
 			user: {
