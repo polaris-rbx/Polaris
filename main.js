@@ -70,17 +70,7 @@ Raven.context(function () {
 
 	client.on("messageCreate", async (message) => {
 		//Command handler
-		if (!message.member) {
-			await getMembers(message.channel.guild);
-			if (!message.author) {
-				client.createMessage(message.channel.id, ":exclamation: I couldn't get your guild member. Please re-try this command. :exclamation:");
-				throw new Error("Guild member is still not defined!");
-			} else if (message.channel.guild.members.get(message.author.id)) {
-				message.member = message.channel.guild.members.get(message.author.id);
-			}
-		}
 
-		if (message.member.bot) return;
 		if (!message.content.startsWith('.')) return;
 
 		const args = message.content.slice(1).trim().split(/ +/g);
@@ -95,10 +85,7 @@ Raven.context(function () {
 
 		}
 	});
-	//async poly fill
-	async function getMembers(guild) {
-		guild.fetchAllMembers();
-	}
+
 
 	process.on('unhandledRejection', (reason, p) => {
 		client.logError(reason, p);

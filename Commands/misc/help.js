@@ -15,7 +15,9 @@ class helpCommand extends Polaris.command {
 			let command = this.client.commands[args[0]] || this.client.commands[this.client.commands.aliases[args[0]]];
 			if (!command) {
 				if (!this._assembled) this.assemble();
+
 				await DMChannel.sendInfo(msg.author, this._assembled);
+
 				return;
 			}
 
@@ -84,7 +86,9 @@ class helpCommand extends Polaris.command {
 			group.forEach(command => groupContent = `${groupContent}**${command.name}** - ${command.description}\n`);
 			embed.fields.push({name: group[0].group, value: groupContent});
 		});
+		embed.footer = {text: "Polaris bot", icon_url: this.client.user.avatarURL};
 		this._assembled = embed;
+
 		return embed;
 
 

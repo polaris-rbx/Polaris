@@ -86,6 +86,18 @@ async function sendInfo(author, content){
 	}
 }
 
+async function send(content) {
+	if (!content) return;
+	this.client = this.guild ? this.guild.shard.client : this._client;
+	try {
+		return await this.client.createMessage(this.id, { content: content});
+	} catch (err) {
+		console.log(`Couldn't send message to ${this.id}`);
+		return null;
+	}
+
+}
+
 
 
 
@@ -177,6 +189,7 @@ module.exports = Eris => {
 	Eris.Channel.prototype.sendInfo = sendInfo;
 	Eris.Channel.prototype.sendError = sendError;
 	Eris.Channel.prototype.sendSuccess = sendSuccess;
+	Eris.Channel.prototype.send = send;
 };
 
 
