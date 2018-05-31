@@ -59,7 +59,12 @@ class settingsCommand extends Polaris.command {
 				let res = await this.sendPrompt(msg, embed, current.subs);
 
 				//If cancelled (returned null)
-				if (res === "time") return msg.channel.sendInfo(msg.author, "Prompt timed out.");
+				if (res === "time") {
+					//Remove from QUEUE
+					COOLDOWN.delete(msg.author.id);
+					done = true;
+					return msg.channel.sendInfo(msg.author, "Prompt timed out.");
+				}
 				if (!res) {
 					msg.channel.sendInfo(msg.author, "Cancelled prompt.");
 					done = true;

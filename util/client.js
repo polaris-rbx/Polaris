@@ -27,27 +27,33 @@ class Command {
 
 
 	async process(message, args) {
-		//DM allowed check
-		if (!message.channel.guild) {
-			if (this.permissions.length !== 0 || this.guildOnly) return message.channel.sendError(message.author, "That command is guild only!");
-		}
 		if (!message.author) {
 			message.channel.send(`:exclamation: \`message.author\` is not defined. This should not happen.\nError recorded. I'll get right on it!`);
 			throw new Error("No author!");
 		}
-		if (!message.member) {
-			console.log("No member " + message.author.username);
-			await getMembers(message.channel.guild);
-			if (!message.author) {
-				this.client.createMessage(message.channel.id, ":exclamation: I couldn't get your guild member. Please re-try this command. :exclamation:");
-				throw new Error("Guild member is still not defined!");
-			} else if (message.channel.guild.members.get(message.author.id)) {
-				console.log("get author");
-				message.member = message.channel.guild.members.get(message.author.id);
+
+		//DM allowed check
+		if (!message.channel.guild) {
+			//In DMs
+			if (this.permissions.length !== 0 || this.guildOnly) return message.channel.sendError(message.author, "That command is guild only!");
+		} else {
+			//In a guild, check for message.member.
+			if (!message.member) {
+				console.log("No member " + message.author.username);
+				await getMembers(message.channel.guild);
+				if (!message.author) {
+					this.client.createMessage(message.channel.id, ":exclamation: I couldn't get your guild member. Please re-try this command. :exclamation:");
+					throw new Error("Guild member is still not defined!");
+				} else if (message.channel.guild.members.get(message.author.id)) {
+					console.log("get author");
+					message.member = message.channel.guild.members.get(message.author.id);
+				}
 			}
 		}
 
-		if (message.member.bot) return;
+
+
+		if (message.author.bot) return;
 
 
 		for (var counter in this.permissions) {

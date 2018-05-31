@@ -70,7 +70,6 @@ Raven.context(function () {
 
 	client.on("messageCreate", async (message) => {
 		//Command handler
-
 		if (!message.content.startsWith('.')) return;
 
 		const args = message.content.slice(1).trim().split(/ +/g);

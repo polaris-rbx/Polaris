@@ -3,8 +3,8 @@ let Polaris = require("../../util/client.js");
 class pingCommand extends Polaris.command {
 	constructor(client){
 		super(client);
-		this.description = "Simple ping command to retrieve bot latency.";
-		this.aliases = ["pong"];
+		this.description = "Get information about the bot, and some important links.";
+		this.aliases = [];
 		this.group = "Misc";
 		this.guildOnly = false;
 	}
