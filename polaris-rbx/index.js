@@ -4,7 +4,7 @@ class Roblox {
     this._userCache = new Map()
     this._groupCache = new Map()
 
-    this._group = require('./baseClasses/group.js')
+    // this._group = require('./baseClasses/group.js')
     this._user = require('./baseClasses/user.js')
   }
   async createUser (id) {
@@ -13,16 +13,17 @@ class Roblox {
       var res = await request(`https://api.roblox.com/users/${id}`)
       if (res) {
         var newUser = new roblox._user(this, id)
-        newUser.username = res
+        res = JSON.parse(res)
+        newUser.username = res.Username
         roblox._userCache.set(id, newUser)
         return newUser
-      }
+      } else return {error: {status: 404, message: 'User does not exist'}}
     } catch (err) {
       if (err.statusCode === 404) {
         return {error: {status: 404, message: 'User does not exist'}}
       }
       // Not 404, put to sentry in future
-      console.log(err)
+      throw Error(err)
     }
   }
   async getUser (id) {
@@ -37,9 +38,13 @@ class Roblox {
 module.exports = Roblox
 async function wrap () {
   const robloxClass = new Roblox()
-  const user = await robloxClass.getUser('66592931') // 66592931
+  const user = await robloxClass.getUser('665924123931') // 66592931
+  if (user.error) {
+    console.log(user.error.message)
+    return
+  }
   // user.updateUsername()
-  user.getRoleInGroup('3812352').then(res => {
+  user.getPlayerInfo().then(res => {
     console.log(res)
   })
 }
