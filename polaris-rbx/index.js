@@ -4,10 +4,15 @@ class Roblox {
     this._userCache = new Map()
     this._groupCache = new Map()
 
-    // this._group = require('./baseClasses/group.js')
+    // base classes:
     this._user = require('./baseClasses/user.js')
+    this._group = require('./baseClasses/group.js')
+    // Cache clear timers
+    const ROBLOX = this
+    setInterval(function () { ROBLOX._groupCache = new Map(); console.log('Cleared Group cache') }, 900000)
+    setInterval(function () { ROBLOX._userCache = new Map(); console.log('Cleared user cache') }, 60000)
   }
-  async createUser (id) {
+  async _createUser (id) {
     var roblox = this
     try {
       var res = await request(`https://api.roblox.com/users/${id}`)
@@ -28,27 +33,63 @@ class Roblox {
   }
   async getUser (id) {
     if (!this._userCache.get(id)) {
-      return this.createUser(id)
+      console.log('New user')
+      return this._createUser(id)
     } else {
       return this._userCache.get(id)
     }
   }
-}
+  async getUserFromName (name) {
+    try {
+      var res = await request(`https://api.roblox.com/users/get-by-username?username=${name}`)
+      if (res) {
+        res = JSON.parse(res)
+        var newUser = new this._user(this, res.Id)
 
-module.exports = Roblox
-async function wrap () {
-  const robloxClass = new Roblox()
-  const user = await robloxClass.getUser('665924123931') // 66592931
-  if (user.error) {
-    console.log(user.error.message)
-    return
+        newUser.username = res.Username
+        this._userCache.set(res.Id, newUser)
+        return newUser
+      } else return {error: {status: 404, message: 'User does not exist'}}
+    } catch (err) {
+      if (err.statusCode === 404) {
+        return {error: {status: 404, message: 'User does not exist'}}
+      }
+      throw new Error(err)
+    }
   }
-  // user.updateUsername()
-  user.getPlayerInfo().then(res => {
-    console.log(res)
-  })
-}
-wrap()
 
-// validateUser()
-// getUserInfo?
+  async getGroup (id) {
+    if (this._groupCache.get(id)) {
+      return this._groupCache.get(id)
+    }
+    var roblox = this
+    // Group does not already exist!
+    try {
+      var res = await request(`http://api.roblox.com/groups/${id}`)
+      res = JSON.parse(res)
+      const newGroup = new roblox._group(res.Id)
+      newGroup.Name = res.Name
+      newGroup.Roles = res.Roles
+      roblox._groupCache.set(id, newGroup)
+      return newGroup
+    } catch (error) {
+      if (error.statusCode === 404 || 500) return {error: {status: 404, message: 'Group not found'}}
+      if (error.statusCode === 503) return {error: {status: 503, message: 'Group info not available'}}
+      // Not 404
+      throw new Error(error)
+    }
+  }
+
+  // API FUNCTIONS. Return simple things, not classes.
+  async getIdFromName (Username) {
+    const res = await this.getUserFromName(Username)
+    if (res.error) return res.error
+    return res.id
+  }
+  async getNameFromId (id) {
+    const res = this.getUser(id)
+    if (res.error) return res.error
+    return res.id
+  }
+}
+module.exports = Roblox
