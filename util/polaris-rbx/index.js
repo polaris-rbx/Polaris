@@ -10,7 +10,7 @@ class Roblox {
     // Cache clear timers
     const ROBLOX = this
     setInterval(function () { ROBLOX._groupCache = new Map(); console.log('Cleared Group cache') }, 900000)
-    setInterval(function () { ROBLOX._userCache = new Map(); console.log('Cleared user cache') }, 60000)
+    setInterval(function () { ROBLOX._userCache = new Map(); console.log('Cleared user cache') }, 7200000)
   }
   async _createUser (id) {
     var roblox = this
@@ -33,7 +33,6 @@ class Roblox {
   }
   async getUser (id) {
     if (!this._userCache.get(id)) {
-      console.log('New user')
       return this._createUser(id)
     } else {
       return this._userCache.get(id)
@@ -59,6 +58,7 @@ class Roblox {
   }
 
   async getGroup (id) {
+    if (!id) return {error: {status: 400, message: 'Group id is required'}}
     if (this._groupCache.get(id)) {
       return this._groupCache.get(id)
     }

@@ -26,7 +26,7 @@ class Database {
     var link = await this.users.get(discordId).run()
     if (link) {
       return link.robloxId
-    } else return
+    }
   }
 
   async setupGuild (guild) {
@@ -44,7 +44,7 @@ class Database {
   }
 
   async getSettings (id) {
-    return await this.servers.get(id).run()
+    return this.servers.get(id).run()
   }
 
   async updateSetting (id, newValue) {
@@ -57,7 +57,7 @@ class Database {
 
     const res = await current.update(newValue).run()
     if (res.errors !== 0) {
-      this.client.logError(res.first_error, {type: 'Database error. UpdateSettings.' })
+      this.client.logError(res.first_error, { type: 'Database error. UpdateSettings.' })
       return false
     } else {
       return true

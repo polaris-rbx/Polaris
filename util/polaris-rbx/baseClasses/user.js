@@ -27,17 +27,13 @@ class User {
         user.username = res.Username
       })
       .catch(function (err) {
-        if (err.statusCode === 404) {
-          // Delete user, isn't real?
-        }
-        console.log(err)
+        throw new Error(err)
       })
   }
 
   async getInfo () {
     // Check for player info fetched
     if (this.age) {
-      console.log('CACHE')
       return {
         age: this.age,
         blurb: this.blurb,
@@ -46,10 +42,10 @@ class User {
         joinDate: this.joinDate
       }
     } else {
-      console.log('HTTP')
       return this.updateInfo()
     }
   }
+
   async updateInfo () {
     var roblox = this
     try {

@@ -28,19 +28,19 @@ class helpCommand extends Polaris.command {
 
       if (command.guildOnly) {
         obj.description = `${obj.description}\n**Works in DMs**: No`
-      }	else {
+      } else {
         obj.description = `${obj.description}\n**Works in DMs**: Yes`
       }
 
       // Add in aliases and permissions in seperate fields
 
-      if (command.aliases.length != 0) {
+      if (command.aliases.length !== 0) {
         if (!obj.fields)obj.fields = []
         let aliases = ``
         command.aliases.forEach(element => aliases = `${aliases} \`${element}\`,`)
         obj.fields.push({name: 'Aliases', value: aliases, inline: true})
       }
-      if (command.permissions.length != 0) {
+      if (command.permissions.length !== 0) {
         if (!obj.fields)obj.fields = []
         let perms = ``
         command.permissions.forEach(element => perms = `${perms} \`${element}\`,`)

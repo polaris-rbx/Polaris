@@ -1,5 +1,5 @@
 let Polaris = require('../../util/client.js')
-const rbx = require('roblox-js')
+
 class linkAccountCommand extends Polaris.command {
   constructor (client) {
     super(client)
@@ -20,22 +20,16 @@ class linkAccountCommand extends Polaris.command {
     // ROBLOX NAME VALIDATION
     if (searchForChars(username, ['?', '<', '>', '~', '|', '%', '"'])) return msg.channel.sendError(msg.author, 'ROBLOX usernames may only contain letters, numbers or the _ symbol.')
     // Get ROBLOX userID from username, return error if not existing. Check that error is non-existant user error.
-    let robloxId = null
-    try {
-      robloxId = await rbx.getIdFromUsername(username)
-    } catch (error) {
-      if (error.message === 'User not found' || error.message === 'User does not exist') {
-        // Say user is invalid
-        msg.channel.sendError(msg.author, `The user \`${username}\` does not exist. Please check your spelling and try again.`)
-        return
-      } else {
-        this.client.logError(error, {CMD: 'Link account', type: 'getIdFromUsername'})
-      }
+    const robloxUser = await this.client.roblox.getUserFromName(username)
+    if (robloxUser.error) {
+      if (robloxUser.error.status === 404) return msg.channel.sendError(msg.author, {title: 'User not found', description: `I could not find user \`${username}\` on ROBLOX.`})
+      msg.channel.sendError(msg.author, {title: 'HTTP Error', description: 'A HTTP Error has occured. Is ROBLOX Down?\n`' + robloxUser.error.message + '`'})
+      return this.client.logError(robloxUser.error)
     }
     // ALREADY EXIST CHECK
     var current = await this.client.db.users.get(msg.author.id)
     if (current) {
-      var user = await rbx.getUsernameFromId(current.robloxId)
+      var user = robloxUser.username
 
       var opt = await msg.channel.restrictedPrompt(msg.author, {title: 'Are you sure you wish to continue?', description: `Continuing will over-write your current link with user \`${user}\` and ID \`${current.robloxId}\`.\nDo you wish to continue?`}, ['Yes', 'No'])
       if (!opt) return
@@ -49,17 +43,16 @@ class linkAccountCommand extends Polaris.command {
     let code = generateCode()
     msg.channel.sendInfo(msg.author, {
       title: 'Account link code',
-      description: `You are linking account with account \`${username}\` with UserID \`${robloxId}\`.\nPlease place the following code in your ROBLOX profile - It can be in your ROBLOX status or description - do \`.done\` once it is there.\n**This request will time-out after five minutes**\n\`${code}\``
+      description: `You are linking account with account \`${username}\` with UserID \`${robloxUser.id}\`.\nPlease place the following code in your ROBLOX profile - It can be in your ROBLOX status or description - do \`.done\` once it is there.\n**This request will time-out after five minutes**\n\`${code}\``
     })
 
     this.client.linkQueue.set(msg.author.id, {
-      robloxId: robloxId,
-      code: code,
-      username: username
+      robloxUser: robloxUser,
+      code: code
     })
     var linkQueue = this.client.linkQueue
     setTimeout(function () {
-      if (linkQueue.get(msg.author.id)) { linkQueue.delete(msg.author.id); console.log('Timed-out') }
+      if (linkQueue.get(msg.author.id)) { linkQueue.delete(msg.author.id) }
     }, 300000)
   }
 }

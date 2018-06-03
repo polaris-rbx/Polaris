@@ -1,12 +1,14 @@
 // Require dependencies
 var Eris = require('eris')
 var erisExtensions = require('./erisExtensions.js')
-var db = require('./db.js')
+
+var DB = require('./db.js')
 const Collection = require('./Collection.js')
 
 const path = require('path')
 const fs = require('fs')
 
+const PolarisRbx = require('./polaris-rbx')
 // Add on additions to Eris prototypes (Such as awaitMessages or channel.sendInfo)
 erisExtensions(Eris)
 
@@ -95,9 +97,11 @@ module.exports.Client = class Client extends Eris.Client {
     this.Raven = Raven
     this.eris = Eris
     // Provides DB
-    this.db = new db(this)
+    this.db = new DB(this)
     // For linkaccount and done.
     this.linkQueue = new Collection()
+    // Roblox lib
+    this.roblox = new PolarisRbx()
 
     this.start()
   }
@@ -113,8 +117,8 @@ module.exports.Client = class Client extends Eris.Client {
       fs.readdirSync(dir).forEach(function (file) {
         var stat = fs.statSync(path.join(dir, file))
         if (stat.isFile()) {
-          let cmdFile = require(dir + '/' + file)
-          let command = new cmdFile(initClient)
+          let CmdFile = require(dir + '/' + file)
+          let command = new CmdFile(initClient)
           let CMDName = file.replace('.js', '')
           command.name = CMDName
 
@@ -127,7 +131,7 @@ module.exports.Client = class Client extends Eris.Client {
         }
       })
     }
-    search(__dirname + '/../Commands')
+    search(path.join(__dirname, '/../Commands'))
     // start bot
 
     this.connect()

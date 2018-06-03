@@ -1,6 +1,5 @@
 'use strict'
 let Polaris = require('../../util/client.js')
-const rbx = require('roblox-js')
 class getRoleCommand extends Polaris.command {
   constructor (client) {
     super(client)
@@ -25,9 +24,10 @@ class getRoleCommand extends Polaris.command {
     }
     const reply = await this.giveRoles(settings, msg.member, rbxId)
     if (reply) {
+      if (reply.error) return msg.channel.sendError(msg.author, reply.error)
       msg.channel.sendSuccess(msg.author, reply)
     } else {
-      msg.channel.sendError(msg.author, 'I could not find any roles to give or remove from you.')
+      msg.channel.sendError(msg.author, 'I could not find any roles to give or remove from you.\nRank data is cached for up to 15 minutes. If you were ranked recently, retry later.')
     }
   }
   // Return true for success, false for otherwise.
@@ -45,7 +45,12 @@ class getRoleCommand extends Polaris.command {
     // binds
     for (let current of settings.binds) {
       if (member.guild.roles.get(current.role)) {
-        let rank = await rbx.getRankInGroup(current.group, robloxId)
+        var group = await this.client.roblox.getGroup(current.group)
+        if (group.error) {
+          return {error: {title: 'HTTP Error', description: 'A HTTP Error has occured. Is ROBLOX Down?\n`' + group.error.message + '`'}}
+        }
+
+        let rank = await group.getRank(robloxId)
 
         if (current.exclusive) {
           if (rank === current.rank) {
@@ -71,22 +76,31 @@ class getRoleCommand extends Polaris.command {
     }
 
     // ranks to roles
-    var [groupRanks, userRank] = await Promise.all([rbx.getRoles(settings.mainGroup.id), rbx.getRankNameInGroup(settings.mainGroup.id, robloxId)])
-    const role = member.guild.roles.find(current => current.name.toLowerCase() === userRank.toLowerCase())
-
-    if (role) {
-      this.rolesToGive[role.id] = role.id
-      // Take out of remove list if there.
-      if (this.rolesToRemove[role.id]) {
-        delete this.rolesToRemove[role.id]
+    if (settings.mainGroup.ranksToRoles && settings.mainGroup.id) {
+      var mainGroup = await this.client.roblox.getGroup(settings.mainGroup.id)
+      if (mainGroup.error) {
+        this.client.logError(group.error)
+        return {error: {title: 'HTTP Error', description: 'A HTTP Error has occured. Is ROBLOX Down?\n`' + mainGroup.error.message + '`'}}
       }
-    }
+      const groupRanks = mainGroup.Roles
+      const userRank = await mainGroup.getRole(robloxId)
 
-    for (let thisOne of groupRanks) {
-      const check = member.guild.roles.find(current => current.name.toLowerCase() === thisOne.Name.toLowerCase())
-      if (check) {
-        if (!this.rolesToGive[check.id]) {
-          this.rolesToRemove[check.id] = check.id
+      const role = member.guild.roles.find(current => current.name.toLowerCase() === userRank.toLowerCase())
+
+      if (role) {
+        this.rolesToGive[role.id] = role.id
+        // Take out of remove list if there.
+        if (this.rolesToRemove[role.id]) {
+          delete this.rolesToRemove[role.id]
+        }
+      }
+
+      for (let thisOne of groupRanks) {
+        const check = member.guild.roles.find(current => current.name.toLowerCase() === thisOne.Name.toLowerCase())
+        if (check) {
+          if (!this.rolesToGive[check.id]) {
+            this.rolesToRemove[check.id] = check.id
+          }
         }
       }
     }
@@ -100,8 +114,10 @@ class getRoleCommand extends Polaris.command {
       if (!checkForPresence(member.roles, roleId)) {
         const role = this.member.guild.roles.get(roleId)
         try {
-          await member.guild.addMemberRole(member.id, roleId)
-          addedMsg = `${addedMsg}${role.name}\n`
+          if (role) {
+            await member.guild.addMemberRole(member.id, roleId)
+            addedMsg = `${addedMsg}${role.name}\n`
+          }
         } catch (err) {
           let roleName = role.name
           if (roleName) {
@@ -117,8 +133,10 @@ class getRoleCommand extends Polaris.command {
         if (checkForPresence(member.roles, roleId)) {
           const role = this.member.guild.roles.get(roleId)
           try {
-            await member.guild.removeMemberRole(member.id, roleId)
-            removedMsg = `${removedMsg}\n${role.name}`
+            if (role) {
+              await member.guild.removeMemberRole(member.id, roleId)
+              removedMsg = `${removedMsg}\n${role.name}`
+            }
           } catch (err) {
             let roleName = role.name
             if (roleName) {

@@ -1,13 +1,16 @@
 'use strict'
-// const settings = require("./settings.json");
-const Raven = require('raven')
-Raven.config('https://655dab4235f64421bae085050790fd21:efe96e46a2024cb28aef989abb687893@sentry.io/242368').install()
-
 const settings = require('./settings.json')
+
+const Raven = require('raven')
+Raven.config(settings.sentry).install()
+
 const Polaris = require('./util/client.js')
 const client = new Polaris.Client(settings.token, Raven, {maxShards: 'auto'})
 
 const probe = require('pmx').probe()
+
+const DBL = require('dblapi.js')
+const dbl = new DBL(settings.dblToken, client) // eslint-disable-line
 
 // Raven error catcher, for anything that isn't caught normally. Shouldn't really be used.
 Raven.context(function () {
@@ -51,6 +54,7 @@ Raven.context(function () {
       if (settings && rbxId) {
         var res = await client.commands.getrole.giveRoles(settings, member, rbxId)
         if (res) {
+          if (res.error) return // If errors, fail silently. No need for user to see.
           res.title = 'Welcome to ' + guild.name
           res.description = 'I have made added the following roles as you are already verified.'
           var DMChannel = await member.user.getDMChannel()

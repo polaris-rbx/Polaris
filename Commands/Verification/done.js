@@ -1,5 +1,5 @@
 let Polaris = require('../../util/client.js')
-const rbx = require('roblox-js')
+
 class doneCommand extends Polaris.command {
   constructor (client) {
     super(client)
@@ -12,11 +12,14 @@ class doneCommand extends Polaris.command {
     if (!this.client.linkQueue.get(msg.author.id)) return msg.channel.sendError(msg.author, "I couldn't find an account link awaiting completion. Please ensure that you have used `.linkaccount [RobloxName]` and that it has not timed out.")
     // Define variables from the queue
     var queue = this.client.linkQueue.get(msg.author.id)
-    var robloxName = queue.username
+    const robloxUser = queue.robloxUser
     var code = queue.code
-    var robloxId = queue.robloxId
 
-    var playerInfo = await rbx.getPlayerInfo(robloxId)
+    var playerInfo = await robloxUser.updateInfo()
+    if (playerInfo.error) {
+      msg.channel.sendError(msg.author, {title: 'HTTP Error', description: 'A HTTP Error has occured. Is ROBLOX Down?\n`' + playerInfo.error.message + '`'})
+      return this.client.logError(playerInfo.error)
+    }
 
     let status = playerInfo.status
     let description = playerInfo.blurb
@@ -30,21 +33,21 @@ class doneCommand extends Polaris.command {
       if (await this.client.db.getLink(msg.author.id)) {
         console.log('Updating for user ' + msg.author.username)
         await this.client.db.users.get(msg.author.id).update({
-          robloxId: robloxId
+          robloxId: robloxUser.id
 
         }).run()
-        return
+        return msg.channel.sendSuccess(msg.author, `You've successfully changed your account link! Please do \`.getroles\` to continue.\nNew Username: \`${robloxUser.username}\` UserID: \`${robloxUser.id}\``)
       }
       console.log('Inserting for user ' + msg.author.username)
       await this.client.db.users.insert({
-        robloxId: robloxId,
+        robloxId: robloxUser.id,
         discordId: msg.author.id
 
       }).run()
 
-      return msg.channel.sendSuccess(msg.author, `You've successfully linked your account! Please do \`.getroles\` to continue.\nUsername: \`${robloxName}\` UserID: \`${robloxId}\``)
+      return msg.channel.sendSuccess(msg.author, `You've successfully linked your account! Please do \`.getroles\` to continue.\nUsername: \`${robloxUser.username}\` UserID: \`${robloxUser.id}\``)
     } else {
-      return msg.channel.sendError(msg.author, `I couldn't find the code in your profile. Please ensure that it is in your **status** or **description**.\nUsername: \`${robloxName}\` UserID: \`${robloxId}\``)
+      return msg.channel.sendError(msg.author, `I couldn't find the code in your profile. Please ensure that it is in your **status** or **description**.\nUsername: \`${robloxUser.username}\` UserID: \`${robloxUser.id}\``)
     }
   }
 }

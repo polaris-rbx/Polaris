@@ -12,9 +12,8 @@ class Group {
     var id = typeof userIdOrUserClass === 'number' || typeof userIdOrUserClass === 'string' ? userIdOrUserClass : userIdOrUserClass.id
     if (this.users.get(id)) {
       // Possible cache hit
-      if (this.users.get(id).rank) { console.log('Cache'); return this.users.get(id).rank }
+      if (this.users.get(id).rank) return this.users.get(id).rank
     }
-    console.log('HTTP')
     var options = {
       method: 'GET',
       uri: `https://www.roblox.com/Game/LuaWebService/HandleSocialRequest.ashx?method=GetGroupRank&playerid=${id}&groupId=${this.id}`,
@@ -31,7 +30,7 @@ class Group {
       return res
     } catch (error) {
       if (error.statusCode === 404 || 400) return {error: {status: 404, message: 'User or group not found'}}
-      console.log(error.statusCode)
+      throw new Error(error)
     }
   }
   async getRole (userIdOrUserClass) {
@@ -39,12 +38,8 @@ class Group {
     var id = typeof userIdOrUserClass === 'number' || typeof userIdOrUserClass === 'string' ? userIdOrUserClass : userIdOrUserClass.id
     if (this.users.get(id)) {
       // Possible cache hit
-      if (this.users.get(id).role) {
-        console.log('CACHE')
-        return this.users.get(id).role
-      }
+      if (this.users.get(id).role) return this.users.get(id).role
     }
-    console.log('HTTP')
     var options = {
       method: 'GET',
       uri: `https://www.roblox.com/Game/LuaWebService/HandleSocialRequest.ashx?method=GetGroupRole&playerid=${id}&groupId=${this.id}`,
@@ -68,8 +63,8 @@ class Group {
     try {
       var res = await request(`https://api.roblox.com/groups/${this.id}`)
       res = JSON.parse(res)
-      this.Name = res.Name
-      this.Roles = res.Roles
+      this.name = res.name
+      this.roles = res.roles
     } catch (error) {
       if (error.statusCode === 404) return {error: {status: 404, message: 'Group not found'}}
       if (error.statusCode === 503) return {error: {status: 503, message: 'Group info not available'}}
@@ -78,7 +73,7 @@ class Group {
     }
   }
   async getRoles () {
-    if (this.Roles) return this.Roles
+    if (this.roles) return this.roles
     var res = await this.updateInfo
     if (res.error) return res
     return this.Roles

@@ -1,6 +1,5 @@
 'use strict'
 let Polaris = require('../../util/client.js')
-const rbx = require('roblox-js')
 var COOLDOWN = new Map()
 
 class settingsCommand extends Polaris.command {
@@ -123,7 +122,7 @@ class settingsCommand extends Polaris.command {
     embed.footer = {text: `Say "cancel" to cancel`, icon_url: message.author.avatarURL}
 
     // Move all object keys to lowercase, ensures that user input will always match.
-    var key, keys = Object.keys(options)
+    var key, keys = Object.keys(options) // eslint-disable-line
     var n = keys.length
     var newobj = {}
     while (n--) {
@@ -132,7 +131,7 @@ class settingsCommand extends Polaris.command {
     }
     options = newobj
 
-    var fn = msg => options[msg.content.toLowerCase()] && msg.author.id === message.author.id || msg.content.toLowerCase() === 'cancel' && msg.author.id === message.author.id
+    var fn = msg => (options[msg.content.toLowerCase()] && msg.author.id === message.author.id) || (msg.content.toLowerCase() === 'cancel' && msg.author.id === message.author.id)
     let m = await message.channel.sendInfo(message.author, embed)
     if (!m) {
       // If message doesn't send for whatever reason
@@ -167,10 +166,10 @@ First letter is auto-capitalised.
 * Each page MUST HAVE a info.
 * Each page may have "extra". This is displayed in addition to info.
 * Each page MUST HAVE EITHER:
-	subs  OR func
+  subs OR func
 
-	subs - Object. Contains sub-menus.
-	func - Function to execute.
+  subs - Object. Contains sub-menus.
+  func - Function to execute.
 */
 const menu = {
   info: 'Settings home. From here you can browse to various settings and update them. Please ensure you read each message both continuing.\n**Say the name of the option that you want to choose.**',
@@ -277,14 +276,15 @@ async function setMainGroupId (msg, settings, client) {
 
   newGroupId = newGroupId.content
 
-  let groupRoles = null
-  try {
-    groupRoles = await rbx.getRoles(newGroupId)
-  } catch (error) {
-    return msg.channel.sendError(msg.author, "I couldn't find that group on ROBLOX.")
+  // Group validator
+  const group = await client.roblox.getGroup(newGroupId)
+  if (group.error) {
+    if (group.error.status === 404) {
+      // Group not found. All other HTTP errors logged by Polaris-RBX
+      return msg.channel.sendError(msg.author, 'I could not find that group on ROBLOX.\nPlease ensure the ID is correct.')
+    }
+    return {error: {title: 'HTTP Error', description: 'A HTTP Error has occured. Is ROBLOX Down?\n`' + group.error.message + '`'}}
   }
-
-  if (!groupRoles) return
 
   let newSetting = settings.mainGroup || {}
   newSetting.id = newGroupId
@@ -438,10 +438,13 @@ async function addBind (msg, settings, client) {
     roleId = role.id
   }
 
-  try {
-    await rbx.getRoles(groupId)
-  } catch (error) {
-    return msg.channel.sendError(msg.author, "I couldn't find that group on ROBLOX.")
+  const group = await client.roblox.getGroup(groupId)
+  if (group.error) {
+    if (group.error.status === 404) {
+      // Group not found. All other HTTP errors logged by Polaris-RBX
+      return msg.channel.sendError(msg.author, 'I could not find that group on ROBLOX.\nPlease ensure the ID is correct.')
+    }
+    return {error: {title: 'HTTP Error', description: 'A HTTP Error has occured. Is ROBLOX Down?\n`' + group.error.message + '`'}}
   }
 
   let binds = settings.binds || []

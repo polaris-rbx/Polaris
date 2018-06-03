@@ -1,4 +1,3 @@
-var rbx = require('roblox-js')
 let Polaris = require('../../util/client.js')
 
 class whoisCommand extends Polaris.command {
@@ -20,18 +19,15 @@ class whoisCommand extends Polaris.command {
     if (!rbxId) {
       return msg.channel.sendError(msg.author, "I couldn't find that user's info. Have they linked their account?")
     } else {
-      let robloxName = null
-      try {
-        robloxName = await rbx.getUsernameFromId(rbxId)
-      } catch (error) {
-        console.log(rbxId)
-        this.client.logError(error)
-        return msg.channel.sendError(msg.author, {title: "Oops! That's an error", description: "I couldn't find that users name. Is ROBLOX down?"})
+      const robloxUser = await this.client.roblox.getUser(rbxId)
+      if (robloxUser.error) {
+        msg.channel.sendError(msg.author, {title: 'HTTP Error', description: 'A HTTP Error has occured. Is ROBLOX Down?\n`' + robloxUser.error.message + '`'})
+        return this.client.logError(robloxUser.error)
       }
 
       msg.channel.sendInfo(msg.author, {
         title: 'Player name',
-        description: `That user is \`${robloxName}\`.`,
+        description: `That user is \`${robloxUser.username}\`.`,
         url: `https://www.roblox.com/users/${rbxId}/profile`
       })
     }
