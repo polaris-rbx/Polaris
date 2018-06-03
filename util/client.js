@@ -67,6 +67,7 @@ class Command {
     this.client.Raven.setContext({
       user: {
         username: message.author.username,
+        discriminator: message.author.discriminator,
         ID: message.author.id
       }
     })

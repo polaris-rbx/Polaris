@@ -16,24 +16,26 @@ class linkAccountCommand extends Polaris.command {
       if (!rbxMsg) return
       username = rbxMsg.content
     }
-
     // ROBLOX NAME VALIDATION
     if (searchForChars(username, ['?', '<', '>', '~', '|', '%', '"'])) return msg.channel.sendError(msg.author, 'ROBLOX usernames may only contain letters, numbers or the _ symbol.')
     // Get ROBLOX userID from username, return error if not existing. Check that error is non-existant user error.
-    const robloxUser = await this.client.roblox.getUserFromName(username)
-    if (robloxUser.error) {
-      if (robloxUser.error.status === 404) return msg.channel.sendError(msg.author, {title: 'User not found', description: `I could not find user \`${username}\` on ROBLOX.`})
-      msg.channel.sendError(msg.author, {title: 'HTTP Error', description: 'A HTTP Error has occured. Is ROBLOX Down?\n`' + robloxUser.error.message + '`'})
-      return this.client.logError(robloxUser.error)
+    const newUser = await this.client.roblox.getUserFromName(username)
+    if (newUser.error) {
+      if (newUser.error.status === 404) return msg.channel.sendError(msg.author, {title: 'User not found', description: `I could not find user \`${username}\` on ROBLOX.`})
+      msg.channel.sendError(msg.author, {title: 'HTTP Error', description: 'A HTTP Error has occured. Is ROBLOX Down?\n`' + newUser.error.message + '`'})
+      return this.client.logError(newUser.error)
     }
     // ALREADY EXIST CHECK
-    var current = await this.client.db.users.get(msg.author.id)
+    var current = await this.client.db.getLink(msg.author.id)
     if (current) {
-      var user = robloxUser.username
+      const robloxUser = await this.client.roblox.getUser(current)
+      if (!newUser.error) {
+        var user = robloxUser.username
 
-      var opt = await msg.channel.restrictedPrompt(msg.author, {title: 'Are you sure you wish to continue?', description: `Continuing will over-write your current link with user \`${user}\` and ID \`${current.robloxId}\`.\nDo you wish to continue?`}, ['Yes', 'No'])
-      if (!opt) return
-      if (opt.content.toLowerCase() !== 'yes') return msg.channel.sendInfo(msg.author, 'Cancelled account re-linking.')
+        var opt = await msg.channel.restrictedPrompt(msg.author, {title: 'Are you sure you wish to continue?', description: `Continuing will over-write your current link with user \`${user}\` and ID \`${current}\`.\nDo you wish to continue?`}, ['Yes', 'No'])
+        if (!opt) return
+        if (opt.content.toLowerCase() !== 'yes') return msg.channel.sendInfo(msg.author, 'Cancelled account re-linking.')
+      }
     }
 
     // Generate code, add to queue and return it.
@@ -43,11 +45,11 @@ class linkAccountCommand extends Polaris.command {
     let code = generateCode()
     msg.channel.sendInfo(msg.author, {
       title: 'Account link code',
-      description: `You are linking account with account \`${username}\` with UserID \`${robloxUser.id}\`.\nPlease place the following code in your ROBLOX profile - It can be in your ROBLOX status or description - do \`.done\` once it is there.\n**This request will time-out after five minutes**\n\`${code}\``
+      description: `You are linking account with account \`${username}\` with UserID \`${newUser.id}\`.\nPlease place the following code in your ROBLOX profile - It can be in your ROBLOX status or description - do \`.done\` once it is there.\n**This request will time-out after five minutes**\n\`${code}\``
     })
 
     this.client.linkQueue.set(msg.author.id, {
-      robloxUser: robloxUser,
+      robloxUser: newUser,
       code: code
     })
     var linkQueue = this.client.linkQueue

@@ -101,14 +101,20 @@ module.exports = Eris => {
   }
 
   Eris.Client.prototype.MessageCollector = MessageCollector
-
+  // To track those currently using prompts, and stop them from starting more.
+  const promptUsers = new Set()
   // Restricted prompt function. Input = Embed message or a string. Must provide author. Options is array of strings. Returns null if cancelled or timed out.
   Eris.Channel.prototype.restrictedPrompt = function (author, msgOrObj, options) {
     var channel = this
+    if (promptUsers.has(author.id)) {
+      this.sendError(author, 'Please finish all other prompts before starting a new one!\nThink this is an error? Join our Discord.')
+      return
+    }
+    promptUsers.add(author.id)
     // Fill embed object & assemble options
     if (typeof msgOrObj === 'string')msgOrObj = {description: msgOrObj}
     var optDesc = ``
-    options.forEach(element => optDesc = `${optDesc}- ${element}\n`)
+    options.forEach(element => optDesc = `${optDesc}- ${element}\n`) // eslint-disable-line
     optDesc = `${optDesc}\nto cancel this prompt, say **cancel**.`
 
     msgOrObj.title = msgOrObj.title || 'Question prompt'
@@ -125,14 +131,16 @@ module.exports = Eris => {
       collector.on('end', function (msg, reason) {
         if (reason === 'time') {
           channel.sendInfo(author, 'Prompt timed out')
+          promptUsers.delete(author.id)
           return resolve(null)
         }
 
         if (msg[0].content.toLowerCase() === 'cancel') {
           channel.sendInfo(author, 'Prompt cancelled')
+          promptUsers.delete(author.id)
           return resolve(null)
         }
-
+        promptUsers.delete(author.id)
         resolve(msg[0], reason)
       })
     })
@@ -141,6 +149,12 @@ module.exports = Eris => {
   // Message prompt function. Input = Embed message or a string. Must provide author. RETURNS NULL IF TIMED OUT OR CANCELLED.
   Eris.Channel.prototype.prompt = function (author, msgOrObj) {
     var channel = this
+    if (promptUsers.has(author.id)) {
+      this.sendError(author, 'Please finish all other prompts before starting a new one!\nThink this is an error? Join our Discord.')
+      return
+    }
+    promptUsers.add(author.id)
+
     if (typeof msgOrObj === 'string')msgOrObj = {description: msgOrObj}
 
     msgOrObj.description = `${msgOrObj.description}\nTo cancel this prompt, say **cancel**.`
@@ -149,21 +163,23 @@ module.exports = Eris => {
 
     this.sendInfo(author, msgOrObj)
 
-    var fn = msg => msg.author.id === author.id
+    var fn = msg => msg.author.id === author.id && !msg.content.startsWith('.')
 
     const collector = new MessageCollector(this, fn, {maxMatches: 1, time: 30000})
     return new Promise(function (resolve) {
       collector.on('end', function (msg, reason) {
         if (reason === 'time') {
           channel.sendInfo(author, 'Prompt timed out')
+          promptUsers.delete(author.id)
           return resolve(null)
         }
 
         if (msg[0].content.toLowerCase() === 'cancel') {
           channel.sendInfo(author, 'Prompt cancelled')
+          promptUsers.delete(author.id)
           return resolve(null)
         }
-
+        promptUsers.delete(author.id)
         resolve(msg[0], reason)
       })
     })
@@ -178,7 +194,7 @@ module.exports = Eris => {
 // Adds in fields that are left undefined when the send message functions are run for embeds.
 function addParts (content, author, type) {
   if (typeof content === 'string') {
-    return {title: type, description: content, footer: {text: 'Sent for: ' + author.username, icon_url: author.avatarURL}, timestamp: new Date() }
+    return { title: type, description: content, footer: {text: 'Sent for: ' + author.username, icon_url: author.avatarURL}, timestamp: new Date() }
   }
   if (!content.title) {
     content.title = type

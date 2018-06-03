@@ -12,8 +12,7 @@ class pingCommand extends Polaris.command {
     msg.channel.sendInfo(msg.author,
       {
         title: 'Bot information',
-        description: '**Polaris** is a ROBLOX verification bot created by `Neztore#6998`. The bot is always undergoing improvement, if you have any suggestions for an improvement that could be made please join our discord.',
-        color: 'info',
+        description: '**Polaris** is a ROBLOX verification bot created by `Neztore#6998`. The bot is always undergoing improvement, if you have any suggestions for an improvement that could be made please join our discord.\nCurrent version: v3.1.0',
         timestamp: new Date(),
         fields: [
           {name: 'Bot info', value: 'Polaris was created by Neztore. It is written in Node.js. If you wish to view the bot commands, please do `.help`.'},
