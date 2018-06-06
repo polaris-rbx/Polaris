@@ -47,9 +47,13 @@ class User {
   }
 
   async updateInfo () {
+    if (!this.id) {
+      this.client.logError('ID is not defined!')
+      return {error: {message: 'Id is not defined. Please try again - We\'re onto it.', status: 400}}
+    }
     var roblox = this
     try {
-      var res = await request(`https://www.roblox.com/users/${this.id}/profile`)
+      var res = await request(`https://www.roblox.com/users/${roblox.id}/profile`)
       let body = Cheerio.load(res)
 
       roblox.blurb = body('.profile-about-content-text').text()
@@ -70,7 +74,7 @@ class User {
       return obj
     } catch (error) {
       if (error.statusCode === 400) {
-        return {error: {message: 'User not found', status: 400}}
+        return {error: {message: 'User not found', status: 400, robloxId: roblox.id, robloxName: roblox.username}}
       }
       throw new Error(error)
     }
