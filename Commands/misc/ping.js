@@ -10,7 +10,8 @@ class pingCommand extends Polaris.command {
   }
   async execute (msg) {
     // Uses default send message as otherwise edit does not work. Perhaps add edit support in future w/ embeds?
-    const m = await this.client.createMessage(msg.channel.id, 'Pong...')
+    const m = await msg.channel.send('Pong...')
+    if (!m) return // no perm
     m.edit(`Pong! Latency is ${m.timestamp - msg.timestamp}ms.`)
   }
 }

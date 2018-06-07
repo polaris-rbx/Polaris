@@ -27,7 +27,7 @@ class getinfoCommand extends Polaris.command {
       }
 
       var sentMsg = await msg.channel.sendInfo(msg.author, 'Getting user info... please wait.')
-
+      if (!sentMsg) return // No perm to send msg.
       var playerInfo = await robloxUser.getInfo()
       if (playerInfo.error) return sentMsg.edit({embed: {title: 'HTTP Error', description: 'A HTTP Error has occured. Is ROBLOX Down?\n`' + playerInfo.error.message + '`', timestamp: new Date(), color: 0xb3000a}})
 

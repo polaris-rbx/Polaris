@@ -20,7 +20,7 @@ class linkAccountCommand extends Polaris.command {
     if (searchForChars(username, ['?', '<', '>', '~', '|', '%', '"'])) return msg.channel.sendError(msg.author, 'ROBLOX usernames may only contain letters, numbers or the _ symbol.')
     // Get ROBLOX userID from username, return error if not existing. Check that error is non-existant user error.
     const newUser = await this.client.roblox.getUserFromName(username)
-    if (newUser.error) {
+    if (newUser.error || !newUser.id) {
       if (newUser.error.status === 404) return msg.channel.sendError(msg.author, {title: 'User not found', description: `I could not find user \`${username}\` on ROBLOX.`})
       msg.channel.sendError(msg.author, {title: 'HTTP Error', description: 'A HTTP Error has occured. Is ROBLOX Down?\n`' + newUser.error.message + '`'})
       return this.client.logError(newUser.error)
