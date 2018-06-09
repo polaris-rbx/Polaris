@@ -48,7 +48,6 @@ class User {
 
   async updateInfo () {
     if (!this.id) {
-      this.client.logError('ID is not defined!')
       return {error: {message: 'Id is not defined. Please try again - We\'re onto it.', status: 400}}
     }
     var roblox = this

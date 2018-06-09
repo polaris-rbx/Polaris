@@ -81,6 +81,6 @@ Raven.context(function () {
 
   process.on('unhandledRejection', (reason, p) => {
     client.logError(reason, p)
-    console.log('ERROR FOUND: ' + reason + '\nAT PROMISE: ' + p)
+    console.log('ERROR FOUND: ' + reason + '\nAT PROMISE: ', p)
   })
 }) // Ends context

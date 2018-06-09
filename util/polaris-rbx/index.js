@@ -43,6 +43,11 @@ class Roblox {
       var res = await request(`https://api.roblox.com/users/get-by-username?username=${name}`)
       if (res) {
         res = JSON.parse(res)
+        if (!res.success) {
+          if (res.errorMessage === 'User not found') return {error: {status: 404, message: res.errorMessage}}
+          this.client.logError(res)
+          return {error: {status: 0, message: res.errorMessage}}
+        }
         var newUser = new this._user(this, res.Id)
 
         newUser.username = res.Username
