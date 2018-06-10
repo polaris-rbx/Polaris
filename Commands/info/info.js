@@ -4,7 +4,7 @@ class infoCommand extends Polaris.command {
   constructor (client) {
     super(client)
     this.description = 'Get information about the bot, and some important links.'
-    this.aliases = []
+    this.aliases = ['invite', 'support']
     this.group = 'Misc'
     this.guildOnly = false
   }

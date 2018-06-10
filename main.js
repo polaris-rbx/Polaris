@@ -56,7 +56,6 @@ Raven.context(function () {
         if (res) {
           if (res.error) return // If errors, fail silently. No need for user to see.
           res.title = 'Welcome to ' + guild.name
-          res.description = 'I have made added the following roles as you are already verified.'
           var DMChannel = await member.user.getDMChannel()
           DMChannel.sendSuccess(member.user, res)
         }

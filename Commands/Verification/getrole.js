@@ -173,10 +173,26 @@ class getRoleCommand extends Polaris.command {
         inline: true
       })
     }
+    var nickChanged = false
+    var newNick = await member.guild.updateNickname(settings, member, robloxId)
+    if (newNick) {
+      if (newNick.error) {
+        newNick = newNick.error.message
+        throw new Error(newNick.error)
+      }
+      nickChanged = true
+    }
+
     if (embed.fields.length === 0) {
       // Return false. No roles added.
-      return false
+      if (nickChanged) {
+        return {
+          title: 'Changed your nickname',
+          description: 'Changed nickname to:\n`' + newNick + '`'
+        }
+      } else return false
     } else {
+      if (nickChanged) embed.description = `${embed.description}\nChanged nickname to \`${newNick}\``
       return embed
     }
   }

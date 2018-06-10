@@ -45,7 +45,7 @@ async function sendSuccess (author, content) {
   this.client = this.guild ? this.guild.shard.client : this._client
   let embed = addParts(content, author, 'Success')
   embed.timestamp = new Date()
-  embed.color = 0x03b212
+  embed.color = 0x23ff9f
   try {
     return await this.client.createMessage(this.id, {content: `<@${author.id}> `, embed: embed})
   } catch (err) {
@@ -78,6 +78,7 @@ async function sendInfo (author, content) {
     return await this.client.createMessage(this.id, {content: `<@${author.id}> `, embed: embed})
   } catch (err) {
     console.log(`Couldn't send message to ${this.id}`)
+    console.log(err)
     return null
   }
 }
@@ -184,11 +185,92 @@ module.exports = Eris => {
       })
     })
   }
+  async function updateNickname (settings, member, robloxId) {
+    const client = this.shard.client
+    if (member.canEdit(this.members.get(client.user.id))) {
+      if (settings.mainGroup.id && settings.nicknameTemplate && settings.nicknameTemplate !== '') {
+        // Group is set and it nickname management is enabled
+        var template = '' + settings.nicknameTemplate
+        if (template.includes('{rankName}')) {
+          // Make rankName request
+          const group = await client.roblox.getGroup(settings.mainGroup.id)
+          if (group.error) return group // Return error. Can be accessed with returnedValue.error
+
+          const rank = await group.getRole(robloxId)
+          if (rank.error) return rank // Return error. Can be accessed with returnedValue.error
+          // Replace
+          template = template.replace(/{rankName}/g, rank)
+        }
+
+        if (template.includes('{rankId}')) {
+          const group = await client.roblox.getGroup(settings.mainGroup.id)
+          if (group.error) return group // Return error. Can be accessed with returnedValue.error
+
+          const rankId = await group.getRank(robloxId)
+          if (rankId.error) return rankId // Return error. Can be accessed with returnedValue.error
+          // Replace
+          template = template.replace(/{rankId}/g, rankId)
+        }
+        // User will be required in virtually every case. Idek why people wouldn't use it
+        const user = await client.roblox.getUser(robloxId)
+        if (user.error) return user
+        template = template.replace(/{robloxName}/g, user.username)
+        template = template.replace(/{robloxId}/g, user.id)
+
+        template = template.replace(/{discordName}/g, member.user.username)
+
+        if (template.length > 32) {
+          template = template.substring(0, 32)
+        }
+
+        if (member.nick !== template) {
+          this.editMember(member.id, {
+            nick: template
+          })
+          return template
+        }
+      }
+    }
+  }
+  // Editor: Member
+  function canEdit (editor) {
+    const guild = this.guild
+
+    // Check if owner
+    if (this.id === guild.ownerID) {
+      return false // User owns guild. Cannot edit!
+    }
+    // Get target's highest role
+    const targetRoles = this.roles
+    var highestTargetPos = 0
+    for (let currentRoleId of targetRoles) {
+      const currentRole = guild.roles.get(currentRoleId)
+      if (currentRole.position > highestTargetPos) highestTargetPos = currentRole.position
+    }
+    // Get bot's highest role
+    const editorRoles = editor.roles
+    var highestEditorPos = 0
+    for (let currentRoleId of editorRoles) {
+      const currentRole = guild.roles.get(currentRoleId)
+      if (currentRole.position > highestEditorPos) highestEditorPos = currentRole.position
+    }
+    // is user below editor
+    if (highestTargetPos < highestEditorPos) {
+      return true
+      // Editor can edit user.
+    } else {
+      // Edior cannot edit user
+      return false
+    }
+  }
 
   Eris.Channel.prototype.sendInfo = sendInfo
   Eris.Channel.prototype.sendError = sendError
   Eris.Channel.prototype.sendSuccess = sendSuccess
   Eris.Channel.prototype.send = send
+
+  Eris.Guild.prototype.updateNickname = updateNickname
+  Eris.Member.prototype.canEdit = canEdit
 }
 
 // Adds in fields that are left undefined when the send message functions are run for embeds.

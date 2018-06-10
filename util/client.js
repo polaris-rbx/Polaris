@@ -125,7 +125,8 @@ module.exports.Client = class Client extends Eris.Client {
 
           lib[CMDName] = command
           for (var i in command.aliases) {
-            lib.aliases[command.aliases[i]] = CMDName
+            let alias = command.aliases[i].toLowerCase()
+            lib.aliases[alias] = CMDName
           }
         } else if (stat.isDirectory()) {
           search(path.join(dir, file))

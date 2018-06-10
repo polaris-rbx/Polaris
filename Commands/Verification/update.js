@@ -5,7 +5,7 @@ class updateRoleCommand extends Polaris.command {
   constructor (client) {
     super(client)
     this.description = "Uses a previously linked account and a server's settings to a user their roles according to your group rank(s)."
-    this.aliases = ['update', 'updateRole']
+    this.aliases = ['updateRole', 'updateRoles']
     this.group = 'Roblox account verification'
     this.permissions = ['manageRoles']
     this.guildOnly = true

@@ -238,6 +238,25 @@ const menu = {
               func: disableAutoVerify
             }
           }
+        },
+        nicknames: {
+          info: 'Customise the nicknames of verified users according to their group rank, ROBLOX name etc.',
+          extra: (settings) => (settings.nicknameTemplate && settings.nicknameTemplate !== '') ? `Nickname template is currently set to \`${settings.nicknameTemplate}\`.` : `The nickname template is **not set**! Use one from the templates, or make a custom one.`,
+          subs: {
+            // MAKE SURE ADD LENGTH CHECK. NICKS ARE MAX 32. ROBLOX NAMES CAN BE UP TO 20!
+            templates: {
+              info: 'Choose from one of our premade templates for the most common usages.',
+              func: nicknameTemplates
+            },
+            custom: {
+              info: 'Create a custom template for nicknames.',
+              func: customNickname
+            },
+            disable: {
+              info: 'Disable nickname management',
+              func: disableNickname
+            }
+          }
         }
       }
     }
@@ -538,4 +557,72 @@ async function rmvBind (msg, settings, client) {
       return msg.channel.sendError(msg.author, {title: 'Oops! Something went wrong.', description: `Something went wrong with the database. Please try again.`})
     }
   })
+}
+const templates = {
+  Standard: '{robloxName} | {rankName}',
+  Reversed: '{rankName} | {robloxName}',
+  'Roblox name': '{robloxName}'
+}
+async function nicknameTemplates (msg, settings, client) {
+  const embed = {
+    title: 'Listing templates',
+    description: 'Please select a template from the list shown. If you want to use a different one, say **cancel** and use the `custom` option. Templates:\n'
+  }
+  const names = Object.keys(templates)
+  const values = Object.values(templates)
+  var lowercaseNames = []
+  for (let current in names) {
+    embed.description = `${embed.description}\n**${names[current]}** - \`${values[current]}\``
+    lowercaseNames.push(names[current].toLowerCase())
+  }
+  const res = await msg.channel.restrictedPrompt(msg.author, embed, lowercaseNames)
+  if (!res) return
+  var newTemplate
+  if (res.content.toLowerCase() === 'standard') {
+    newTemplate = '{robloxName} | {rankName}'
+  } else if (res.content.toLowerCase() === 'roblox name') {
+    newTemplate = '{robloxName}'
+  } else if (res.content.toLowerCase() === 'reversed') {
+    newTemplate = '{rankName} | {robloxName}'
+  } else {
+    await msg.channel.sendError(msg.author, 'Invalid option! This should\'nt have happened. Please join our discord.')
+    throw new Error('Invalid option accepted! ' + res.content)
+  }
+  const success = await client.db.updateSetting(msg.channel.guild.id, {nicknameTemplate: newTemplate})
+  if (success) {
+    return msg.channel.sendSuccess(msg.author, {title: 'Successfully updated', description: `Successfully set the nickname template for this server to ${newTemplate}`})
+  } else {
+    return msg.channel.sendError(msg.author, {title: 'Oops! Something went wrong.', description: `Something went wrong with the database. Please try again.`})
+  }
+}
+
+async function customNickname (msg, settings, client) {
+  // Get new template
+  const embed = {
+    title: 'What would you like your new nickname template to be?',
+    description: 'Please say your new nickname template. The bot will reply with an example of what it will look like when in use, once set. Please ensure all variables are enclosed with `{}`.\n',
+    fields: []
+  }
+  const m = 'The following variables can be used within nicknames:\n`{rankName}`\n`{rankId}`\n`{robloxName}`\n`{discordName}`'
+  embed.fields.push({name: 'Availible variables', value: m})
+  embed.fields.push({name: 'Notice', value: 'Please note that nicknames that will be longer than 32 characters (discord max) will be shortened.'})
+  const res = await msg.channel.prompt(msg.author, embed)
+  if (!res) return
+  const newTemplate = res.content
+  // Do DB
+  const success = await client.db.updateSetting(msg.channel.guild.id, {nicknameTemplate: newTemplate})
+  if (success) {
+    return msg.channel.sendSuccess(msg.author, {title: 'Successfully updated the template', description: `The new nickname template is \`${newTemplate}!\``})
+  } else {
+    return msg.channel.sendError(msg.author, {title: 'Oops! Something went wrong.', description: `Something went wrong with the database. Please try again.`})
+  }
+}
+
+async function disableNickname (msg, settings, client) {
+  const success = await client.db.updateSetting(msg.channel.guild.id, {nicknameTemplate: ''})
+  if (success) {
+    return msg.channel.sendSuccess(msg.author, {title: 'Successfully disabled', description: `Successfully disabled nickname management!`})
+  } else {
+    return msg.channel.sendError(msg.author, {title: 'Oops! Something went wrong.', description: `Something went wrong with the database. Please try again.`})
+  }
 }
