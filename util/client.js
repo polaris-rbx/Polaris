@@ -74,7 +74,7 @@ class Command {
 
     try {
       let commandName = this.name
-      this.client.Raven.mergeContext({
+      this.client.Raven.setContext({
         extra: {
           args: args,
           command: commandName

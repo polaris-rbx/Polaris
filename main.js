@@ -2,7 +2,9 @@
 const settings = require('./settings.json')
 
 const Raven = require('raven')
-Raven.config(settings.sentry).install()
+Raven.config(settings.sentry, {
+  captureUnhandledRejections: true
+}).install()
 
 const Polaris = require('./util/client.js')
 const client = new Polaris.Client(settings.token, Raven, {maxShards: 'auto'})
