@@ -1,4 +1,5 @@
 const request = require('request-promise')
+
 class Roblox {
   constructor (client) {
     this.client = client
@@ -46,7 +47,7 @@ class Roblox {
         if (!res.Id) {
           if (res.errorMessage === 'User not found') return {error: {status: 404, message: res.errorMessage}}
           this.client.logError(res)
-          return {error: {status: 0, message: res.errorMessage}}
+          return {error: {status: 0, message: res}}
         }
         var newUser = new this._user(this, res.Id)
 

@@ -9,6 +9,8 @@ const path = require('path')
 const fs = require('fs')
 
 const PolarisRbx = require('./polaris-rbx')
+const util = require('util')
+
 // Add on additions to Eris prototypes (Such as awaitMessages or channel.sendInfo)
 erisExtensions(Eris)
 
@@ -145,6 +147,7 @@ module.exports.Client = class Client extends Eris.Client {
       extra: obj
     })
     console.log(err)
+    if (typeof err === 'object') err = util.inspect(err)
     this.Raven.captureException(err)
   }
 }
