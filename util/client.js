@@ -73,16 +73,16 @@ class Command {
     })
 
     try {
-      this.execute(message, args)
-    } catch (e) {
       let commandName = this.name
       this.client.Raven.mergeContext({
         extra: {
           args: args,
           command: commandName
-
         }
       })
+
+      this.execute(message, args)
+    } catch (e) {
       this.client.Raven.captureException(e)
       console.log('COMMAND GENERAL CATCH: ' + e)
     }
@@ -102,7 +102,7 @@ module.exports.Client = class Client extends Eris.Client {
     // For linkaccount and done.
     this.linkQueue = new Collection()
     // Roblox lib
-    this.roblox = new PolarisRbx()
+    this.roblox = new PolarisRbx(this)
 
     this.start()
   }

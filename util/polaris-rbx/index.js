@@ -1,9 +1,9 @@
 const request = require('request-promise')
 class Roblox {
-  constructor () {
+  constructor (client) {
+    this.client = client
     this._userCache = new Map()
     this._groupCache = new Map()
-
     // base classes:
     this._user = require('./baseClasses/user.js')
     this._group = require('./baseClasses/group.js')
@@ -58,7 +58,7 @@ class Roblox {
       if (err.statusCode === 404) {
         return {error: {status: 404, message: 'User does not exist'}}
       }
-      throw new Error(err)
+      this.client.logError(err)
     }
   }
 
@@ -81,7 +81,7 @@ class Roblox {
       if (error.statusCode === 404 || 500) return {error: {status: 404, message: 'Group not found'}}
       if (error.statusCode === 503) return {error: {status: 503, message: 'Group info not available'}}
       // Not 404
-      throw new Error(error)
+      this.client.logError(error)
     }
   }
 

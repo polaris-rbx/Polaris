@@ -24,7 +24,6 @@ class infoCommand extends Polaris.command {
           {name: 'Users', value: this.client.users.size, inline: true},
           {name: 'Uptime', value: `${Math.round(this.client.uptime / 60000)} Minutes`, inline: true}
 
-
         ]
       })
   }
