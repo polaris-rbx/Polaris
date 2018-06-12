@@ -20,7 +20,7 @@ class helpCommand extends Polaris.command {
 
         return
       }
-
+      if (command.hidden) return // It's a hidden command. It doesn't exist.
       // assemble command-specific help
       let obj = {}
       // Add in command desc & command group
@@ -62,6 +62,7 @@ class helpCommand extends Polaris.command {
     var commands = Object.values(this.client.commands)
     commands.forEach(function (command) {
       if (!command.client) return // This means that it is the "aliases" object and not a command.
+      if (command.hidden) return // this means that it is a HIDDEN COMMAND
       if (organised[command.group]) {
         organised[command.group].push(command)
       } else {
