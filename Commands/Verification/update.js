@@ -21,6 +21,10 @@ class updateRoleCommand extends Polaris.command {
 
     var rbxId = await this.client.db.getLink(mentionedUser.id)
     if (!rbxId) {
+      const res = await this.client.commands.getrole.verifiedRoles(false, mentionedMember)
+      if (res.error) {
+        return msg.channel.sendError(msg.author, {title: 'No permissions', description: res.error})
+      }
       return msg.channel.sendError(msg.author, "I couldn't find that user's info. Have they linked their account?")
     }
 

@@ -11,6 +11,10 @@ class getRoleCommand extends Polaris.command {
     // Check for link
     var rbxId = await this.client.db.getLink(msg.author.id)
     if (!rbxId) {
+      const res = await this.verifiedRoles(false, msg.member)
+      if (res.error) {
+        return msg.channel.sendError(msg.author, {title: 'No permissions', description: res.error})
+      }
       msg.channel.sendError(msg.author, {title: 'Please link your account', description: 'You need to link your account to get your roles.\nGet started with `.linkaccount`.'})
       return
     }
@@ -32,6 +36,8 @@ class getRoleCommand extends Polaris.command {
   }
   // Return true for success, false for otherwise.
   async giveRoles (settings, member, robloxId) {
+    const res = await this.verifiedRoles(true, member)
+    if (res.error) return {title: 'No permissions', description: res.error}
     this.rolesToGive = {}
     this.rolesToRemove = {}
 
@@ -195,6 +201,72 @@ class getRoleCommand extends Polaris.command {
       if (nickChanged) embed.description = `${embed.description}\nChanged nickname to \`${newNick}\``
       return embed
     }
+  }
+  async verifiedRoles (isVerified, member) {
+    const verifiedName = 'Verified'
+    const unverifiedName = 'Unverified'
+
+    var verifiedRole = member.guild.roles.find((role) => role.name === verifiedName)
+    var unverifiedRole = member.guild.roles.find((role) => role.name === unverifiedName)
+    // Check for roles existing. If they do not exist, create them.
+    if (!verifiedRole) {
+      // Create verified role
+      try {
+        verifiedRole = await member.guild.createRole({name: verifiedName})
+      } catch (error) {
+        return {error: 'I do not have permission to create roles. Please ask a server admin to grant me this permission.'}
+      }
+    }
+    if (!unverifiedRole) {
+      // Create unverified role
+      try {
+        unverifiedRole = await member.guild.createRole({name: unverifiedName})
+      } catch (error) {
+        return {error: 'I do not have permission to create roles. Please ask a server admin to grant me this permission.'}
+      }
+    }
+    // If user verified
+    if (isVerified) {
+      // Check for verified role. Add if don't have.
+      if (!checkForPresence(member.roles, verifiedRole.id)) {
+        // Add role
+        try {
+          member.guild.addMemberRole(member.id, verifiedRole.id, 'User is verified')
+        } catch (error) {
+          return {error: 'I do not have permission to add roles. Please ask a server admin to grant me this permission, or move my role.'}
+        }
+      }
+      // Check for unverified role. Remove if have.
+      if (checkForPresence(member.roles, unverifiedRole.id)) {
+        // Add role
+        try {
+          member.guild.removeMemberRole(member.id, unverifiedRole.id, 'User is not verified')
+        } catch (error) {
+          return {error: 'I do not have permission to remove roles. Please ask a server admin to grant me this permission, or move my role.'}
+        }
+      }
+    } else {
+      // If user NOT verified
+      // Check for verified role. Remove if have.
+      if (checkForPresence(member.roles, verifiedRole.id)) {
+        // Add role
+        try {
+          member.guild.removeMemberRole(member.id, verifiedRole.id, 'User is verified')
+        } catch (error) {
+          return {error: 'I do not have permission to add roles. Please ask a server admin to grant me this permission, or move my role.'}
+        }
+      }
+      // Check for unverified role. add if don't have.
+      if (!checkForPresence(member.roles, unverifiedRole.id)) {
+        // Add role
+        try {
+          member.guild.addMemberRole(member.id, unverifiedRole.id, 'User is not verified')
+        } catch (error) {
+          return {error: 'I do not have permission to remove roles. Please ask a server admin to grant me this permission, or move my role.'}
+        }
+      }
+    }
+    return true
   }
 }
 module.exports = getRoleCommand

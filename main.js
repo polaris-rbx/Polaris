@@ -61,6 +61,8 @@ Raven.context(function () {
           var DMChannel = await member.user.getDMChannel()
           DMChannel.sendSuccess(member.user, res)
         }
+      } else if (!rbxId) {
+        await client.commands.getrole.verifiedRoles(false, member)
       }
     }
   })
