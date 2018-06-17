@@ -3,7 +3,9 @@ const settings = require('./settings.json')
 
 const Raven = require('raven')
 Raven.config(settings.sentry, {
-  captureUnhandledRejections: true
+  captureUnhandledRejections: true,
+  autoBreadcrumbs: true,
+  sendTimeout: 3
 }).install()
 
 const Polaris = require('./util/client.js')
@@ -80,10 +82,5 @@ Raven.context(function () {
     } else if (client.commands.aliases[command]) {
       client.commands[client.commands.aliases[command]].process(message, args)
     }
-  })
-
-  process.on('unhandledRejection', (reason, p) => {
-    client.logError(reason, p)
-    console.log('ERROR FOUND: ' + reason + '\nAT PROMISE: ', p)
   })
 }) // Ends context

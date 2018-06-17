@@ -66,13 +66,6 @@ class Command {
       return message.channel.sendError(message.author, "I couldn't find your guildMember. Please switch to `Online`, `Idle` or `DnD`. If issue persists, join our discord.")
     }
     // Add in some useful info for bug tracking
-    this.client.Raven.setContext({
-      user: {
-        username: message.author.username,
-        discriminator: message.author.discriminator,
-        ID: message.author.id
-      }
-    })
 
     try {
       let commandName = this.name
@@ -80,6 +73,11 @@ class Command {
         extra: {
           args: args,
           command: commandName
+        },
+        user: {
+          username: message.author.username,
+          discriminator: message.author.discriminator,
+          ID: message.author.id
         }
       })
 
