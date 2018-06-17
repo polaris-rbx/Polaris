@@ -12,6 +12,8 @@ class settingsCommand extends Polaris.command {
     this.group = 'Admin'
     this.permissions = ['administrator']
     this.guildOnly = true
+
+    this.changePrefix = changePrefix
   }
 
   async execute (msg, args) {
@@ -257,6 +259,10 @@ const menu = {
               func: disableNickname
             }
           }
+        },
+        prefix: {
+          info: 'Allows you to change the prefix for this server. Can be 1 or 2 characters.',
+          func: changePrefix
         }
       }
     }
@@ -590,7 +596,7 @@ async function nicknameTemplates (msg, settings, client) {
   }
   const success = await client.db.updateSetting(msg.channel.guild.id, {nicknameTemplate: newTemplate})
   if (success) {
-    return msg.channel.sendSuccess(msg.author, {title: 'Successfully updated', description: `Successfully set the nickname template for this server to ${newTemplate}`})
+    return msg.channel.sendSuccess(msg.author, {title: 'Successfully updated', description: `Successfully set the nickname template for this server to \`${newTemplate}\``})
   } else {
     return msg.channel.sendError(msg.author, {title: 'Oops! Something went wrong.', description: `Something went wrong with the database. Please try again.`})
   }
@@ -622,6 +628,23 @@ async function disableNickname (msg, settings, client) {
   const success = await client.db.updateSetting(msg.channel.guild.id, {nicknameTemplate: ''})
   if (success) {
     return msg.channel.sendSuccess(msg.author, {title: 'Successfully disabled', description: `Successfully disabled nickname management!`})
+  } else {
+    return msg.channel.sendError(msg.author, {title: 'Oops! Something went wrong.', description: `Something went wrong with the database. Please try again.`})
+  }
+}
+async function changePrefix (msg, settings, client) {
+  const prefix = settings.prefix ? settings.prefix : '.'
+  const res = await msg.channel.prompt(msg.author, {
+    title: 'Changing prefix',
+    description: `The prefix for this server is currently set to \`${prefix}\`!`,
+    fields: [{name: 'What would you like to set the prefix to?', value: 'It can be anything! Up to 2 characters.\nPlease do not use a character such as "a" which will be used in normal conversation.'}]
+  })
+  if (!res) return
+  if (res.content.length > 2 || res.content.length <= 0) return msg.channel.sendError(msg.author, 'Prefix must be 1 or 2 characters.')
+
+  const success = await client.db.updateSetting(msg.channel.guild.id, {prefix: res.content})
+  if (success) {
+    return msg.channel.sendSuccess(msg.author, {title: 'Successfully updated the prefix', description: `The new command prefix for this server is \`${res.content}\`! Users should use this new prefix to interact with Polaris.`})
   } else {
     return msg.channel.sendError(msg.author, {title: 'Oops! Something went wrong.', description: `Something went wrong with the database. Please try again.`})
   }

@@ -8,6 +8,13 @@ class getRoleCommand extends Polaris.command {
     this.group = 'Roblox account verification'
   }
   async execute (msg) {
+    // Check for settings
+
+    var settings = await this.client.db.getSettings(msg.member.guild.id)
+    if (!settings || (settings.binds.length === 0 && !settings.mainGroup.ranksToRoles)) {
+      msg.channel.sendError(msg.author, {title: 'No settings', description: "This server isn't set up yet. Please ask an admin to set up Polaris."})
+      return
+    }
     // Check for link
     var rbxId = await this.client.db.getLink(msg.author.id)
     if (!rbxId) {
@@ -15,15 +22,8 @@ class getRoleCommand extends Polaris.command {
       if (res.error) {
         return msg.channel.sendError(msg.author, {title: 'No permissions', description: res.error})
       }
-      msg.channel.sendError(msg.author, {title: 'Please link your account', description: 'You need to link your account to get your roles.\nGet started with `.linkaccount`.'})
-      return
-    }
-
-    // Check for settings
-
-    var settings = await this.client.db.getSettings(msg.member.guild.id)
-    if (!settings || (settings.binds.length === 0 && !settings.mainGroup.ranksToRoles)) {
-      msg.channel.sendError(msg.author, {title: 'No settings', description: "This server isn't set up yet. Please ask an admin to set up Polaris."})
+      const prefix = settings.prefix ? settings.prefix : '.'
+      msg.channel.sendError(msg.author, {title: 'Please link your account', description: `You need to link your account to get your roles.\nGet started with \`${prefix}linkaccount\`.`})
       return
     }
     const reply = await this.giveRoles(settings, msg.member, rbxId)

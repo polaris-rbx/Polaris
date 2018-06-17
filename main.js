@@ -41,13 +41,18 @@ Raven.context(function () {
 
   client.on('ready', () => {
     console.log(`Bot now running on ${client.guilds.size} servers`)
-    client.editStatus('online', {name: `${client.guilds.size} servers | .help`})
+    client.editStatus('online', {name: `${client.guilds.size} servers | .help`, type: 3})
   })
 
   // Fires when the bot joins a new guild. This updates the status and logs it.
   client.on('guildCreate', async guild => {
     console.log(`New guild joined: ${guild.name} (id: ${guild.id}). This guild has ${guild.memberCount} members!`)
-    client.editStatus('online', {name: `${client.guilds.size} servers | .help`})
+    client.editStatus('online', {name: `${client.guilds.size} servers | .help`, type: 3})
+  })
+
+  client.on('guildDelete', async guild => {
+    console.log(`Guild ${guild.name} has removed Polaris.`)
+    client.editStatus('online', {name: `${client.guilds.size} servers | .help`, type: 3})
   })
 
   client.on('guildMemberAdd', async function (guild, member) {
@@ -68,12 +73,29 @@ Raven.context(function () {
       }
     }
   })
-
   client.on('messageCreate', async (message) => {
     // Command handler
-    if (!message.content.startsWith('.')) return
+    if (message.author.bot) return
+    // New prefix handler
+    const prefixMention = new RegExp(`^<@!?${client.user.id}> `)
+    let prefix = '.'
+    // Check if user has mentioned bot. if so, set that to prefix. Else, check for custom prefix.
+    if (message.content.match(prefixMention)) {
+      prefix = message.content.match(prefixMention)[0]
+    } else {
+      const guild = message.channel.guild
 
-    const args = message.content.slice(1).trim().split(/ +/g)
+      if (guild) {
+        const guildSettings = await client.db.getSettings(guild.id)
+        // it is in a server. Check if they have a custom prefix. If so set prefix to it.
+        if (guildSettings.prefix && guildSettings.prefix !== '') {
+          prefix = guildSettings.prefix
+        }
+      }
+    }
+    if (!message.content.startsWith(prefix)) return
+
+    const args = message.content.slice(prefix.length).trim().split(/ +/g)
     const command = args.shift().toLowerCase()
     // Main command handler. For commands used with the main 'alias'
     if (client.commands[command]) {
