@@ -29,6 +29,9 @@ class Command {
   }
 
   async process (message, args) {
+    if (this.hidden) {
+      if (message.author.id !== '183601072344924160') return
+    }
     if (!message.author) {
       message.channel.send(`:exclamation: \`message.author\` is not defined. This should not happen.\nError recorded. I'll get right on it!`)
       throw new Error('No author!')
@@ -122,6 +125,7 @@ module.exports.Client = class Client extends Eris.Client {
           let command = new CmdFile(initClient)
           let CMDName = file.replace('.js', '')
           command.name = CMDName
+          command.url = dir + '/' + file
 
           lib[CMDName] = command
           for (var i in command.aliases) {
