@@ -12,7 +12,7 @@ class linkAccountCommand extends Polaris.command {
     var username = args[0]
     if (!username) {
       // Prompt for username
-      var rbxMsg = await msg.channel.prompt(msg.author, 'You need to provide your ROBLOX username. What is your ROBLOX username?')
+      var rbxMsg = await msg.channel.prompt(msg.author, `Hey there \`${msg.author.username}\`! I need your ROBLOX name to get started. What is your ROBLOX username?`)
       if (!rbxMsg) return
       username = rbxMsg.content
     }
@@ -32,7 +32,7 @@ class linkAccountCommand extends Polaris.command {
       if (!newUser.error) {
         var user = robloxUser.username
 
-        var opt = await msg.channel.restrictedPrompt(msg.author, {title: 'Are you sure you wish to continue?', description: `Continuing will over-write your current link with user \`${user}\` and ID \`${current}\`.\nDo you wish to continue?`}, ['Yes', 'No'])
+        var opt = await msg.channel.restrictedPrompt(msg.author, {title: 'Are you sure you wish to continue?', description: `Continuing will over-write your current link with user \`${user}\` and ID \`${current}\`.If you have already linked your account, do \`getroles\`!\nDo you wish to continue?`}, ['Yes', 'No'])
         if (!opt) return
         if (opt.content.toLowerCase() !== 'yes') return msg.channel.sendInfo(msg.author, 'Cancelled account re-linking.')
       }
@@ -45,7 +45,12 @@ class linkAccountCommand extends Polaris.command {
     let code = generateCode()
     msg.channel.sendInfo(msg.author, {
       title: 'Account link code',
-      description: `You are linking account with account \`${username}\` with UserID \`${newUser.id}\`.\nPlease place the following code in your ROBLOX profile - It can be in your ROBLOX status or description - do \`.done\` once it is there.\n**This request will time-out after five minutes**\n\`${code}\``
+      description: `You are linking account with account \`${username}\` with UserID \`${newUser.id}\`.\nPlease place the following code in your ROBLOX profile - It can be in your ROBLOX status or description.`,
+      fields: [
+        {name: 'Code', value: `\`${code}\``},
+        {name: 'After you are done', value: 'Once you have put the code in your profile, run the `done` command! :)'},
+        {name: 'Timeout', value: 'This request will time-out in **5 minutes.** Please run `done` before then, or you\'ll need to restart!'}
+      ]
     })
 
     this.client.linkQueue.set(msg.author.id, {

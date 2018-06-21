@@ -18,6 +18,7 @@ class Database {
 
     this.users = this._r.table('users')
     this.servers = this._r.table('servers')
+    this.blacklist = this._r.table('blacklist')
 
     this.defaults = {binds: [], mainGroup: {}, autoVerify: false}
     this.client.on('guildCreate', this.setupGuild.bind(this))

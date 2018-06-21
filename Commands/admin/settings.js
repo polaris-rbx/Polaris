@@ -425,24 +425,19 @@ async function addBind (msg, settings, client) {
   let groupId = await msg.channel.prompt(msg.author, {title: 'Please provide Group ID', description: 'What is the ROBLOX group ID?'})
   if (!groupId) return
   groupId = groupId.content
+  // Validate group ID
+  const group = await client.roblox.getGroup(groupId)
+  if (group.error) {
+    if (group.error.status === 404) {
+      // Group not found. All other HTTP errors logged by Polaris-RBX
+      return msg.channel.sendError(msg.author, 'I could not find that group on ROBLOX.\nPlease ensure the ID is correct.')
+    }
+    return {error: {title: 'HTTP Error', description: 'A HTTP Error has occured. Is ROBLOX Down?\n`' + group.error.message + '`'}}
+  }
 
   let rankId = await msg.channel.prompt(msg.author, {title: 'Please provide Rank ID', description: 'What is the ROBLOX Rank ID for this rank? It should be a number from 0 to 255.'})
   if (!rankId) return
   rankId = rankId.content
-
-  let roleName = await msg.channel.prompt(msg.author, {title: 'Please provide role name', description: 'What is the name of the Discord role? (Case sensitive)'})
-  if (!roleName) return
-  roleName = roleName.content
-
-  let exclusive = await msg.channel.restrictedPrompt(msg.author, {title: 'Is this bind Exclusive?', description: 'Is this bind exclusive? If **Yes** then only this rank will get it.\nIf **no** all ranks above this rank will also recieve it.'}, ['Yes', 'No'])
-  if (!exclusive) return
-  exclusive = exclusive.content
-
-  if (exclusive.toLowerCase() === 'yes') {
-    exclusive = true
-  } else {
-    exclusive = false
-  }
 
   // RANK ID VALIDATION
   try {
@@ -454,6 +449,10 @@ async function addBind (msg, settings, client) {
     return msg.channel.sendError(msg.author, `Rank ID must be a number between 0 and 255.`)
   }
 
+  let roleName = await msg.channel.prompt(msg.author, {title: 'Please provide role name', description: 'What is the name of the Discord role? (Case sensitive)'})
+  if (!roleName) return
+  roleName = roleName.content
+
   // Validate Discord role - in guild?
   let roleId = null
   if (!msg.channel.guild.roles.find((a) => a.name === roleName)) {
@@ -463,13 +462,14 @@ async function addBind (msg, settings, client) {
     roleId = role.id
   }
 
-  const group = await client.roblox.getGroup(groupId)
-  if (group.error) {
-    if (group.error.status === 404) {
-      // Group not found. All other HTTP errors logged by Polaris-RBX
-      return msg.channel.sendError(msg.author, 'I could not find that group on ROBLOX.\nPlease ensure the ID is correct.')
-    }
-    return {error: {title: 'HTTP Error', description: 'A HTTP Error has occured. Is ROBLOX Down?\n`' + group.error.message + '`'}}
+  let exclusive = await msg.channel.restrictedPrompt(msg.author, {title: 'Is this bind Exclusive?', description: 'Is this bind exclusive? If **Yes** then only this rank will get it.\nIf **no** all ranks above this rank will also recieve it.'}, ['Yes', 'No'])
+  if (!exclusive) return
+  exclusive = exclusive.content
+
+  if (exclusive.toLowerCase() === 'yes') {
+    exclusive = true
+  } else {
+    exclusive = false
   }
 
   let binds = settings.binds || []

@@ -36,7 +36,16 @@ class Command {
       message.channel.send(`:exclamation: \`message.author\` is not defined. This should not happen.\nError recorded. I'll get right on it!`)
       throw new Error('No author!')
     }
+    var blacklist = await this.client.db.blacklist.get(message.author.id)
+    if (blacklist) {
+      return message.channel.sendError(message.author, {title: 'BLACKLISTED!', description: `You are blacklisted from using Polaris. This is likely due to a violation of our Terms of service.\n**Reason: **${blacklist.reason ? blacklist.reason : 'None provided.'}\n**Date: **${blacklist.time}`})
+    }
 
+    blacklist = await this.client.db.blacklist.get(message.channel.guild.id)
+    if (blacklist) {
+      await message.channel.sendError(message.author, {title: 'BLACKLISTED!', description: `This server is blacklisted from using Polaris. This is likely due to a violation of our Terms of service.\n**Reason: **${blacklist.reason ? blacklist.reason : 'None provided.'}\n**Date: **${blacklist.time}`, fields: [{name: 'Leaving server', value: 'I am now leaving the server. Please do not re-invite me.'}]})
+      message.channel.guild.leave()
+    }
     // DM allowed check
     if (!message.channel.guild) {
       // In DMs
@@ -58,18 +67,21 @@ class Command {
 
     if (message.author.bot) return
 
-    for (var counter in this.permissions) {
-      if (!message.member.permission.has(this.permissions[counter])) {
-        return message.channel.sendError(message.author, {title: 'Error', description: `The \`${this.name}\` command requires permission \`${this.permissions[counter]}\` permission`})
+    if (this.client.cooldown.has(message.author.id)) {
+      return message.channel.send(':x: - There is a command cooldown of 3 seconds. Please wait!')
+    }
+    if (message.author.id !== '183601072344924160') {
+      for (var counter in this.permissions) {
+        if (!message.member.permission.has(this.permissions[counter])) {
+          return message.channel.sendError(message.author, {title: 'Error', description: `The \`${this.name}\` command requires permission \`${this.permissions[counter]}\` permission`})
+        }
       }
     }
-
     if (!message.member && this.guildOnly) {
       console.log('MEMBER IS NULL. Content: ' + message.content + ' id: ' + message.id)
       return message.channel.sendError(message.author, "I couldn't find your guildMember. Please switch to `Online`, `Idle` or `DnD`. If issue persists, join our discord.")
     }
     // Add in some useful info for bug tracking
-
     try {
       let commandName = this.name
       this.client.Raven.setContext({
@@ -83,7 +95,9 @@ class Command {
           ID: message.author.id
         }
       })
-
+      const cooldown = this.client.cooldown
+      cooldown.add(message.author.id)
+      setTimeout(() => cooldown.delete(message.author.id), 3000)
       this.execute(message, args)
     } catch (e) {
       this.client.Raven.captureException(e)
@@ -107,6 +121,10 @@ module.exports.Client = class Client extends Eris.Client {
     // Roblox lib
     this.roblox = new PolarisRbx(this)
 
+    // Command cooldown
+    this.cooldown = new Set()
+
+    this.ownerId = '183601072344924160'
     this.start()
   }
   // Assemble commands and prepare the bot.
