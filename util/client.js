@@ -41,16 +41,17 @@ class Command {
       return message.channel.sendError(message.author, {title: 'BLACKLISTED!', description: `You are blacklisted from using Polaris. This is likely due to a violation of our Terms of service.\n**Reason: **${blacklist.reason ? blacklist.reason : 'None provided.'}\n**Date: **${blacklist.time}`})
     }
 
-    blacklist = await this.client.db.blacklist.get(message.channel.guild.id)
-    if (blacklist) {
-      await message.channel.sendError(message.author, {title: 'BLACKLISTED!', description: `This server is blacklisted from using Polaris. This is likely due to a violation of our Terms of service.\n**Reason: **${blacklist.reason ? blacklist.reason : 'None provided.'}\n**Date: **${blacklist.time}`, fields: [{name: 'Leaving server', value: 'I am now leaving the server. Please do not re-invite me.'}]})
-      message.channel.guild.leave()
-    }
     // DM allowed check
     if (!message.channel.guild) {
       // In DMs
       if (this.permissions.length !== 0 || this.guildOnly) return message.channel.sendError(message.author, 'That command is guild only!')
     } else {
+      // In guild. Check blacklist
+      blacklist = await this.client.db.blacklist.get(message.channel.guild.id)
+      if (blacklist) {
+        await message.channel.sendError(message.author, {title: 'BLACKLISTED!', description: `This server is blacklisted from using Polaris. This is likely due to a violation of our Terms of service.\n**Reason: **${blacklist.reason ? blacklist.reason : 'None provided.'}\n**Date: **${blacklist.time}`, fields: [{name: 'Leaving server', value: 'I am now leaving the server. Please do not re-invite me.'}]})
+        message.channel.guild.leave()
+      }
       // In a guild, check for message.member.
       if (!message.member) {
         console.log('No member ' + message.author.username)

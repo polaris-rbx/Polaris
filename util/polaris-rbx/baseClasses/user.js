@@ -72,8 +72,8 @@ class User {
       }
       return obj
     } catch (error) {
-      if (error.statusCode === 400) {
-        return {error: {message: 'User not found', status: 400, robloxId: roblox.id, robloxName: roblox.username}}
+      if (error.statusCode === 400 || error.statusCode === 404) {
+        return {error: {message: 'User not found', status: error.statusCode, robloxId: roblox.id, robloxName: roblox.username}}
       }
       throw new Error(error)
     }

@@ -75,6 +75,9 @@ Raven.context(function () {
   })
   client.on('messageCreate', async (message) => {
     // Command handler
+    // If webhook
+    if (!message.author) return msg.channel.send('Oops. `message.author` is not defined. Please contact `Neztore#6998` if this issue persists.')
+    // If bot
     if (message.author.bot) return
     // New prefix handler
     const prefixMention = new RegExp(`^<@!?${client.user.id}> `)

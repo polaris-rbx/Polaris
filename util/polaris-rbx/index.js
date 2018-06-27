@@ -28,6 +28,7 @@ class Roblox {
       if (err.statusCode === 404) {
         return {error: {status: 404, message: 'User does not exist'}}
       }
+      if (err.statusCode === 503) return {error: {status: 503, message: 'Service Unavailible - ROBLOX is down.'}}
       // Not 404, put to sentry in future
       throw Error(err)
     }
@@ -59,6 +60,7 @@ class Roblox {
       if (err.statusCode === 404) {
         return {error: {status: 404, message: 'User does not exist'}}
       }
+      if (err.statusCode === 503) return {error: {status: 503, message: 'Service Unavailible - ROBLOX is down.'}}
       this.client.logError(err)
     }
   }
@@ -71,7 +73,7 @@ class Roblox {
     var roblox = this
     // Group does not already exist!
     try {
-      var res = await request(`http://api.roblox.com/groups/${id}`)
+      var res = await request(`https://api.roblox.com/groups/${id}`)
       res = JSON.parse(res)
       const newGroup = new roblox._group(res.Id)
       newGroup.Name = res.Name

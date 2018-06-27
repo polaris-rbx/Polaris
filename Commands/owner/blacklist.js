@@ -21,11 +21,11 @@ class blacklistCommand extends Polaris.command {
     if (await blacklist.get(id)) {
       console.log(`Updating blacklist for ${id}`)
       await blacklist.get(id).update({reason: reason, time: new Date()})
-      msg.channel.sendSuccess(msg.author, 'Successfully updated the blacklist!')
+      msg.channel.sendSuccess(msg.author, 'Successfully updated the blacklist!\nNew reason: ' + reason)
     } else {
       console.log(`Creating blacklist for ${id}, reason: ${reason}`)
       await blacklist.insert({id: id, reason: reason, time: new Date()})
-      msg.channel.sendSuccess(msg.author, 'Successfully added the blacklist!\n**New reason:** ' + reason)
+      msg.channel.sendSuccess(msg.author, 'Successfully added the blacklist!\n**Reason:** ' + reason)
     }
   }
 }
