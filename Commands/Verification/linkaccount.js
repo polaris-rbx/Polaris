@@ -49,7 +49,7 @@ class linkAccountCommand extends Polaris.command {
 			description: `You are linking account with account \`${username}\` with UserID \`${newUser.id}\`.\nPlease place the following code in your ROBLOX profile - It can be in your ROBLOX status or description.`,
 			fields: [
 				{name: 'Code', value: `\`${code}\``},
-				{name: 'After you are done', value: 'Once you have put the code in your profile, run the `done` command! :)'},
+				{name: 'After you are done', value: 'Once you have put the code in your profile, run the `.done` command! :)'},
 				{name: 'Timeout', value: 'This request will time-out in **5 minutes.** Please run `done` before then, or you\'ll need to restart!'}
 			]
 		});
