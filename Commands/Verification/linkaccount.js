@@ -33,7 +33,7 @@ class linkAccountCommand extends Polaris.command {
 			if (!newUser.error) {
 				var user = robloxUser.username;
 
-				var opt = await msg.channel.restrictedPrompt(msg.author, {title: 'Are you sure you wish to continue?', description: `Continuing will over-write your current link with user \`${user}\` and ID \`${current}\`.If you have already linked your account, do \`getroles\`!\nDo you wish to continue?`}, ['Yes', 'No']);
+				var opt = await msg.channel.restrictedPrompt(msg.author, {title: 'Are you sure you wish to continue?', description: `Continuing will over-write your current link with user \`${user}\` and ID \`${current}\`.If you have already linked your account, do \`.getroles\`!\nDo you wish to continue?`}, ['Yes', 'No']);
 				if (!opt) return;
 				if (opt.content.toLowerCase() !== 'yes') return msg.channel.sendInfo(msg.author, 'Cancelled account re-linking.');
 			}
@@ -50,7 +50,7 @@ class linkAccountCommand extends Polaris.command {
 			fields: [
 				{name: 'Code', value: `\`${code}\``},
 				{name: 'After you are done', value: 'Once you have put the code in your profile, run the `.done` command! :)'},
-				{name: 'Timeout', value: 'This request will time-out in **5 minutes.** Please run `done` before then, or you\'ll need to restart!'}
+				{name: 'Timeout', value: 'This request will time-out in **5 minutes.** Please run `.done` before then, or you\'ll need to restart!'}
 			]
 		});
 
