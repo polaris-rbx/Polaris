@@ -64,6 +64,8 @@ class setupCommand extends Polaris.command {
 		const msgToBeEdited = await msg.channel.send(
 			"Generating roles.. Please wait."
 		);
+		if (!msgToBeEdited) return;
+		
 		const roles = group.Roles.reverse();
 		var createdRoles = "";
 		for (var current of roles) {

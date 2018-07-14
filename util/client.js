@@ -28,7 +28,7 @@ class Command {
 		// add some placeholders
 	}
 
-	async process (message, args) {
+	async process (message, args, prefix) {
 		if (this.hidden) {
 			if (message.author.id !== '183601072344924160') return;
 		}
@@ -99,10 +99,15 @@ class Command {
 			const cooldown = this.client.cooldown;
 			cooldown.add(message.author.id);
 			setTimeout(() => cooldown.delete(message.author.id), 3000);
-			this.execute(message, args);
+
+			await this.execute(message, args, prefix);
 		} catch (e) {
 			this.client.Raven.captureException(e);
-			console.log('COMMAND GENERAL CATCH: ' + e);
+			console.log('Command catch: ' + e);
+			await message.channel.sendError(message.author, {
+				title: 'Oops! An error has occured.',
+				description: `Polaris has encounted an unexpected and fatal error. We're right on it! You may want to join to join our [discord](https://discord.gg/eVyVK5J) to help with fixing this.\n \`\`\` ${e.message} \`\`\``
+			});
 		}
 	}
 }

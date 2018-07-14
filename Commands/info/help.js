@@ -8,7 +8,7 @@ class helpCommand extends Polaris.command {
 		this.aliases = ['cmds', 'commands'];
 		this.guildOnly = false;
 	}
-	async execute (msg, args) {
+	async execute (msg, args, prefix) {
 		var DMChannel = await msg.author.getDMChannel();
 		if (args[0]) {
 			// Provide specific help info
@@ -53,11 +53,11 @@ class helpCommand extends Polaris.command {
 			return;
 		}
 
-		if (!this._assembled) this.assemble();
+		if (!this._assembled) this.assemble(prefix);
 		await DMChannel.sendInfo(msg.author, this._assembled);
 	}
 
-	assemble () {
+	assemble (prefix) {
 		var organised = {};
 		var commands = Object.values(this.client.commands);
 		commands.forEach(function (command) {
@@ -72,7 +72,7 @@ class helpCommand extends Polaris.command {
 		// Turn that into an embed.
 		var embed = {
 			title: 'Help menu',
-			description: "Listed below is all of Polaris' commands. You can also see them on our [website](http://polaris-bot.xyz/commands). Need more help? Join our [Discord](https://discord.gg/eVyVK5J). do `.settings` to set up.",
+			description: `Listed below is all of Polaris' commands. You can also see them on our [website](http://polaris-bot.xyz/commands). Need more help? Join our [Discord](https://discord.gg/eVyVK5J). Do \`${prefix}settings\` to set up the bot.`,
 			fields: []
 		};
 

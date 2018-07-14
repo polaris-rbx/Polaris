@@ -73,7 +73,7 @@ class User {
 			return obj;
 		} catch (error) {
 			if (error.statusCode === 400 || error.statusCode === 404) {
-				return {error: {message: 'User not found', status: error.statusCode, robloxId: roblox.id, robloxName: roblox.username}};
+				return {error: {message: 'User not found - Have you been banned from ROBLOX?', status: error.statusCode, robloxId: roblox.id, robloxName: roblox.username}};
 			}
 			throw new Error(error);
 		}

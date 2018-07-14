@@ -82,19 +82,24 @@ Raven.context(function () {
 		// New prefix handler
 		const prefixMention = new RegExp(`^<@!?${client.user.id}> `);
 		let prefix = '.';
+		// Prefix msg which is shown to users. Used so that when a mention is used, it makes sense.
+		let prefixMsg = prefix;
+
+		const guild = message.channel.guild;
+		if (guild) {
+			const guildSettings = await client.db.getSettings(guild.id);
+			if (!guildSettings) throw new Error(`Guild ${message.channel.guild.id} has no settings!`);
+			// it is in a server. Check if they have a custom prefix. If so set prefix to it.
+			if (guildSettings.prefix && guildSettings.prefix !== '') {
+				prefix = guildSettings.prefix;
+				prefixMsg = prefix;
+			}
+		}
+
 		// Check if user has mentioned bot. if so, set that to prefix. Else, check for custom prefix.
 		if (message.content.match(prefixMention)) {
 			prefix = message.content.match(prefixMention)[0];
-		} else {
-			const guild = message.channel.guild;
-
-			if (guild) {
-				const guildSettings = await client.db.getSettings(guild.id);
-				// it is in a server. Check if they have a custom prefix. If so set prefix to it.
-				if (guildSettings.prefix && guildSettings.prefix !== '') {
-					prefix = guildSettings.prefix;
-				}
-			}
+			prefixMsg = `@Polaris#9752 `;
 		}
 		if (!message.content.startsWith(prefix)) return;
 
@@ -102,10 +107,10 @@ Raven.context(function () {
 		const command = args.shift().toLowerCase();
 		// Main command handler. For commands used with the main 'alias'
 		if (client.commands[command]) {
-			client.commands[command].process(message, args);
+			client.commands[command].process(message, args, prefixMsg);
 			// Run if its using an alias
 		} else if (client.commands.aliases[command]) {
-			client.commands[client.commands.aliases[command]].process(message, args);
+			client.commands[client.commands.aliases[command]].process(message, args, prefixMsg);
 		}
 	});
 }); // Ends context

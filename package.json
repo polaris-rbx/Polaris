@@ -1,6 +1,6 @@
 {
 	"name": "polaris",
-	"version": "3.2.0",
+	"version": "3.2.1",
 	"main": "main.js",
 	"private": true,
 	"description": "The new class based Polaris bot. Private.",
