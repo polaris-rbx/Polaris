@@ -1,4 +1,6 @@
 let Polaris = require('../../util/client.js');
+const settings = require('../../settings.json');
+const specialPeople = settings.specialPeople;
 
 class whoisCommand extends Polaris.command {
 	constructor (client) {
@@ -10,7 +12,7 @@ class whoisCommand extends Polaris.command {
 	}
 	async execute (msg) {
 		if (!msg.mentions[0]) {
-			return msg.channel.sendError(msg.author, 'You must mention a user.\nSupport for whois without tagging will be added in future.');
+			return msg.channel.sendError(msg.author, 'You must mention a user.\nSupport for reverse whois without tagging will be added in future.');
 		}
 		const mentionedUser = msg.mentions[0];
 		if (mentionedUser.bot) return msg.channel.sendError(msg.author, 'Do you really think a bot has linked their account?! **Please mention a normal user!**');
@@ -24,7 +26,14 @@ class whoisCommand extends Polaris.command {
 				msg.channel.sendError(msg.author, {title: 'HTTP Error', description: 'A HTTP Error has occured. Is ROBLOX Down?\n`' + robloxUser.error.message + '`'});
 				return this.client.logError(robloxUser.error);
 			}
-
+			/// Exta bit for me/Polaris employees.
+			if (specialPeople["" + robloxUser.id]) {
+				return msg.channel.sendInfo(msg.author, {
+					title: 'Player name',
+					description: `That user is \`${robloxUser.username}\`.\n\n**${specialPeople["" + robloxUser.id]}**`,
+					url: `https://www.roblox.com/users/${rbxId}/profile`
+				});
+			} 
 			msg.channel.sendInfo(msg.author, {
 				title: 'Player name',
 				description: `That user is \`${robloxUser.username}\`.`,
