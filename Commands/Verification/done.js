@@ -3,7 +3,7 @@ let Polaris = require('../../util/client.js');
 class doneCommand extends Polaris.command {
 	constructor (client) {
 		super(client);
-		this.description = 'Completes an in-progress account link by checking your ROBLOX profile for the code.';
+		this.description = 'Completes an in-progress account link by checking your Roblox profile for the code.';
 		this.aliases = ['ihavesuccessfullyputthecodeinmydesc'];
 		this.group = 'Roblox account verification';
 	}
@@ -17,7 +17,7 @@ class doneCommand extends Polaris.command {
 
 		var playerInfo = await robloxUser.updateInfo();
 		if (playerInfo.error) {
-			msg.channel.sendError(msg.author, {title: 'HTTP Error', description: 'A HTTP Error has occured. Is ROBLOX Down?\n`' + playerInfo.error.message + '`'});
+			msg.channel.sendError(msg.author, {title: 'HTTP Error', description: 'A HTTP Error has occured. Is Roblox Down?\n`' + playerInfo.error.message + '`'});
 			if (playerInfo.error.status !== 404) this.client.logError(playerInfo.error);
 			return;
 		}
@@ -45,8 +45,18 @@ class doneCommand extends Polaris.command {
 				discordId: msg.author.id
 
 			}).run();
-
-			return msg.channel.sendSuccess(msg.author, `You've successfully linked your account! Please do \`${prefix}getroles\` to continue.\nUsername: \`${robloxUser.username}\` UserID: \`${robloxUser.id}\``);
+			const res = await this.client.commands.getrole.verifiedRoles(true, msg.member);
+			const embed = {
+				title: 'Account linked!',
+				description: `You've successfully linked your account! Please do \`${prefix}getroles\` to continue, and recieve your roles.\nUsername: \`${robloxUser.username}\` UserID: \`${robloxUser.id}\``
+			};
+			if (res.error) {
+				embed.fields = [
+					{name: 'Permission error',
+						value: `${res.error}`}
+				];
+			}
+			return msg.channel.sendSuccess(msg.author, embed);
 		} else {
 			return msg.channel.sendError(msg.author, `I couldn't find the code in your profile. Please ensure that it is in your **status** or **description**.\nUsername: \`${robloxUser.username}\` UserID: \`${robloxUser.id}\``);
 		}
