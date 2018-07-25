@@ -53,7 +53,7 @@ class getRoleCommand extends Polaris.command {
 			if (member.guild.roles.get(current.role)) {
 				var group = await this.client.roblox.getGroup(current.group);
 				if (group.error) {
-					return {error: {title: 'HTTP Error', description: 'A HTTP Error has occured. Is ROBLOX Down?\n`' + group.error.message + '`'}};
+					return {error: {title: 'HTTP Error', description: 'A HTTP Error has occured. Is Roblox Down?\n`' + group.error.message + '`'}};
 				}
 
 				let rank = await group.getRank(robloxId);
@@ -86,7 +86,7 @@ class getRoleCommand extends Polaris.command {
 			var mainGroup = await this.client.roblox.getGroup(settings.mainGroup.id);
 			if (mainGroup.error) {
 				this.client.logError(mainGroup.error);
-				return {error: {title: 'HTTP Error', description: 'A HTTP Error has occured. Is ROBLOX Down?\n`' + mainGroup.error.message + '`'}};
+				return {error: {title: 'HTTP Error', description: 'A HTTP Error has occured. Is Roblox Down?\n`' + mainGroup.error.message + '`'}};
 			}
 			const groupRanks = mainGroup.Roles;
 			const userRank = await mainGroup.getRole(robloxId);

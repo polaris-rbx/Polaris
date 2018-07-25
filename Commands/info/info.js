@@ -12,7 +12,7 @@ class infoCommand extends Polaris.command {
 		msg.channel.sendInfo(msg.author,
 			{
 				title: 'Bot information',
-				description: '**Polaris** is a ROBLOX verification bot created by `Neztore#6998`. The bot is always undergoing improvement, if you have any suggestions for an improvement that could be made please join our discord.\nCurrent version: v' + packageJson.version,
+				description: '**Polaris** is a Roblox verification bot created by `Neztore#6998`. The bot is always undergoing improvement, if you have any suggestions for an improvement that could be made please join our discord.\nCurrent version: v' + packageJson.version,
 				timestamp: new Date(),
 				fields: [
 					{name: 'Bot info', value: `Polaris was created by Neztore. It is written in Node.js. If you wish to view the bot commands, please do \`${prefix}help\`.`},

@@ -242,10 +242,10 @@ const menu = {
 					}
 				},
 				nicknames: {
-					info: 'Customise the nicknames of verified users according to their group rank, ROBLOX name etc.',
+					info: 'Customise the nicknames of verified users according to their group rank, Roblox name etc.',
 					extra: (settings) => (settings.nicknameTemplate && settings.nicknameTemplate !== '') ? `Nickname template is currently set to \`${settings.nicknameTemplate}\`.` : `The nickname template is **not set**! Use one from the templates, or make a custom one.`,
 					subs: {
-						// MAKE SURE ADD LENGTH CHECK. NICKS ARE MAX 32. ROBLOX NAMES CAN BE UP TO 20!
+						// MAKE SURE ADD LENGTH CHECK. NICKS ARE MAX 32. Roblox NAMES CAN BE UP TO 20!
 						templates: {
 							info: 'Choose from one of our premade templates for the most common usages.',
 							func: nicknameTemplates
@@ -278,13 +278,13 @@ const menu = {
 // EXTRA:
 function groupExtra (settings) {
 	if (!settings.mainGroup || !settings.mainGroup.id || settings.mainGroup.id === 0) {
-		return 'There is currently no main group set! Use `groupid` to set the ID of your ROBLOX Group.';
+		return 'There is currently no main group set! Use `groupid` to set the ID of your Roblox Group.';
 	} else if (!settings.mainGroup.ranksToRoles && settings.mainGroup.id) {
 		return `Group ID is currently set to ${settings.mainGroup.id}. Ranks to roles is \`Disabled\`.`;
 	} else if (settings.mainGroup.ranksToRoles && settings.mainGroup.id) {
 		return `Ranks to roles is \`enabled\` and the group ID is set to ${settings.mainGroup.id}`;
 	} else {
-		return 'Use `groupid` to set the ID of your ROBLOX Group!';
+		return 'Use `groupid` to set the ID of your Roblox Group!';
 	}
 }
 
@@ -306,9 +306,9 @@ async function setMainGroupId (msg, settings, client) {
 	if (group.error) {
 		if (group.error.status === 404) {
 			// Group not found. All other HTTP errors logged by Polaris-RBX
-			return msg.channel.sendError(msg.author, 'I could not find that group on ROBLOX.\nPlease ensure the ID is correct.');
+			return msg.channel.sendError(msg.author, 'I could not find that group on Roblox.\nPlease ensure the ID is correct.');
 		}
-		return {error: {title: 'HTTP Error', description: 'A HTTP Error has occured. Is ROBLOX Down?\n`' + group.error.message + '`'}};
+		return {error: {title: 'HTTP Error', description: 'A HTTP Error has occured. Is Roblox Down?\n`' + group.error.message + '`'}};
 	}
 
 	let newSetting = settings.mainGroup || {};
@@ -422,7 +422,7 @@ async function addBind (msg, settings, client) {
 		msg.channel.sendError(msg.author, 'Oops! You can only have up to 25 seperate binds. Please consider using `ranksToRoles` or `sub groups`.');
 	}
 	// Variables
-	let groupId = await msg.channel.prompt(msg.author, {title: 'Please provide Group ID', description: 'What is the ROBLOX group ID?'});
+	let groupId = await msg.channel.prompt(msg.author, {title: 'Please provide Group ID', description: 'What is the Roblox group ID?'});
 	if (!groupId) return;
 	groupId = groupId.content;
 	// Validate group ID
@@ -430,12 +430,12 @@ async function addBind (msg, settings, client) {
 	if (group.error) {
 		if (group.error.status === 404) {
 			// Group not found. All other HTTP errors logged by Polaris-RBX
-			return msg.channel.sendError(msg.author, 'I could not find that group on ROBLOX.\nPlease ensure the ID is correct.');
+			return msg.channel.sendError(msg.author, 'I could not find that group on Roblox.\nPlease ensure the ID is correct.');
 		}
-		return {error: {title: 'HTTP Error', description: 'A HTTP Error has occured. Is ROBLOX Down?\n`' + group.error.message + '`'}};
+		return {error: {title: 'HTTP Error', description: 'A HTTP Error has occured. Is Roblox Down?\n`' + group.error.message + '`'}};
 	}
 
-	let rankId = await msg.channel.prompt(msg.author, {title: 'Please provide Rank ID', description: 'What is the ROBLOX Rank ID for this rank? It should be a number from 0 to 255.'});
+	let rankId = await msg.channel.prompt(msg.author, {title: 'Please provide Rank ID', description: 'What is the Roblox Rank ID for this rank? It should be a number from 0 to 255.'});
 	if (!rankId) return;
 	rankId = rankId.content;
 

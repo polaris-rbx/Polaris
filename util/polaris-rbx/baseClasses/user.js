@@ -2,8 +2,8 @@ const request = require('request-promise');
 const Cheerio = require('cheerio');
 /* INFO WITH USER CLASS:
   * User.id: User ID. Always set
-  * User.username: ROBLOX Name. Always set.
-  * User.age, User.blurb, User.status, User.joinDate: ROBLOX Profile info. *Not* always set.
+  * User.username: Roblox Name. Always set.
+  * User.age, User.blurb, User.status, User.joinDate: Roblox Profile info. *Not* always set.
  */
 class User {
 	constructor (Roblox, userId) {
@@ -73,7 +73,7 @@ class User {
 			return obj;
 		} catch (error) {
 			if (error.statusCode === 400 || error.statusCode === 404) {
-				return {error: {message: 'User not found - User is likely banned from ROBLOX.', status: error.statusCode, robloxId: roblox.id, robloxName: roblox.username}};
+				return {error: {message: 'User not found - User is likely banned from Roblox.', status: error.statusCode, robloxId: roblox.id, robloxName: roblox.username}};
 			}
 			throw new Error(error);
 		}

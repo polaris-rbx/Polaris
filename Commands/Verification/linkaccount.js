@@ -17,7 +17,7 @@ class linkAccountCommand extends Polaris.command {
 				this.client.linkQueue.delete(msg.author.id);
 				return msg.channel.sendSuccess(msg.author, `Canceled account link attempt. You can now start again with a new username!`);
 			} else {
-				return msg.channel.sendError(msg.author, `You don't have an account link in process! Please try again with your ROBLOX name.`);
+				return msg.channel.sendError(msg.author, `You don't have an account link in process! Please try again with your Roblox name.`);
 			}
 		}
 		// Check for current link account attempt. Send message if theres one.
@@ -36,8 +36,8 @@ class linkAccountCommand extends Polaris.command {
 				timeMsg = `${seconds} seconds`;
 			}
 			return await msg.channel.sendInfo(msg.author, {
-				title: 'You are already linking your ROBLOX account',
-				description: `You have already started linking your ROBLOX account!\nPlease put the code in your ROBLOX profile.\n**Account name**: \`${currentProcess.robloxUser.username}\``,
+				title: 'You are already linking your Roblox account',
+				description: `You have already started linking your Roblox account!\nPlease put the code in your Roblox profile.\n**Account name**: \`${currentProcess.robloxUser.username}\``,
 				fields: [
 					{
 						name: 'Code',
@@ -53,7 +53,7 @@ class linkAccountCommand extends Polaris.command {
 		}
 		if (!username) {
 			// Prompt for username
-			let rbxMsg = await msg.channel.prompt(msg.author, {title: 'I need your ROBLOX name', description: `Hey there \`${msg.author.username}\`! I need your ROBLOX name to get started. What is your ROBLOX username?`});
+			let rbxMsg = await msg.channel.prompt(msg.author, {title: 'I need your Roblox name', description: `Hey there \`${msg.author.username}\`! I need your Roblox name to get started. What is your Roblox username?`});
 			if (!rbxMsg) return;
 			username = rbxMsg.content;
 		}
@@ -76,8 +76,8 @@ class linkAccountCommand extends Polaris.command {
 				timeMsg = `${seconds} seconds`;
 			}
 			return await msg.channel.sendInfo(msg.author, {
-				title: 'You are already linking your ROBLOX account',
-				description: `You have already started linking your ROBLOX account!\nPlease put the code in your ROBLOX profile.\n**Account name**: \`${currentProcess.robloxUser.username}\`\nYou can cancel link attempt by doing \`${prefix}link cancel\``,
+				title: 'You are already linking your Roblox account',
+				description: `You have already started linking your Roblox account!\nPlease put the code in your Roblox profile.\n**Account name**: \`${currentProcess.robloxUser.username}\`\nYou can cancel link attempt by doing \`${prefix}link cancel\``,
 				fields: [
 					{
 						name: 'Code',
@@ -90,14 +90,14 @@ class linkAccountCommand extends Polaris.command {
 				]
 			}
 			);
-		}// ROBLOX NAME VALIDATION
-		if (searchForChars(username, ['?', '<', '>', '~', '|', '%', '"'])) return msg.channel.sendError(msg.author, 'ROBLOX usernames may only contain letters, numbers or the _ symbol.');
-		// Get ROBLOX userID from username, return error if not existing. Check that error is non-existant user error.
+		}// Roblox NAME VALIDATION
+		if (searchForChars(username, ['?', '<', '>', '~', '|', '%', '"'])) return msg.channel.sendError(msg.author, 'Roblox usernames may only contain letters, numbers or the _ symbol.');
+		// Get Roblox userID from username, return error if not existing. Check that error is non-existant user error.
 		const newUser = await this.client.roblox.getUserFromName(username);
-		if (!newUser) return msg.channel.sendError(msg.author, {title: 'HTTP Error', description: `I have encountered a HTTP error. Is ROBLOX Down?`});
+		if (!newUser) return msg.channel.sendError(msg.author, {title: 'HTTP Error', description: `I have encountered a HTTP error. Is Roblox Down?`});
 		if (newUser.error || !newUser.id) {
-			if (newUser.error.status === 404) return msg.channel.sendError(msg.author, {title: 'User not found', description: `I could not find user \`${username}\` on ROBLOX.`});
-			msg.channel.sendError(msg.author, {title: 'HTTP Error', description: 'A HTTP Error has occured. Is ROBLOX Down?\n`' + newUser.error.message + '`'});
+			if (newUser.error.status === 404) return msg.channel.sendError(msg.author, {title: 'User not found', description: `I could not find user \`${username}\` on Roblox.`});
+			msg.channel.sendError(msg.author, {title: 'HTTP Error', description: 'A HTTP Error has occured. Is Roblox Down?\n`' + newUser.error.message + '`'});
 			return this.client.logError(newUser.error);
 		}
 		// ALREADY EXIST CHECK
@@ -109,10 +109,10 @@ class linkAccountCommand extends Polaris.command {
 				if (robloxUser.username === username) {
 					return await msg.channel.sendError(msg.author, {
 						title: 'You are already linked to that account',
-						description: `You are already linked to the ROBLOX account \`${robloxUser.username}\` and id \`${robloxUser.id}\`!\nDo \`${prefix}getroles\` to get started.`
+						description: `You are already linked to the Roblox account \`${robloxUser.username}\` and id \`${robloxUser.id}\`!\nDo \`${prefix}getroles\` to get started.`
 					});
 				}
-				let opt = await msg.channel.restrictedPrompt(msg.author, {title: 'Hold up! You have already linked your account.', description: `**PLEASE READ FULLY**\nAccount details: \`${user}\` and ID \`${current}\`.\n If this the ROBLOX account you want to use, just do \`${prefix}getroles\`! \nDo you want to contiue?`}, ['Yes', 'No']);
+				let opt = await msg.channel.restrictedPrompt(msg.author, {title: 'Hold up! You have already linked your account.', description: `**PLEASE READ FULLY**\nAccount details: \`${user}\` and ID \`${current}\`.\n If this the Roblox account you want to use, just do \`${prefix}getroles\`! \nDo you want to contiue?`}, ['Yes', 'No']);
 				if (!opt) return;
 				if (opt.content.toLowerCase() !== 'yes') return msg.channel.sendInfo(msg.author, 'Cancelled account re-linking.');
 			}
@@ -124,7 +124,7 @@ class linkAccountCommand extends Polaris.command {
 		let code = generateCode();
 		msg.channel.sendInfo(msg.author, {
 			title: 'Account link code - Please read FULLY',
-			description: `You are linking account with account \`${username}\` with UserID \`${newUser.id}\`.\nPlease place the following code in your ROBLOX profile - It can be in your ROBLOX status or description.`,
+			description: `You are linking account with account \`${username}\` with UserID \`${newUser.id}\`.\nPlease place the following code in your Roblox profile - It can be in your Roblox status or description.`,
 			fields: [
 				{name: 'Code', value: `\`${code}\``},
 				{name: 'After you are done', value: `Once you have put the code in your profile, run the \`${prefix}done\` command! :)`},

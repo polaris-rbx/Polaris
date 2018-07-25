@@ -1,7 +1,7 @@
 /*
 USERS:
 discordId: DISCORD ID
-robloxId: ROBLOX ID
+robloxId: Roblox ID
 
 Servers:
 Id: guildID

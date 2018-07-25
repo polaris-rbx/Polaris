@@ -5,7 +5,7 @@ const specialPeople = settings.specialPeople;
 class whoisCommand extends Polaris.command {
 	constructor (client) {
 		super(client);
-		this.description = "Tells you a user's ROBLOX Name";
+		this.description = "Tells you a user's Roblox Name";
 		this.aliases = ['whomst', 'who'];
 		this.group = 'Roblox';
 		this.guildOnly = true;
@@ -23,7 +23,7 @@ class whoisCommand extends Polaris.command {
 		} else {
 			const robloxUser = await this.client.roblox.getUser(rbxId);
 			if (robloxUser.error) {
-				msg.channel.sendError(msg.author, {title: 'HTTP Error', description: 'A HTTP Error has occured. Is ROBLOX Down?\n`' + robloxUser.error.message + '`'});
+				msg.channel.sendError(msg.author, {title: 'HTTP Error', description: 'A HTTP Error has occured. Is Roblox Down?\n`' + robloxUser.error.message + '`'});
 				return this.client.logError(robloxUser.error);
 			}
 			/// Exta bit for me/Polaris employees.

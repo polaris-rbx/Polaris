@@ -9,9 +9,9 @@ class Roblox {
 		this._user = require('./baseClasses/user.js');
 		this._group = require('./baseClasses/group.js');
 		// Cache clear timers
-		const ROBLOX = this;
-		setInterval(function () { ROBLOX._groupCache = new Map(); console.log('Cleared Group cache'); }, 900000);
-		setInterval(function () { ROBLOX._userCache = new Map(); console.log('Cleared user cache'); }, 7200000);
+		const Roblox = this;
+		setInterval(function () { Roblox._groupCache = new Map(); console.log('Cleared Group cache'); }, 900000);
+		setInterval(function () { Roblox._userCache = new Map(); console.log('Cleared user cache'); }, 7200000);
 	}
 	async _createUser (id) {
 		var roblox = this;
@@ -28,7 +28,7 @@ class Roblox {
 			if (err.statusCode === 404) {
 				return {error: {status: 404, message: 'User does not exist'}};
 			}
-			if (err.statusCode === 503) return {error: {status: 503, message: 'Service Unavailible - ROBLOX is down.'}};
+			if (err.statusCode === 503) return {error: {status: 503, message: 'Service Unavailible - Roblox is down.'}};
 			// Not 404, put to sentry in future
 			throw Error(err);
 		}
@@ -60,7 +60,7 @@ class Roblox {
 			if (err.statusCode === 404) {
 				return {error: {status: 404, message: 'User does not exist'}};
 			}
-			if (err.statusCode === 503) return {error: {status: 503, message: 'Service Unavailible - ROBLOX is down.'}};
+			if (err.statusCode === 503) return {error: {status: 503, message: 'Service Unavailible - Roblox is down.'}};
 			this.client.logError(err);
 		}
 	}

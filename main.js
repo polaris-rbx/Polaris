@@ -73,6 +73,14 @@ Raven.context(function () {
 			}
 		}
 	});
+	client.on('error', function (error, shardId) {
+		Raven.captureException(error, {
+			level: 'fatal',
+			extra: {
+				shardId: shardId
+			}
+		});
+	});
 	client.on('messageCreate', async (message) => {
 		// Command handler
 		// If webhook

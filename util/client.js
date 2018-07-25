@@ -102,7 +102,7 @@ class Command {
 
 			await this.execute(message, args, prefix);
 		} catch (e) {
-			this.client.Raven.captureException(e);
+			// this.client.Raven.captureException(e);
 			console.log('Command catch: ' + e);
 			await message.channel.sendError(message.author, {
 				title: 'Oops! An error has occured.',
