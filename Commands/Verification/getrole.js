@@ -30,10 +30,13 @@ class getRoleCommand extends Polaris.command {
 		if (reply) {
 			if (reply.error) return msg.channel.sendError(msg.author, reply.error);
 			msg.channel.sendSuccess(msg.author, reply);
+			return;
 		} else {
 			msg.channel.sendError(msg.author, 'I could not find any roles to give or remove from you.\nRank data is cached for up to 15 minutes. If you were ranked recently, retry later.');
+			return;
 		}
 	}
+
 	// Return true for success, false for otherwise.
 	async giveRoles (settings, member, robloxId) {
 		const res = await this.verifiedRoles(true, member);
@@ -90,6 +93,7 @@ class getRoleCommand extends Polaris.command {
 			}
 			const groupRanks = mainGroup.Roles;
 			const userRank = await mainGroup.getRole(robloxId);
+			if (!userRank) throw new Error('User rank is not defined?');
 
 			const role = member.guild.roles.find(current => current.name.toLowerCase() === userRank.toLowerCase());
 

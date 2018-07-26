@@ -449,17 +449,24 @@ async function addBind (msg, settings, client) {
 		return msg.channel.sendError(msg.author, `Rank ID must be a number between 0 and 255.`);
 	}
 
-	let roleName = await msg.channel.prompt(msg.author, {title: 'Please provide role name', description: 'What is the name of the Discord role? (Case sensitive)'});
+	let roleName = await msg.channel.prompt(msg.author, {title: 'Please provide role name or mention it', description: 'What is the name of the Discord role? (Case sensitive), you can also mention the role.'});
 	if (!roleName) return;
+	let roleId;
+
+	if (roleName.roleMentions.length !== 0) {
+		roleId = roleName.roleMentions[0];
+	}
 	roleName = roleName.content;
 
+
 	// Validate Discord role - in guild?
-	let roleId = null;
-	if (!msg.channel.guild.roles.find((a) => a.name === roleName)) {
-		return msg.channel.sendError(msg.author, "I couldn't find a role in this discord with that name! **Please note that it is case sensitive.**");
-	} else {
-		let role = msg.channel.guild.roles.find((a) => a.name === roleName);
-		roleId = role.id;
+	if (!roleId) {
+		if (!msg.channel.guild.roles.find((a) => a.name === roleName)) {
+			return msg.channel.sendError(msg.author, "I couldn't find a role in this discord with that name! **Please note that it is case sensitive.**");
+		} else {
+			let role = msg.channel.guild.roles.find((a) => a.name === roleName);
+			roleId = role.id;
+		}
 	}
 
 	let exclusive = await msg.channel.restrictedPrompt(msg.author, {title: 'Is this bind Exclusive?', description: 'Is this bind exclusive? If **Yes** then only this rank will get it.\nIf **no** all ranks above this rank will also recieve it.'}, ['Yes', 'No']);
@@ -492,9 +499,9 @@ async function addBind (msg, settings, client) {
 	if (!success) {
 		return msg.channel.sendError(msg.author, `A database error has occurred. Please try again.`);
 	} else if (exclusive) {
-		msg.channel.sendSuccess(msg.author, `Successfully added an exclusive new bind with Group ID \`${groupId}\`, Rank ID \`${rankId}\` and Rolename \`${roleName}\`.`);
+		msg.channel.sendSuccess(msg.author, `Successfully added an exclusive new bind with Group ID \`${groupId}\`, Rank ID \`${rankId}\` and Rolename ${roleName}.`);
 	} else {
-		msg.channel.sendSuccess(msg.author, `Successfully added a non-exclusive bind with Group ID \`${groupId}\`, Rank ID \`${rankId}\` and Role name \`${roleName}\`.`);
+		msg.channel.sendSuccess(msg.author, `Successfully added a non-exclusive bind with Group ID \`${groupId}\`, Rank ID \`${rankId}\` and Role name ${roleName}.`);
 	}
 }
 async function rmvBind (msg, settings, client) {
