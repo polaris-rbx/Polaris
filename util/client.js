@@ -51,6 +51,7 @@ class Command {
 			if (blacklist) {
 				await message.channel.sendError(message.author, {title: 'BLACKLISTED!', description: `This server is blacklisted from using Polaris. This is likely due to a violation of our Terms of service.\n**Reason: **${blacklist.reason ? blacklist.reason : 'None provided.'}\n**Date: **${blacklist.time}`, fields: [{name: 'Leaving server', value: 'I am now leaving the server. Please do not re-invite me.'}]});
 				message.channel.guild.leave();
+				return;
 			}
 			// In a guild, check for message.member.
 			if (!message.member) {

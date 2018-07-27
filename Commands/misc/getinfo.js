@@ -60,7 +60,10 @@ class getinfoCommand extends Polaris.command {
 		if (specialPeople["" + robloxUser.id]) {
 			return sentMsg.edit({embed: {
 				title: 'Player info',
-				description: `${text}\n\n**${specialPeople["" + robloxUser.id]}**`,
+				description: `${text}`,
+				fields: [
+					{name: 'Polaris employee', value: specialPeople["" + robloxUser.id]}
+				],
 				url: `https://www.roblox.com/users/${rbxId}/profile`,
 				thumbnail: {
 					url: 'https://www.roblox.com/Thumbs/Avatar.ashx?x=100&y=100&userId=' + rbxId,
