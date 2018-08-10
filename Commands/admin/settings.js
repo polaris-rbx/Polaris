@@ -645,7 +645,7 @@ async function changePrefix (msg, settings, client) {
 		title: 'Changing prefix',
 		description: `The prefix for this server is currently set to \`${prefix}\`!`,
 		fields: [{name: 'What would you like to set the prefix to?', value: 'It can be anything! Up to 2 characters.\nPlease do not use a character such as "a" which will be used in normal conversation.'}]
-	});
+	}, true);
 	if (!res) return;
 	if (res.content.length > 2 || res.content.length <= 0) return msg.channel.sendError(msg.author, 'Prefix must be 1 or 2 characters.');
 

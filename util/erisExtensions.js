@@ -148,7 +148,7 @@ module.exports = Eris => {
 	};
 
 	// Message prompt function. Input = Embed message or a string. Must provide author. RETURNS NULL IF TIMED OUT OR CANCELLED.
-	Eris.Channel.prototype.prompt = function (author, msgOrObj) {
+	Eris.Channel.prototype.prompt = function (author, msgOrObj, allowDot) {
 		var channel = this;
 		if (promptUsers.has(author.id)) {
 			this.sendError(author, 'Please finish all other prompts before starting a new one!\nThink this is an error? Join our Discord.');
@@ -163,8 +163,8 @@ module.exports = Eris => {
 		msgOrObj.title = msgOrObj.title || 'Message Prompt';
 
 		this.sendInfo(author, msgOrObj);
-
-		var fn = msg => msg.author.id === author.id && !msg.content.startsWith('.');
+		// If allow dot don't check for . at start of msg.
+		var fn = allowDot ? (msg => msg.author.id === author.id) : (msg => msg.author.id === author.id && !msg.content.startsWith('.'));
 
 		const collector = new MessageCollector(this, fn, {maxMatches: 1, time: 30000});
 		return new Promise(function (resolve) {
