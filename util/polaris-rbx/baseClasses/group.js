@@ -5,14 +5,16 @@ class Group {
 		this.users = new Map();
 	}
 	clearCache () {
-		this.users = new Map();
+		// Clear rank cache
+		console.log(`Clearing cache for group ${this.id}`);
+		this.users.clear();
 	}
 	async getRank (userIdOrUserClass) {
 		if (!userIdOrUserClass) return;
 		var id = typeof userIdOrUserClass === 'number' || typeof userIdOrUserClass === 'string' ? userIdOrUserClass : userIdOrUserClass.id;
 		if (this.users.get(id)) {
 			// Possible cache hit
-			if (this.users.get(id).rank) return this.users.get(id).rank;
+			if (this.users.get(id).rank !== undefined) return this.users.get(id).rank;
 		}
 		var options = {
 			method: 'GET',
@@ -23,7 +25,9 @@ class Group {
 			var res = await request(options);
 			res = parseInt(res.body.substring(22), 10);
 			if (this.users.get(id)) {
-				this.users.get(id).rank = res;
+				let cache = this.users.get(id);
+				cache.rank = res;
+				this.users.set(id, cache);
 			} else {
 				this.users.set(id, {rank: res});
 			}

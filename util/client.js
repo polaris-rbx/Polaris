@@ -24,11 +24,11 @@ class Command {
 		this.permissions = [];
 		this.aliases = [];
 		this.guildOnly = true;
-
 		// add some placeholders
 	}
 
 	async process (message, args, prefix) {
+
 		if (this.hidden) {
 			if (message.author.id !== '183601072344924160') return;
 		}

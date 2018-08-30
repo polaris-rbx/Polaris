@@ -10,8 +10,18 @@ class Roblox {
 		this._group = require('./baseClasses/group.js');
 		// Cache clear timers
 		const Roblox = this;
-		setInterval(function () { Roblox._groupCache = new Map(); console.log('Cleared Group cache'); }, 900000);
-		setInterval(function () { Roblox._userCache = new Map(); console.log('Cleared user cache'); }, 7200000);
+		// Clear group cache (Group info & ranks - everything.)
+		setInterval(function () { Roblox._groupCache.clear(); console.log('Cleared full Group cache'); }, 3600000);
+		setInterval(function () { Roblox._userCache.clear(); console.log('Cleared user cache'); }, 7200000);
+		// Clear group RANK cache
+		setInterval(function () {
+			Roblox.clearRanks();
+
+			console.log('Cleared Group rank cache');
+
+		}, 900000);
+		this.clearRanks = ()=>	Roblox._groupCache.forEach((group)=>group.clearCache());
+
 	}
 	async _createUser (id) {
 		var roblox = this;
@@ -64,7 +74,6 @@ class Roblox {
 			this.client.logError(err);
 		}
 	}
-
 	async getGroup (id) {
 		if (!id) return {error: {status: 400, message: 'Group id is required'}};
 		if (this._groupCache.get(id)) {
