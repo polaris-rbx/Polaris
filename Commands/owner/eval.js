@@ -18,7 +18,7 @@ class evalCommand extends Polaris.command {
 			if (typeof evaled !== 'string') {
 				evaled = require('util').inspect(evaled);
 			}
-			if (evaled.length > 2040) evaled = evaled.substring(0, 2035) + '**...**';
+			if (evaled.length > 2040) evaled = evaled.substring(0, 2035) + '  ...';
 			msg.channel.sendInfo(msg.author, {title: 'Eval complete', description: '```' + evaled + '```'});
 		} catch (err) {
 			msg.channel.sendError(msg.author, {description: `\`\`\`xl\n${clean(err)}\n\`\`\``});

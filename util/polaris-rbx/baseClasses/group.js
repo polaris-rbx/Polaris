@@ -69,8 +69,12 @@ class Group {
 		try {
 			var res = await request(`https://api.roblox.com/groups/${this.id}`);
 			res = JSON.parse(res);
-			this.name = res.name;
-			this.roles = res.roles;
+			this.name = res.Name;
+			this.roles = res.Roles;
+			this.description = res.Description;
+			this.owner = res.Owner;
+			this.emblemUrl = res.EmblemUrl;
+
 		} catch (error) {
 			if (error.statusCode === 404) return {error: {status: 404, message: 'Group not found'}};
 			if (error.statusCode === 503) return {error: {status: 503, message: 'Group info not available'}};

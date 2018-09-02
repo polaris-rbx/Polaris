@@ -85,8 +85,12 @@ class Roblox {
 			var res = await request(`https://api.roblox.com/groups/${id}`);
 			res = JSON.parse(res);
 			const newGroup = new roblox._group(res.Id);
-			newGroup.Name = res.Name;
-			newGroup.Roles = res.Roles;
+			newGroup.name = res.Name;
+			newGroup.roles = res.Roles;
+			newGroup.description = res.Description;
+			newGroup.owner = res.Owner;
+			newGroup.emblemUrl = res.EmblemUrl;
+
 			roblox._groupCache.set(id, newGroup);
 			return newGroup;
 		} catch (error) {
