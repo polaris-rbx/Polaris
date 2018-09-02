@@ -46,7 +46,7 @@ class getGroupCommand extends Polaris.command {
 		let ranksText = "";
 		for (let r = 0; r < groupInfo.roles.length; r++) {
 			let role = groupInfo.roles[r];
-			ranksText += `**Rank name**: ${role.Name}\n**Rank Id**: ${role.Rank}\n\n`;
+			ranksText += `${r + 1}: **Rank name**: \`${role.Name}\` - **Rank Id**: \`${role.Rank}\`\n`;
 		}
 
 		// Build fields. Only show desc if it exists.
@@ -54,8 +54,9 @@ class getGroupCommand extends Polaris.command {
 		if (groupInfo.description !== "") {
 			fields.push({
 				name: `Group description`,
-				value: groupInfo.description.length > 400 ?  groupInfo.description.subString(0, 400) : ``+groupInfo.description,
+				value: groupInfo.description.length > 400 ?  groupInfo.description.substring(0, 400) : groupInfo.description,
 			});
+
 		}
 		fields.push({
 			name: `Group ranks`,
