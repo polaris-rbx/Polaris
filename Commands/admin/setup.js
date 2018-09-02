@@ -66,7 +66,7 @@ class setupCommand extends Polaris.command {
 		);
 		if (!msgToBeEdited) return;
 		
-		const roles = group.Roles.reverse();
+		const roles = group.roles.reverse();
 		var createdRoles = "";
 		for (var current of roles) {
 			// Check for role with same name.
