@@ -91,7 +91,7 @@ class getRoleCommand extends Polaris.command {
 				this.client.logError(mainGroup.error);
 				return {error: {title: 'HTTP Error', description: 'A HTTP Error has occured. Is Roblox Down?\n`' + mainGroup.error.message + '`'}};
 			}
-			const groupRanks = mainGroup.Roles;
+			const groupRanks = mainGroup.roles;
 			const userRank = await mainGroup.getRole(robloxId);
 			if (!userRank) throw new Error('User rank is not defined?');
 
