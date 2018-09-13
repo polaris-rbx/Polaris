@@ -58,7 +58,7 @@ class doneCommand extends Polaris.command {
 			}
 			return msg.channel.sendSuccess(msg.author, embed);
 		} else {
-			return msg.channel.sendError(msg.author, `I couldn't find the code in your profile. Please ensure that it is in your **status** or **description**.\nUsername: \`${robloxUser.username}\` UserID: \`${robloxUser.id}\``);
+			return msg.channel.sendError(msg.author, `I couldn't find the code in your profile. Please ensure that it is in your **description** / **blurb**.\nUsername: \`${robloxUser.username}\` UserID: \`${robloxUser.id}\``);
 		}
 	}
 }

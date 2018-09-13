@@ -6,7 +6,6 @@ class Group {
 	}
 	clearCache () {
 		// Clear rank cache
-		console.log(`Clearing cache for group ${this.id}`);
 		this.users.clear();
 	}
 	async getRank (userIdOrUserClass) {

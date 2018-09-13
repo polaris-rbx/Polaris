@@ -100,7 +100,6 @@ class Command {
 			const cooldown = this.client.cooldown;
 			cooldown.add(message.author.id);
 			setTimeout(() => cooldown.delete(message.author.id), 3000);
-
 			await this.execute(message, args, prefix);
 		} catch (e) {
 			// this.client.Raven.captureException(e);
@@ -109,6 +108,7 @@ class Command {
 				title: 'Oops! An error has occured.',
 				description: `Polaris has encounted an unexpected and fatal error. We're right on it! You may want to join to join our [discord](https://discord.gg/eVyVK5J) to help with fixing this.\n \`\`\` ${e.message} \`\`\``
 			});
+			this.client.Raven.captureException(e);
 		}
 	}
 }
