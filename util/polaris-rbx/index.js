@@ -1,15 +1,20 @@
 const request = require('request-promise');
+const userClass = require('./baseClasses/user.js');
+const groupClass = require('./baseClasses/group.js');
 
 class Roblox {
 	constructor (client) {
 		this.client = client;
 		this._userCache = new Map();
 		this._groupCache = new Map();
+
 		// base classes:
-		this._user = require('./baseClasses/user.js');
-		this._group = require('./baseClasses/group.js');
+		this._user = userClass;
+		this._group = groupClass;
+
 		// Cache clear timers
 		const Roblox = this;
+
 		// Clear group cache (Group info & ranks - everything.)
 		setInterval(function () { Roblox._groupCache.clear(); console.log('Cleared full Group cache'); }, 3600000);
 		setInterval(function () { Roblox._userCache.clear(); console.log('Cleared user cache'); }, 7200000);
@@ -23,12 +28,13 @@ class Roblox {
 		this.clearRanks = ()=>	Roblox._groupCache.forEach((group)=>group.clearCache());
 
 	}
+
 	async _createUser (id) {
-		var roblox = this;
+		const roblox = this;
 		try {
-			var res = await request(`https://api.roblox.com/users/${id}`);
+			let res = await request(`https://api.roblox.com/users/${id}`);
 			if (res) {
-				var newUser = new roblox._user(this, id);
+				const newUser = new roblox._user(this, id);
 				res = JSON.parse(res);
 				newUser.username = res.Username;
 				roblox._userCache.set(id, newUser);
@@ -52,7 +58,7 @@ class Roblox {
 	}
 	async getUserFromName (name) {
 		try {
-			var res = await request(`https://api.roblox.com/users/get-by-username?username=${name}`);
+			let res = await request(`https://api.roblox.com/users/get-by-username?username=${name}`);
 			if (res) {
 				res = JSON.parse(res);
 				if (!res.Id) {
@@ -60,7 +66,7 @@ class Roblox {
 					this.client.logError(res);
 					return {error: {status: 0, message: res}};
 				}
-				var newUser = new this._user(this, res.Id);
+				const newUser = new this._user(this, res.Id);
 
 				newUser.username = res.Username;
 				this._userCache.set(res.Id, newUser);
@@ -79,10 +85,10 @@ class Roblox {
 		if (this._groupCache.get(id)) {
 			return this._groupCache.get(id);
 		}
-		var roblox = this;
+		const roblox = this;
 		// Group does not already exist!
 		try {
-			var res = await request(`https://api.roblox.com/groups/${id}`);
+			let res = await request(`https://api.roblox.com/groups/${id}`);
 			res = JSON.parse(res);
 			const newGroup = new roblox._group(res.Id);
 			newGroup.name = res.Name;

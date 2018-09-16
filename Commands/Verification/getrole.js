@@ -10,13 +10,13 @@ class getRoleCommand extends Polaris.command {
 	async execute (msg) {
 		// Check for settings
 
-		var settings = await this.client.db.getSettings(msg.member.guild.id);
+		const settings = await this.client.db.getSettings(msg.member.guild.id);
 		if (!settings || (settings.binds.length === 0 && !settings.mainGroup.ranksToRoles)) {
 			msg.channel.sendError(msg.author, {title: 'No settings', description: "This server isn't set up yet. Please ask an admin to set up Polaris."});
 			return;
 		}
 		// Check for link
-		var rbxId = await this.client.db.getLink(msg.author.id);
+		const rbxId = await this.client.db.getLink(msg.author.id);
 		if (!rbxId) {
 			const res = await this.verifiedRoles(false, msg.member);
 			if (res.error) {
@@ -41,20 +41,19 @@ class getRoleCommand extends Polaris.command {
 	async giveRoles (settings, member, robloxId) {
 		const res = await this.verifiedRoles(true, member);
 		if (res.error) return {title: 'No permissions', description: res.error};
-		this.rolesToGive = {};
-		this.rolesToRemove = {};
+		const rolesToGive = {};
+		const rolesToRemove = {};
 
 		var addedMsg = '';
 		var removedMsg = '';
 		var failedMsg = '';
 
-		this.member = member;
 		// Var to store pos of binds that relate to deleted roles. It'll only delete one broken bind per run, but that's better than none.
 		var bindToDelete;
 		// binds
 		for (let current of settings.binds) {
 			if (member.guild.roles.get(current.role)) {
-				var group = await this.client.roblox.getGroup(current.group);
+				let group = await this.client.roblox.getGroup(current.group);
 				if (group.error) {
 					return {error: {title: 'HTTP Error', description: 'A HTTP Error has occured. Is Roblox Down?\n`' + group.error.message + '`'}};
 				}
@@ -63,15 +62,15 @@ class getRoleCommand extends Polaris.command {
 
 				if (current.exclusive) {
 					if (rank === current.rank) {
-						this.rolesToGive[current.role] = current.role;
+						rolesToGive[current.role] = current.role;
 					} else {
-						this.rolesToRemove[current.role] = current.role;
+						rolesToRemove[current.role] = current.role;
 					}
 				} else {
 					if (rank >= parseInt(current.rank)) {
-						this.rolesToGive[current.role] = current.role;
+						rolesToGive[current.role] = current.role;
 					} else {
-						this.rolesToRemove[current.role] = current.role;
+						rolesToRemove[current.role] = current.role;
 					}
 				}
 			} else {
@@ -86,7 +85,7 @@ class getRoleCommand extends Polaris.command {
 
 		// ranks to roles
 		if (settings.mainGroup.ranksToRoles && settings.mainGroup.id) {
-			var mainGroup = await this.client.roblox.getGroup(settings.mainGroup.id);
+			let mainGroup = await this.client.roblox.getGroup(settings.mainGroup.id);
 			if (mainGroup.error) {
 				this.client.logError(mainGroup.error);
 				return {error: {title: 'HTTP Error', description: 'A HTTP Error has occured. Is Roblox Down?\n`' + mainGroup.error.message + '`'}};
@@ -98,31 +97,31 @@ class getRoleCommand extends Polaris.command {
 			const role = member.guild.roles.find(current => current.name.toLowerCase() === userRank.toLowerCase());
 
 			if (role) {
-				this.rolesToGive[role.id] = role.id;
+				rolesToGive[role.id] = role.id;
 				// Take out of remove list if there.
-				if (this.rolesToRemove[role.id]) {
-					delete this.rolesToRemove[role.id];
+				if (rolesToRemove[role.id]) {
+					delete rolesToRemove[role.id];
 				}
 			}
 
 			for (let thisOne of groupRanks) {
 				const check = member.guild.roles.find(current => current.name.toLowerCase() === thisOne.Name.toLowerCase());
 				if (check) {
-					if (!this.rolesToGive[check.id]) {
-						this.rolesToRemove[check.id] = check.id;
+					if (!rolesToGive[check.id]) {
+						rolesToRemove[check.id] = check.id;
 					}
 				}
 			}
 		}
 
 		// ROLE GIVER
-		for (let roleId of Object.keys(this.rolesToGive)) {
-			if (this.rolesToRemove[roleId]) {
-				delete this.rolesToRemove[roleId];
+		for (let roleId of Object.keys(rolesToGive)) {
+			if (rolesToRemove[roleId]) {
+				delete rolesToRemove[roleId];
 			}
 
 			if (!checkForPresence(member.roles, roleId)) {
-				const role = this.member.guild.roles.get(roleId);
+				const role = member.guild.roles.get(roleId);
 				try {
 					if (role) {
 						await member.guild.addMemberRole(member.id, roleId);
@@ -138,10 +137,10 @@ class getRoleCommand extends Polaris.command {
 		}
 
 		// ROLE Remover
-		for (let roleId of Object.keys(this.rolesToRemove)) {
-			if (!this.rolesToGive[roleId]) {
+		for (let roleId of Object.keys(rolesToRemove)) {
+			if (!rolesToGive[roleId]) {
 				if (checkForPresence(member.roles, roleId)) {
-					const role = this.member.guild.roles.get(roleId);
+					const role = member.guild.roles.get(roleId);
 					try {
 						if (role) {
 							await member.guild.removeMemberRole(member.id, roleId);
@@ -156,7 +155,7 @@ class getRoleCommand extends Polaris.command {
 				}
 			}
 		}
-		var embed = {
+		const embed = {
 			title: 'Successfully changed your roles:',
 			fields: [],
 			description: 'If a role was added, removed or failed to add it will be listed below.'
@@ -182,9 +181,10 @@ class getRoleCommand extends Polaris.command {
 				value: failedMsg,
 				inline: true
 			});
+			this.client.Raven.captureException({msg: "FAILED TO ADD ROLES", roles: failedMsg, add: rolesToGive, rmv: rolesToRemove});
 		}
-		var nickChanged = false;
-		var newNick = await member.guild.updateNickname(settings, member, robloxId);
+		let nickChanged = false;
+		let newNick = await member.guild.updateNickname(settings, member, robloxId);
 		if (newNick) {
 			if (newNick.error) {
 				newNick = newNick.error.message;
@@ -210,8 +210,8 @@ class getRoleCommand extends Polaris.command {
 		const verifiedName = 'Verified';
 		const unverifiedName = 'Unverified';
 
-		var verifiedRole = member.guild.roles.find((role) => role.name === verifiedName);
-		var unverifiedRole = member.guild.roles.find((role) => role.name === unverifiedName);
+		let verifiedRole = member.guild.roles.find((role) => role.name === verifiedName);
+		let unverifiedRole = member.guild.roles.find((role) => role.name === unverifiedName);
 		// Check for roles existing. If they do not exist, create them.
 		if (!verifiedRole) {
 			// Create verified role

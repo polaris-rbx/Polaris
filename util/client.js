@@ -1,9 +1,10 @@
 // Require dependencies
-var Eris = require('eris');
-var erisExtensions = require('./erisExtensions.js');
+const Eris = require('eris');
+const erisExtensions = require('./erisExtensions.js');
 
-var DB = require('./db.js');
+const DB = require('./db.js');
 const Collection = require('./Collection.js');
+
 
 const path = require('path');
 const fs = require('fs');

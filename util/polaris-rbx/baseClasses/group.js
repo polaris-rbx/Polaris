@@ -10,21 +10,21 @@ class Group {
 	}
 	async getRank (userIdOrUserClass) {
 		if (!userIdOrUserClass) return;
-		var id = typeof userIdOrUserClass === 'number' || typeof userIdOrUserClass === 'string' ? userIdOrUserClass : userIdOrUserClass.id;
+		const id = typeof userIdOrUserClass === 'number' || typeof userIdOrUserClass === 'string' ? userIdOrUserClass : userIdOrUserClass.id;
 		if (this.users.get(id)) {
 			// Possible cache hit
 			if (this.users.get(id).rank !== undefined) return this.users.get(id).rank;
 		}
-		var options = {
+		const options = {
 			method: 'GET',
 			uri: `https://www.roblox.com/Game/LuaWebService/HandleSocialRequest.ashx?method=GetGroupRank&playerid=${id}&groupId=${this.id}`,
 			resolveWithFullResponse: true
 		};
 		try {
-			var res = await request(options);
+			let res = await request(options);
 			res = parseInt(res.body.substring(22), 10);
 			if (this.users.get(id)) {
-				let cache = this.users.get(id);
+				const cache = this.users.get(id);
 				cache.rank = res;
 				this.users.set(id, cache);
 			} else {
@@ -39,18 +39,20 @@ class Group {
 	}
 	async getRole (userIdOrUserClass) {
 		if (!userIdOrUserClass) return;
-		var id = typeof userIdOrUserClass === 'number' || typeof userIdOrUserClass === 'string' ? userIdOrUserClass : userIdOrUserClass.id;
-		if (this.users.get(id)) {
+		const id = typeof userIdOrUserClass === 'number' || typeof userIdOrUserClass === 'string' ? userIdOrUserClass : userIdOrUserClass.id;
+		const cache = this.users.get(id);
+		if (cache) {
 			// Possible cache hit
-			if (this.users.get(id).role) return this.users.get(id).role;
+			const role = this.users.get(id).role;
+			if (role) return role;
 		}
-		var options = {
+		const options = {
 			method: 'GET',
 			uri: `https://www.roblox.com/Game/LuaWebService/HandleSocialRequest.ashx?method=GetGroupRole&playerid=${id}&groupId=${this.id}`,
 			resolveWithFullResponse: true
 		};
 		try {
-			var res = await request(options);
+			let res = await request(options);
 			res = res.body;
 			if (this.users.get(id)) {
 				this.users.get(id).role = res;
@@ -66,7 +68,7 @@ class Group {
 	}
 	async updateInfo () {
 		try {
-			var res = await request(`https://api.roblox.com/groups/${this.id}`);
+			let res = await request(`https://api.roblox.com/groups/${this.id}`);
 			res = JSON.parse(res);
 			this.name = res.Name;
 			this.roles = res.Roles;
@@ -83,7 +85,8 @@ class Group {
 	}
 	async getRoles () {
 		if (this.roles) return this.roles;
-		var res = await this.updateInfo;
+
+		const res = await this.updateInfo();
 		if (res.error) return res;
 		return this.Roles;
 	}

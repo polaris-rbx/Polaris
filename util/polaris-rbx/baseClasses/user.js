@@ -20,7 +20,7 @@ class User {
 	}
 	// RETURNS: USERNAME OR NULL FOR FAIL.
 	async updateUsername () {
-		var user = this;
+		const user = this;
 		request(`https://api.roblox.com/users/${this.id}`)
 			.then(function (res) {
 				res = JSON.parse(res);
@@ -50,30 +50,30 @@ class User {
 		if (!this.id) {
 			return {error: {message: 'Id is not defined. Please try again - We\'re onto it.', status: 400}};
 		}
-		var roblox = this;
+		const user = this;
 		try {
-			var res = await request(`https://www.roblox.com/users/${roblox.id}/profile`);
-			let body = Cheerio.load(res);
+			const res = await request(`https://www.roblox.com/users/${user.id}/profile`);
+			const body = Cheerio.load(res);
 
-			roblox.blurb = body('.profile-about-content-text').text();
-			roblox.status = body('div[data-statustext]').attr('data-statustext');
-			roblox.joinDate = body('.profile-stats-container .text-lead').eq(0).text();
+			user.blurb = body('.profile-about-content-text').text();
+			user.status = body('div[data-statustext]').attr('data-statustext');
+			user.joinDate = body('.profile-stats-container .text-lead').eq(0).text();
 
-			roblox.joinDate = rbxDate(this.joinDate, 'CT');
+			user.joinDate = rbxDate(this.joinDate, 'CT');
 
-			let currentTime = new Date();
-			roblox.age = Math.round(Math.abs((roblox.joinDate.getTime() - currentTime.getTime()) / (24 * 60 * 60 * 1000)));
+			const currentTime = new Date();
+			user.age = Math.round(Math.abs((user.joinDate.getTime() - currentTime.getTime()) / (24 * 60 * 60 * 1000)));
 			const obj = {
-				username: roblox.username,
-				status: roblox.status,
-				blurb: roblox.blurb,
-				joinDate: roblox.joinDate,
-				age: roblox.age
+				username: user.username,
+				status: user.status,
+				blurb: user.blurb,
+				joinDate: user.joinDate,
+				age: user.age
 			};
 			return obj;
 		} catch (error) {
 			if (error.statusCode === 400 || error.statusCode === 404) {
-				return {error: {message: 'User not found - User is likely banned from Roblox.', status: error.statusCode, robloxId: roblox.id, robloxName: roblox.username}};
+				return {error: {message: 'User not found - User is likely banned from Roblox.', status: error.statusCode, robloxId: user.id, userName: user.username}};
 			}
 			throw new Error(error);
 		}
@@ -84,11 +84,11 @@ module.exports = User;
 
 // Froast's (sentanos') time function. I don't want to re-make something similar. Repo: https://github.com/sentanos/roblox-js/
 function isDST (time) {
-	var today = new Date(time);
-	var month = today.getMonth();
-	var dow = today.getDay();
-	var day = today.getDate();
-	var hours = today.getHours();
+	const today = new Date(time);
+	const month = today.getMonth();
+	const dow = today.getDay();
+	const day = today.getDate();
+	const hours = today.getHours();
 	if (month < 2 || month > 10) {
 		return false;
 	}
@@ -106,7 +106,7 @@ function isDST (time) {
 			}
 		}
 	}
-	var previousSunday = day - dow;
+	const previousSunday = day - dow;
 	if (month === 2) {
 		return previousSunday >= 8;
 	}
