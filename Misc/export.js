@@ -18,3 +18,4 @@ async function exportTable(tbl) {
 }
 
 exportTable('users');
+exportTable('servers');

@@ -20,3 +20,4 @@ function importTable(tbl) {
 
 }
 importTable('users');
+importTable('servers');
