@@ -31,7 +31,7 @@ class Database {
 	}
 
 	async setupGuild (guild) {
-		console.log('Joined new server. Setting up Defaults.');
+		console.log('Setting up Defaults.');
 		try {
 			let current = await this.servers.get(guild.id);
 			if (!current) {

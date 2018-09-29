@@ -83,10 +83,15 @@ Raven.context(function () {
 	});
 	client.on('messageCreate', async (message) => {
 		// Command handler
+
 		// If webhook
 		if (!message.author) return message.channel.send('Oops. `message.author` is not defined. Please contact `Neztore#6998` if this issue persists.');
 		// If bot
 		if (message.author.bot) return;
+		// Stop if it's DBL/Discordbots.pw
+		if (message.channel.guild) {
+			if (message.channel.guild.id === "264445053596991498" || message.channel.guild.id === "110373943822540800") return;
+		}
 		// New prefix handler
 		const prefixMention = new RegExp(`^<@!?${client.user.id}> `);
 		let prefix = '.';
@@ -96,7 +101,11 @@ Raven.context(function () {
 		const guild = message.channel.guild;
 		if (guild) {
 			const guildSettings = await client.db.getSettings(guild.id);
-			if (!guildSettings) throw new Error(`Guild ${message.channel.guild.id} has no settings!`);
+			if (!guildSettings) {
+				console.log(`Guild ${guild.id} has no settings. Resolving.`);
+				this.client.db.setupGuild(guild.id);
+				return;
+			}
 			// it is in a server. Check if they have a custom prefix. If so set prefix to it.
 			if (guildSettings.prefix && guildSettings.prefix !== '') {
 				prefix = guildSettings.prefix;
