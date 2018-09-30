@@ -1,4 +1,19 @@
-const request = require('request-promise');
+const requestLib = require('request-promise');
+const request = async function (obj) {
+	if (typeof obj === "string") {
+
+		const startTime = new Date();
+		let resp = await requestLib(obj);
+		let doneTime = new Date();
+		console.log(`GET to ${obj} took ${doneTime.getTime() - startTime.getTime()}ms`);
+		return resp;
+	}
+	const startTime = new Date();
+	let resp = await requestLib(obj);
+	let doneTime = new Date();
+	console.log(`${obj.method || "GET"} to ${obj.uri} took ${doneTime.getTime() - startTime.getTime()}ms`);
+	return resp;
+};
 class Group {
 	constructor (groupId) {
 		this.id = groupId;

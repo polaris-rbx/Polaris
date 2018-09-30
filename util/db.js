@@ -14,7 +14,7 @@ autoverify: false (boolean)
 class Database {
 	constructor (client) {
 		this.client = client;
-		this._r = require('rethinkdbdash')({db: 'main'});
+		this._r = require('rethinkdbdash')({db: 'test'});
 
 		this.users = this._r.table('users');
 		this.servers = this._r.table('servers');
@@ -44,7 +44,12 @@ class Database {
 		}
 	}
 
-	async getSettings (id) {
+	/**
+	 *
+	 * @param {string} id - The guild id to get the settings for
+	 * @returns {Promise<object>|null} - The settings object for that guld
+	 */
+	getSettings (id) {
 		return this.servers.get(id).run();
 	}
 

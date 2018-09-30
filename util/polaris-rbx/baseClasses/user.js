@@ -1,5 +1,19 @@
-const request = require('request-promise');
+const requestLib = require('request-promise');
 const Cheerio = require('cheerio');
+const request = async function (obj) {
+	if (typeof obj === "string") {
+		const startTime = new Date();
+		let resp = await requestLib(obj);
+		let doneTime = new Date();
+		console.log(`GET to ${obj} took ${doneTime.getTime() - startTime.getTime()}ms`);
+		return resp;
+	}
+	const startTime = new Date();
+	let resp = await requestLib(obj);
+	let doneTime = new Date();
+	console.log(`${obj.method || "GET"} to ${obj.uri} took ${doneTime.getTime() - startTime.getTime()}ms`);
+	return resp;
+};
 /* INFO WITH USER CLASS:
   * User.id: User ID. Always set
   * User.username: Roblox Name. Always set.
@@ -63,14 +77,13 @@ class User {
 
 			const currentTime = new Date();
 			user.age = Math.round(Math.abs((user.joinDate.getTime() - currentTime.getTime()) / (24 * 60 * 60 * 1000)));
-			const obj = {
+			return{
 				username: user.username,
 				status: user.status,
 				blurb: user.blurb,
 				joinDate: user.joinDate,
 				age: user.age
 			};
-			return obj;
 		} catch (error) {
 			if (error.statusCode === 400 || error.statusCode === 404) {
 				return {error: {message: 'User not found - User is likely banned from Roblox.', status: error.statusCode, robloxId: user.id, userName: user.username}};

@@ -1,4 +1,6 @@
+// Copyright © Josh Muir 2018.
 'use strict';
+
 const settings = require('./settings.json');
 
 const Raven = require('raven');
@@ -9,12 +11,12 @@ Raven.config(settings.sentry, {
 }).install();
 
 const Polaris = require('./util/client.js');
-const client = new Polaris.Client(settings.token, Raven, {maxShards: 'auto'});
+const client = new Polaris.Client(settings.testToken, Raven, {maxShards: 'auto'});
 
 const probe = require('pmx').probe();
 
 const DBL = require('dblapi.js');
-const dbl = new DBL(settings.dblToken, client) // eslint-disable-line
+const dbl = new DBL(settings.dblToken, client); // eslint-disable-line
 
 // Raven error catcher, for anything that isn't caught normally. Shouldn't really be used.
 Raven.context(function () {
@@ -103,7 +105,7 @@ Raven.context(function () {
 			const guildSettings = await client.db.getSettings(guild.id);
 			if (!guildSettings) {
 				console.log(`Guild ${guild.id} has no settings. Resolving.`);
-				this.client.db.setupGuild(guild.id);
+				client.db.setupGuild(guild.id);
 				return;
 			}
 			// it is in a server. Check if they have a custom prefix. If so set prefix to it.
