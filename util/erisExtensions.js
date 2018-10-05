@@ -185,53 +185,7 @@ module.exports = Eris => {
 			});
 		});
 	};
-	async function updateNickname (settings, member, robloxId) {
-		const client = this.shard.client;
-		if (member.canEdit(this.members.get(client.user.id))) {
-			if (settings.mainGroup.id && settings.nicknameTemplate && settings.nicknameTemplate !== '') {
-				// Group is set and it nickname management is enabled
-				var template = '' + settings.nicknameTemplate;
-				if (template.includes('{rankName}')) {
-					// Make rankName request
-					const group = await client.roblox.getGroup(settings.mainGroup.id);
-					if (group.error) return group; // Return error. Can be accessed with returnedValue.error
 
-					const rank = await group.getRole(robloxId);
-					if (rank.error) return rank; // Return error. Can be accessed with returnedValue.error
-					// Replace
-					template = template.replace(/{rankName}/g, rank);
-				}
-
-				if (template.includes('{rankId}')) {
-					const group = await client.roblox.getGroup(settings.mainGroup.id);
-					if (group.error) return group; // Return error. Can be accessed with returnedValue.error
-
-					const rankId = await group.getRank(robloxId);
-					if (rankId.error) return rankId; // Return error. Can be accessed with returnedValue.error
-					// Replace
-					template = template.replace(/{rankId}/g, rankId);
-				}
-				// User will be required in virtually every case. Idek why people wouldn't use it
-				const user = await client.roblox.getUser(robloxId);
-				if (user.error) return user;
-				template = template.replace(/{robloxName}/g, user.username);
-				template = template.replace(/{robloxId}/g, user.id);
-
-				template = template.replace(/{discordName}/g, member.user.username);
-
-				if (template.length > 32) {
-					template = template.substring(0, 32);
-				}
-
-				if (member.nick !== template) {
-					this.editMember(member.id, {
-						nick: template
-					});
-					return template;
-				}
-			}
-		}
-	}
 	// Editor: Member
 	function canEdit (editor) {
 		const guild = this.guild;
@@ -241,19 +195,9 @@ module.exports = Eris => {
 			return false; // User owns guild. Cannot edit!
 		}
 		// Get target's highest role
-		const targetRoles = this.roles;
-		var highestTargetPos = 0;
-		for (let currentRoleId of targetRoles) {
-			const currentRole = guild.roles.get(currentRoleId);
-			if (currentRole.position > highestTargetPos) highestTargetPos = currentRole.position;
-		}
-		// Get bot's highest role
-		const editorRoles = editor.roles;
-		var highestEditorPos = 0;
-		for (let currentRoleId of editorRoles) {
-			const currentRole = guild.roles.get(currentRoleId);
-			if (currentRole.position > highestEditorPos) highestEditorPos = currentRole.position;
-		}
+		const highestTargetPos = this.highestRole.position;
+		var highestEditorPos = editor.highestRole.position;
+
 		// is user below editor
 		if (highestTargetPos < highestEditorPos) {
 			return true;
@@ -269,9 +213,32 @@ module.exports = Eris => {
 	Eris.Channel.prototype.sendSuccess = sendSuccess;
 	Eris.Channel.prototype.send = send;
 
-	Eris.Guild.prototype.updateNickname = updateNickname;
 	Eris.Member.prototype.canEdit = canEdit;
+
+	// Defines it so that it can be accessed like a property
+	/**
+	 * @returns role
+	 *
+	 */
+	Object.defineProperty(Eris.Member.prototype, "highestRole", {
+		get: function() {
+			// return @ everyone role
+			if(this.roles.length === 0) return this.guild.roles.get(this.guild.id);
+			// max stores role obj for highest role
+
+			let max = this.guild.roles.get(this.roles[0]);
+			for (let count = 1; count < this.roles.length; count++) {
+				const role = this.guild.roles.get(this.roles[count]);
+				if (role.position > max.position) {
+					max = role;
+				}
+			}
+			return max;
+		}
+	});
 };
+
+
 
 // Adds in fields that are left undefined when the send message functions are run for embeds.
 function addParts (content, author, type) {

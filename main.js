@@ -63,7 +63,7 @@ Raven.context(function () {
 		if (settings.autoVerify) {
 			var rbxId = await client.db.getLink(member.id);
 			if (settings && rbxId) {
-				var res = await client.commands.getrole.giveRoles(settings, member, rbxId);
+				var res = await client.commands.getrole.giveRoles(member, rbxId);
 				if (res) {
 					if (res.error) return; // If errors, fail silently. No need for user to see.
 					res.title = 'Welcome to ' + guild.name;
@@ -85,7 +85,6 @@ Raven.context(function () {
 	});
 	client.on('messageCreate', async (message) => {
 		// Command handler
-
 		// If webhook
 		if (!message.author) return message.channel.send('Oops. `message.author` is not defined. Please contact `Neztore#6998` if this issue persists.');
 		// If bot

@@ -27,22 +27,22 @@ class updateRoleCommand extends Polaris.command {
 			}
 			return msg.channel.sendError(msg.author, "I couldn't find that user's info. Have they linked their account?");
 		}
+		const pendingMsg = await msg.channel.send("Fetching their info...");
+		const response = await this.client.commands.getrole.giveRoles(mentionedMember, rbxId);
 
-		// Check for settings
-
-		var settings = await this.client.db.getSettings(msg.member.guild.id);
-		if (!settings || (settings.binds.length === 0 && !settings.mainGroup.ranksToRoles)) {
-			msg.channel.sendError(msg.author, {title: 'No settings', description: "This server isn't set up yet. Please ask an admin to set up Polaris."});
-			return;
-		}
-
-		const reply = await this.client.commands.getrole.giveRoles(settings, mentionedMember, rbxId);
-		if (reply) {
-			reply.title = 'Changed their roles:';
-
-			msg.channel.sendSuccess(msg.author, reply);
+		if (response.error) {
+			response.error.color = 0xb3000a;
+			pendingMsg.edit({
+				content: `<@${msg.author.id}>`,
+				embed: response.error
+			});
 		} else {
-			msg.channel.sendError(msg.author, 'I could not find any roles to give or remove from `' + mentionedUser.username + '`.');
+			response.color = response.color||0x23ff9f;
+			response.title = "Changed their roles:";
+			pendingMsg.edit({
+				content: `<@${msg.author.id}>`,
+				embed: response
+			});
 		}
 	}
 }
