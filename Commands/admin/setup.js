@@ -55,11 +55,19 @@ class setupCommand extends Polaris.command {
 		}
 		const group = await this.client.roblox.getGroup(groupId);
 		if (group.error) {
-			msg.channel.sendError(msg.author, {
-				title: "HTTP Error",
-				description: `Oops! Error.\`\`\`${group.error.message}\`\`\``
-			});
-			throw new Error(group.error);
+			if (group.error.status === 404) {
+				msg.channel.sendError(msg.author, {
+					title: "Group not found",
+					description: `I couldn't find that group on Roblox.`
+				});
+			} else {
+				msg.channel.sendError(msg.author, {
+					title: "HTTP error",
+					description: `A HTTP error has occurred. Is Roblox down?`
+				});
+			}
+
+			return;
 		}
 		const msgToBeEdited = await msg.channel.send(
 			"Generating roles.. Please wait."

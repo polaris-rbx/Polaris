@@ -36,7 +36,28 @@ class getGroupCommand extends Polaris.command {
 
 		if (!sentMsg) return; // No perm to send msg.
 		var groupInfo = await this.client.roblox.getGroup(groupId);
-		if (groupInfo.error) return sentMsg.edit({embed: {title: 'HTTP Error', description: 'A HTTP Error has occured. Is Roblox Down?\n`' + groupInfo.error.message + '`', timestamp: new Date(), color: 0xb3000a}});
+		if (groupInfo.error) {
+			if (groupInfo.error.status === 404) {
+				return sentMsg.edit({
+					embed: {
+						title: 'Group not found',
+						description: 'I couldn\'t find that group on Roblox. Please check the id, and try again.',
+						timestamp: new Date(),
+						color: 0xb3000a
+					}
+				});
+			} else {
+				return sentMsg.edit({
+					embed: {
+						title: 'HTTP Error',
+						description: 'A HTTP Error has occured. Is Roblox Down?\n`' + groupInfo.error.message + '`',
+						timestamp: new Date(),
+						color: 0xb3000a
+					}
+				});
+			}
+
+		}
 
 		// EMBED PART
 
