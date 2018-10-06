@@ -9,12 +9,12 @@ Raven.config(settings.sentry, {
 }).install();
 
 const Polaris = require('./util/client.js');
-const client = new Polaris.Client(settings.token, Raven, {maxShards: 'auto'});
+const client = new Polaris.Client(settings.testToken, Raven, {maxShards: 'auto'});
 
 const probe = require('pmx').probe();
 
 const DBL = require('dblapi.js');
-const dbl = new DBL(settings.dblToken, client) // eslint-disable-line
+//const dbl = new DBL(settings.dblToken, client) // eslint-disable-line
 
 // Raven error catcher, for anything that isn't caught normally. Shouldn't really be used.
 Raven.context(function () {

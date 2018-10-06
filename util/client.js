@@ -10,6 +10,8 @@ const path = require('path');
 const fs = require('fs');
 
 const PolarisRbx = require('./polaris-rbx');
+const IPC = require('./ipcClient.js');
+
 const util = require('util');
 
 // Add on additions to Eris prototypes (Such as awaitMessages or channel.sendInfo)
@@ -124,6 +126,8 @@ module.exports.Client = class Client extends Eris.Client {
 		this.eris = Eris;
 		// Provides DB
 		this.db = new DB(this);
+		// Provides IPC: Unlikely to be accessed
+		this.IPC = new IPC(this);
 		// For linkaccount and done.
 		this.linkQueue = new Collection();
 		// Roblox lib
