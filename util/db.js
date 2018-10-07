@@ -14,7 +14,7 @@ autoverify: false (boolean)
 class Database {
 	constructor (client) {
 		this.client = client;
-		this._r = require('rethinkdbdash')({db: 'main'});
+		this._r = require('rethinkdbdash')({db: 'test'});
 
 		this.users = this._r.table('users');
 		this.servers = this._r.table('servers');
