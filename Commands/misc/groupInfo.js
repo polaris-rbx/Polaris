@@ -83,10 +83,16 @@ class getGroupCommand extends Polaris.command {
 			name: `Group ranks`,
 			value: ranksText,
 		});
+		let ownerText;
+		if (groupInfo.owner) {
+			ownerText = `[${groupInfo.owner.Name}](https://www.roblox.com/users/${groupInfo.owner.Id})`;
+		} else {
+			ownerText = `Unowned`;
+		}
 		sentMsg.edit({embed: {
 			title: title,
 			color: 0x168776,
-			description: `**Group name**: ${groupInfo.name}\n**Group ID:**: ${groupInfo.id}\n**Owned by**: [${groupInfo.owner.Name}](https://www.roblox.com/users/${groupInfo.owner.Id})`,
+			description: `**Group name**: ${groupInfo.name}\n**Group ID:**: ${groupInfo.id}\n**Owned by**: ${ownerText}`,
 			//	thumbnail: { roblox is bad. no image extension = no discord support.
 			//	url: groupInfo.emblemUrl,
 			//	height: 100,

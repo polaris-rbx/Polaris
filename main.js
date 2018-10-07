@@ -103,8 +103,7 @@ Raven.context(function () {
 			const guildSettings = await client.db.getSettings(guild.id);
 			if (!guildSettings) {
 				console.log(`Guild ${guild.id} has no settings. Resolving.`);
-				client.db.setupGuild(guild);
-				return;
+				await client.db.setupGuild(guild);
 			}
 			// it is in a server. Check if they have a custom prefix. If so set prefix to it.
 			if (guildSettings.prefix && guildSettings.prefix !== '') {
