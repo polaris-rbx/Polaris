@@ -202,25 +202,7 @@ const menu = {
 
 				},
 
-				binds: {
-					info: 'Allows you to add, remove and view Group binds. Group binds allow you to bind single ranks from other groups.',
-					subs: {
-						view: {
-							info: 'Displays all current group binds.',
-							func: viewBinds
-						},
-						add: {
-							info: 'Adds a new group bind.',
-							func: addBind
-						},
-						remove: {
-							info: 'Removes a group bind.',
-							func: rmvBind
 
-						}
-					}
-
-				}
 			}
 
 		},
@@ -263,7 +245,12 @@ const menu = {
 				prefix: {
 					info: 'Allows you to change the prefix for this server. Can be 1 or 2 characters.',
 					func: changePrefix
+				},
+				view: {
+					info: '**For beta testing only** - View all server settings.',
+					func: viewSettings
 				}
+
 			}
 		}
 	}
@@ -654,5 +641,46 @@ async function changePrefix (msg, settings, client) {
 		return msg.channel.sendSuccess(msg.author, {title: 'Successfully updated the prefix', description: `The new command prefix for this server is \`${res.content}\`! Users should use this new prefix to interact with Polaris.`});
 	} else {
 		return msg.channel.sendError(msg.author, {title: 'Oops! Something went wrong.', description: `Something went wrong with the database. Please try again.`});
+	}
+}
+
+function viewSettings (msg, settings) {
+	const sendMessage = {title: "current settings", fields: []};
+	sendMessage.description = `**Nickname management**: ${settings.nicknameTemplate || "Not set"}\n**Prefix**:${settings.prefix || "`.`"}\n**Auto verification**:\`${settings.autoVerify}\``;
+	if (settings.binds) {
+		let bindString = ``;
+		for (let bind of settings.binds) {
+			bindString += `Group: ${bind.group}, rank: ${bind.rank}, role: ${bind.role}\n`;
+		}
+		if (bindString !== "") {
+			sendMessage.fields.push({name: "Old binds", value: bindString});
+		}
+	}
+
+
+	sendMessage.fields.push({name: 'Main group', value: doGroup(settings.mainGroup)});
+	if (settings.subGroups) {
+		for (let counter = 0; counter < settings.subGroups.length; counter ++) {
+			const sub = settings.subGroups[counter];
+			sendMessage.fields.push({name: `Sub group ${counter + 1}`, value: doGroup(sub)});
+		}
+	}
+	msg.channel.sendInfo(msg.author, sendMessage);
+	function doGroup (obj) {
+		let returnString = "";
+		if (obj.id) {
+			returnString = `**Group id**: ${obj.id}\n`;
+		}
+		if (obj.ranksToRoles !== undefined) {
+			returnString += `**Ranks to roles**: ${obj.ranksToRoles}\n`;
+		}
+		if (obj.binds) {
+			returnString += "**Binds**: \n"
+			for (let bind of obj.binds) {
+				returnString += `Rank: ${bind.rank}, role: ${bind.role}\n`;
+			}
+		}
+
+		return returnString;
 	}
 }
