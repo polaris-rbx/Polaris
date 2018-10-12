@@ -1,27 +1,24 @@
 'use strict';
+//Require statements
 const settings = require('./settings.json');
-
+const probe = require('pmx').probe();
 const Raven = require('raven');
+const Polaris = require('./util/client.js');
+
+let accountLinks = 0;
+// Set up Raven
 Raven.config(settings.sentry, {
 	captureUnhandledRejections: true,
 	autoBreadcrumbs: true,
 	sendTimeout: 3
 }).install();
 
-const Polaris = require('./util/client.js');
-const client = new Polaris.Client(settings.testToken, Raven, {maxShards: 'auto'});
+if (process.env.NODE_ENV === "production") {
 
-const probe = require('pmx').probe();
 
-const DBL = require('dblapi.js');
-//const dbl = new DBL(settings.dblToken, client) // eslint-disable-line
+	const DBL = require('dblapi.js');
+	const dbl = new DBL(settings.dblToken, client); // eslint-disable-line
 
-// Raven error catcher, for anything that isn't caught normally. Shouldn't really be used.
-Raven.context(function () {
-	var accountLinks = 0;
-	async function updateValues () {
-		accountLinks = await client.db.users.count().run();
-	}
 	setInterval(updateValues, 600000);
 	updateValues();
 
@@ -38,6 +35,19 @@ Raven.context(function () {
 			return client.guilds.size;
 		}
 	});
+} else {
+	console.log("Starting in development mode.");
+}
+// Metrics
+async function updateValues () {
+	accountLinks = await client.db.users.count().run();
+}
+
+const client = new Polaris.Client(process.env.NODE_ENV === "production" ? settings.token : settings.testToken, Raven, {maxShards: 'auto'});
+
+// Raven error catcher, for anything that isn't caught normally. Shouldn't really be used.
+Raven.context(function () {
+
 
 	client.on('ready', () => {
 		console.log(`Bot now running on ${client.guilds.size} servers`);
