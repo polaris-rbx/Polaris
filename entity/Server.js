@@ -20,5 +20,13 @@ module.exports = {
       length: 2,
       default: '.'
     }
+  },
+
+  relations: {
+    groups: {
+      target: 'Group',
+      eager: true,
+      type: 'one-to-many'
+    }
   }
 };

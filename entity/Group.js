@@ -18,5 +18,16 @@ module.exports = {
       type: 'boolean',
       default: 'false'
     }
+  },
+
+  relations: {
+    server: {
+      target: 'Server',
+      type: 'many-to-one',
+      eager: true,
+      joinColumn: {
+        name: 'server_id'
+      }
+    }
   }
 };
