@@ -17,7 +17,7 @@ class infoCommand extends Polaris.command {
 				fields: [
 					{name: 'Bot info', value: `Polaris was created by Neztore. It is written in Node.js. If you wish to view the bot commands, please do \`${prefix}help\`.`},
 					{name: 'Our website', value: 'Polaris now has a website, with our terms of use and commands. By using the bot, you agree to our [terms of use](https://polaris-bot.xyz/terms). You can see our site [here](https://polaris-bot.xyz/).'},
-					{name: 'Discord invite', value: 'For support, join our [discord](https://discord.gg/eVyVK5J). This is also where you can make suggestions.'},
+					{name: 'Discord invite', value: 'For support, join our [discord](https://discord.gg/QevWabU). This is also where you can make suggestions.'},
 					{name: 'Bot invite', value: 'To invite the bot to your server, use [this](https://discordapp.com/oauth2/authorize?client_id=375408313724043278&scope=bot&permissions=470281408) link.'},
 					{name: 'Donate', value: 'Do you enjoy using Polaris? Please donate to the running of the bot [here](https://www.paypal.me/Neztore).'},
 					{name: 'Discord bot list', value: 'Why not check us out on [Discord bot list](https://discordbots.org/bot/375408313724043278)? You can also vote for Polaris, but we don\'t mind!'},
