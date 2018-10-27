@@ -20,7 +20,7 @@ class Database {
 		this.client.on('guildCreate', this.setupGuild.bind(this));
 	}
 
-	static async init(options) {
+	async init(options) {
 		const { host, port, username, password, database, synchronize } = options
 		this._connection = await createConnection({
 			logging: console.log,

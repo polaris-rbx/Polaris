@@ -4,7 +4,6 @@ const settings = require('./settings.json');
 const probe = require('pmx').probe();
 const Raven = require('raven');
 const Polaris = require('./util/client.js');
-const Database  = require('./util/db.js');
 
 let accountLinks = 0;
 // Set up Raven
@@ -45,14 +44,6 @@ async function updateValues () {
 }
 
 const client = new Polaris.Client(process.env.NODE_ENV === "production" ? settings.token : settings.testToken, Raven, {maxShards: 'auto'});
-Database.init({
-    host: settings.postgres.host,
-    port: settings.postgres.port,
-    username: settings.postgres.username,
-    password: settings.postgres.password,
-    database: settings.postgres.database,
-    synchronize: settings.postgres.synchronize
-});
 
 // Raven error catcher, for anything that isn't caught normally. Shouldn't really be used.
 Raven.context(function () {

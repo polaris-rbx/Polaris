@@ -14,6 +14,8 @@ const IPC = require('./ipcClient.js');
 
 const util = require('util');
 
+const settings = require('../settings.json');
+
 // Add on additions to Eris prototypes (Such as awaitMessages or channel.sendInfo)
 erisExtensions(Eris);
 
@@ -141,6 +143,16 @@ module.exports.Client = class Client extends Eris.Client {
 	}
 	// Assemble commands and prepare the bot.
 	start () {
+		// Initialize database
+        this.db.init({
+            host: settings.postgres.host,
+            port: settings.postgres.port,
+            username: settings.postgres.username,
+            password: settings.postgres.password,
+            database: settings.postgres.database,
+            synchronize: settings.postgres.synchronize
+        });
+
 		// Load commands and assemble aliases
 		this.commands = {
 			aliases: {}
