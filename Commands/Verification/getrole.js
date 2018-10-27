@@ -85,35 +85,15 @@ class getRoleCommand extends Polaris.command {
 
 		// ranks to roles
 		if (settings.mainGroup.ranksToRoles && settings.mainGroup.id) {
-			let mainGroup = await this.client.roblox.getGroup(settings.mainGroup.id);
-			if (mainGroup.error) {
-				this.client.logError(mainGroup.error);
-				return {error: {title: 'HTTP Error', description: 'A HTTP Error has occured. Is Roblox Down?\n`' + mainGroup.error.message + '`'}};
-			}
-			const groupRanks = mainGroup.roles;
-			const userRank = await mainGroup.getRole(robloxId);
-			if (!userRank) throw new Error('User rank is not defined?');
-
-			const role = member.guild.roles.find(current => current.name.toLowerCase() === userRank.toLowerCase());
-
-			if (role) {
-				rolesToGive[role.id] = role.id;
-				// Take out of remove list if there.
-				if (rolesToRemove[role.id]) {
-					delete rolesToRemove[role.id];
-				}
-			}
-
-			for (let thisOne of groupRanks) {
-				const check = member.guild.roles.find(current => current.name.toLowerCase() === thisOne.Name.toLowerCase());
-				if (check) {
-					if (!rolesToGive[check.id]) {
-						rolesToRemove[check.id] = check.id;
-					}
-				}
-			}
+			await this.processGroup(rolesToGive, rolesToRemove, member, settings.mainGroup, robloxId);
 		}
 
+		// SubGroups
+		if (settings.subGroups && settings.subGroups.length > 0) {
+			for (let sub of settings.subGroups) {
+				await this.processGroup(rolesToGive, rolesToRemove, member, sub, robloxId);
+			}
+		}
 		// ROLE GIVER
 		for (let roleId of Object.keys(rolesToGive)) {
 			if (rolesToRemove[roleId]) {
@@ -121,6 +101,7 @@ class getRoleCommand extends Polaris.command {
 			}
 
 			if (!checkForPresence(member.roles, roleId)) {
+				console.log(`Give ${roleId}`);
 				const role = member.guild.roles.get(roleId);
 				try {
 					if (role) {
@@ -181,7 +162,6 @@ class getRoleCommand extends Polaris.command {
 				value: failedMsg,
 				inline: true
 			});
-			this.client.Raven.captureException({msg: "FAILED TO ADD ROLES", roles: failedMsg, add: rolesToGive, rmv: rolesToRemove});
 		}
 		let nickChanged = false;
 		let newNick = await member.guild.updateNickname(settings, member, robloxId);
@@ -272,6 +252,70 @@ class getRoleCommand extends Polaris.command {
 		}
 		return true;
 	}
+	// messy: lots of params.
+	/**
+	 *
+	 * @param rolesToGive
+	 * @param rolesToRemove
+	 * @param member
+	 * @param groupSettings
+	 * @param robloxId
+	 * @return {Promise<{error: {title: string, description: string}}>}
+	 */
+	async processGroup(rolesToGive, rolesToRemove,member, groupSettings, robloxId) {
+		const group = await this.client.roblox.getGroup(groupSettings.id);
+		if (group.error) {
+			this.client.logError(group.error);
+			return {error: {title: 'HTTP Error', description: 'A HTTP Error has occured. Is Roblox Down?\n`' + group.error.message + '`'}};
+		}
+		// Check ranks to roles
+		if (groupSettings.ranksToRoles) {
+			const groupRanks = group.roles;
+			const userRank = await group.getRole(robloxId);
+			if (!userRank) throw new Error('User rank is not defined?');
+			// Give user their role if it exists.
+			const role = member.guild.roles.find(current => current.name.toLowerCase() === userRank.toLowerCase());
+
+			if (role) {
+				rolesToGive[role.id] = role.id;
+				// Take out of remove list if there.
+				if (rolesToRemove[role.id]) {
+					delete rolesToRemove[role.id];
+				}
+			}
+
+			for (let thisOne of groupRanks) {
+				const check = member.guild.roles.find(current => current.name.toLowerCase() === thisOne.Name.toLowerCase());
+				if (check) {
+					if (!rolesToGive[check.id]) {
+						rolesToRemove[check.id] = check.id;
+					}
+				}
+			}
+		}
+		// Check binds
+		if (groupSettings.binds && groupSettings.binds.length > 0) {
+			console.log(groupSettings.binds);
+			for (let current of groupSettings.binds) {
+				const rank = await group.getRank(robloxId);
+
+				if (current.exclusive) {
+					if (rank === current.rank) {
+						rolesToGive[current.role] = current.role;
+					} else {
+						rolesToRemove[current.role] = current.role;
+					}
+				} else {
+					if (rank >= parseInt(current.rank)) {
+						rolesToGive[current.role] = current.role;
+					} else {
+						rolesToRemove[current.role] = current.role;
+					}
+				}
+			}
+		}
+
+	}
 }
 module.exports = getRoleCommand;
 
@@ -283,3 +327,4 @@ function checkForPresence (array, value) {
 	}
 	return false;
 }
+

@@ -14,7 +14,7 @@ class whoisCommand extends Polaris.command {
 		if (!msg.mentions[0]) {
 			return msg.channel.sendError(msg.author, 'You must mention a user.\nSupport for reverse whois without tagging will be added in future.');
 		}
-		const mentionedUser = msg.mentions[0];
+		const mentionedUser = msg.mentions[1] || msg.mentions[0];
 		if (mentionedUser.bot) return msg.channel.sendError(msg.author, 'Do you really think a bot has linked their account?! **Please mention a normal user!**');
 
 		var rbxId = await this.client.db.getLink(mentionedUser.id);

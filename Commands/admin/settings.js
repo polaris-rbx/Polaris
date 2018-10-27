@@ -245,10 +245,6 @@ const menu = {
 				prefix: {
 					info: 'Allows you to change the prefix for this server. Can be 1 or 2 characters.',
 					func: changePrefix
-				},
-				view: {
-					info: '**For beta testing only** - View all server settings.',
-					func: viewSettings
 				}
 
 			}
