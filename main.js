@@ -46,12 +46,12 @@ async function updateValues () {
 
 const client = new Polaris.Client(process.env.NODE_ENV === "production" ? settings.token : settings.testToken, Raven, {maxShards: 'auto'});
 init({
-    host: 'host here',
-    port: 'port here',
-    username: 'username here',
-    password: 'password here',
-    database: 'database name here',
-    synchronize: 'force update of database (no, only first time. USE MIGRATIONS)'
+    host: settings.postgres.host,
+    port: settings.postgres.port,
+    username: settings.postgres.username,
+    password: settings.postgres.password,
+    database: settings.postgres.database,
+    synchronize: settings.postgres.synchronize
 });
 
 // Raven error catcher, for anything that isn't caught normally. Shouldn't really be used.
