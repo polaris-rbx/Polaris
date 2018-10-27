@@ -1,5 +1,5 @@
 const { createConnection } = require('typeorm');
-const entities = require('../entity/')
+const entities = require('../entity/');
 
 /*
 USERS:
@@ -20,20 +20,22 @@ class Database {
 		this.client.on('guildCreate', this.setupGuild.bind(this));
 	}
 
-	async init(options) {
+	static async init(options) {
+		console.log(__dirname)
 		const { host, port, username, password, database, synchronize } = options
 		this._connection = await createConnection({
-		  type: 'postgres',
-		  host,
-		  port,
-		  username,
-		  password,
-		  database,
-		  synchronize,
-		  entitySchemas: [
-			...Object.values(entities)
-		  ]
-		})
+			logging: console.log,
+			type: 'postgres',
+			host,
+			port,
+			username,
+			password,
+			database,
+			synchronize,
+			entities: [
+                ...Object.values(entities)
+			]
+		});
 
 		this.User = this._connection.getRepository('User')
 		this.Server = this._connection.getRepository('Server')
