@@ -67,7 +67,7 @@ class getGroupCommand extends Polaris.command {
 		let ranksText = "";
 		for (let r = 0; r < groupInfo.roles.length; r++) {
 			let role = groupInfo.roles[r];
-			ranksText += `${r + 1}: **Rank name**: \`${role.Name}\` - **Rank Id**: \`${role.Rank}\`\n`;
+			ranksText += `${r + 1}: **Name**: \`${role.Name}\` - **Rank Id:**: \`${role.Rank}\`\n`;
 		}
 
 		// Build fields. Only show desc if it exists.
@@ -79,10 +79,33 @@ class getGroupCommand extends Polaris.command {
 			});
 
 		}
-		fields.push({
-			name: `Group ranks`,
-			value: ranksText,
-		});
+		if (ranksText.length < 1024) {
+			fields.push({
+				name: `Group ranks`,
+				value: ranksText,
+			});
+		} else {
+			// regen: cut in half
+			let ranksText1 = "";
+			for (let r = 0; r < groupInfo.roles.length / 2; r++) {
+				let role = groupInfo.roles[r];
+				ranksText1 += `${r + 1}: **Name**: \`${role.Name}\` - **Id:**: \`${role.Rank}\`\n`;
+			}
+			let ranksText2 = "";
+			for (let r = groupInfo.roles.length / 2; r < groupInfo.roles.length; r++) {
+				let role = groupInfo.roles[r];
+				ranksText2 += `${r + 1}: **Name**: \`${role.Name}\` - **Id:**: \`${role.Rank}\`\n`;
+			}
+			fields.push({
+				name: `Group ranks 1`,
+				value: ranksText1,
+			});
+			fields.push({
+				name: `Group ranks 2`,
+				value: ranksText2,
+			});
+		}
+
 		let ownerText;
 		if (groupInfo.owner) {
 			ownerText = `[${groupInfo.owner.Name}](https://www.roblox.com/users/${groupInfo.owner.Id})`;
