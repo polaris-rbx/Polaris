@@ -21,7 +21,6 @@ class Database {
 	}
 
 	static async init(options) {
-		console.log(__dirname)
 		const { host, port, username, password, database, synchronize } = options
 		this._connection = await createConnection({
 			logging: console.log,
