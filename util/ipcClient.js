@@ -8,6 +8,10 @@ class IPCClient {
 		IPC.config.id = config.id || 'polarisClient';
 		IPC.config.retry = config.retry || 3000;
 		IPC.config.silent = config.silent || true;
+		this.client.on('ready', this.start.bind(this));
+	}
+	start () {
+		this.client.removeListener('ready', this.start);
 		IPC.connectTo('polarisServer', this.setup.bind(this));
 	}
 	setup () {

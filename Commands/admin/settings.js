@@ -174,7 +174,7 @@ First letter is auto-capitalised.
   func - Function to execute.
 */
 const menu = {
-	info: 'Settings home. From here you can browse to various settings and update them. Please ensure you read each message both continuing.\n**Say the name of the option that you want to choose.**',
+	info: 'Settings home. Please ensure you read each message both continuing.\n**Say the name of the option that you want to choose.**\n**WE RECOMMEND YOU USE OUR WEB PANEL INSTEAD:** https://polaris-bot.xyz/panel',
 	subs: {
 		group: {
 			info: 'Allows you to set the group ID of the main group for this server and toggle `Ranks to roles`.',
