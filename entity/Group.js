@@ -1,33 +1,34 @@
-module.exports = {
-  name: 'Group',
-  columns: {
-    id: {
-      primary: true,
-      type: 'int',
-      length: 40
-    },
-    main: {
-      type: 'boolean',
-      default: 'true'
-    },
-    binds: {
-      type: 'jsonb',
-      array: true
-    },
-    ranks_to_roles: {
-      type: 'boolean',
-      default: 'false'
-    }
-  },
+const { EntitySchema } = require('typeorm');
+const { Group } = require('../model/Group')
 
-  relations: {
-    server: {
-      target: 'Server',
-      type: 'many-to-one',
-      eager: true,
-      joinColumn: {
-        name: 'server_id'
-      }
+module.exports = new EntitySchema({
+    name: 'Group',
+    target: Group,
+    columns: {
+        id: {
+            primary: true,
+            type: 'int'
+        },
+        main: {
+            type: 'boolean',
+            default: 'true'
+        },
+        binds: {
+            type: 'jsonb',
+            array: true
+        },
+        ranks_to_roles: {
+            type: 'boolean',
+            default: 'false'
+        }
+    },
+
+    relations: {
+        server: {
+            target: 'Server',
+            eager: true,
+            type: 'many-to-one',
+            joinColumn: { name: 'server_id' }
+        }
     }
-  }
-};
+});
