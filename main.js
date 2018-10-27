@@ -12,6 +12,7 @@ Raven.config(settings.sentry, {
 	autoBreadcrumbs: true,
 	sendTimeout: 3
 }).install();
+const client = new Polaris.Client(process.env.NODE_ENV === "production" ? settings.token : settings.testToken, Raven, {maxShards: 'auto'});
 
 if (process.env.NODE_ENV === "production") {
 
@@ -43,7 +44,7 @@ async function updateValues () {
 	accountLinks = await client.db.users.count().run();
 }
 
-const client = new Polaris.Client(process.env.NODE_ENV === "production" ? settings.token : settings.testToken, Raven, {maxShards: 'auto'});
+
 
 // Raven error catcher, for anything that isn't caught normally. Shouldn't really be used.
 Raven.context(function () {
@@ -69,13 +70,13 @@ Raven.context(function () {
 		if (member.bot) return;
 		const settings = await client.db.getSettings(guild.id);
 		if (settings.autoVerify) {
-			var rbxId = await client.db.getLink(member.id);
+			const rbxId = await client.db.getLink(member.id);
 			if (settings && rbxId) {
-				var res = await client.commands.getrole.giveRoles(settings, member, rbxId);
+				const res = await client.commands.getrole.giveRoles(settings, member, rbxId);
 				if (res) {
 					if (res.error) return; // If errors, fail silently. No need for user to see.
 					res.title = 'Welcome to ' + guild.name;
-					var DMChannel = await member.user.getDMChannel();
+					const DMChannel = await member.user.getDMChannel();
 					DMChannel.sendSuccess(member.user, res);
 				}
 			} else if (!rbxId) {
