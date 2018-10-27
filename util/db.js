@@ -16,32 +16,32 @@ autoverify: false (boolean)
 'use strict';
 class Database {
 	constructor (client) {
-        this.client = client;
-        this.client.on('guildCreate', this.setupGuild.bind(this));
-  }
+		this.client = client;
+		this.client.on('guildCreate', this.setupGuild.bind(this));
+	}
 
-  async init(options) {
-    const { host, port, username, password, database, synchronize } = options
-    this._connection = await createConnection({
-      type: 'postgres',
-      host,
-      port,
-      username,
-      password,
-      database,
-      synchronize,
-      entitySchemas: [
-        ...Object.values(entities)
-      ]
-    })
+	async init(options) {
+		const { host, port, username, password, database, synchronize } = options
+		this._connection = await createConnection({
+		  type: 'postgres',
+		  host,
+		  port,
+		  username,
+		  password,
+		  database,
+		  synchronize,
+		  entitySchemas: [
+			...Object.values(entities)
+		  ]
+		})
 
-    this.User = this._connection.getRepository('User')
-    this.Server = this._connection.getRepository('Server')
-    this.Group = this._connection.getRepository('Group')
-    this.Blacklist = this._connection.getRepository('Blacklist')
+		this.User = this._connection.getRepository('User')
+		this.Server = this._connection.getRepository('Server')
+		this.Group = this._connection.getRepository('Group')
+		this.Blacklist = this._connection.getRepository('Blacklist')
 
-    return this._connection
-  }
+		return this._connection
+	}
 
 	async getLink (discordId) {
 		var link = await this.User.findOne(discordId);
