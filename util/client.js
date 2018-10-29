@@ -150,7 +150,7 @@ module.exports.Client = class Client extends Eris.Client {
             username: settings.postgres.username,
             password: settings.postgres.password,
             database: settings.postgres.database,
-            synchronize: settings.postgres.synchronize
+            synchronize: settings.postgres.synchronize || false
         });
 
 		// Load commands and assemble aliases
