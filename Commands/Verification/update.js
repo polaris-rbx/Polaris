@@ -31,7 +31,7 @@ class updateRoleCommand extends Polaris.command {
 		// Check for settings
 
 		var settings = await this.client.db.getSettings(msg.member.guild.id);
-		if (!settings || (settings.binds.length === 0 && !settings.mainGroup.ranksToRoles)) {
+		if (!settings || !settings.mainGroup || (settings.mainGroup.binds === 0 && !settings.mainGroup.ranksToRoles)) {
 			msg.channel.sendError(msg.author, {title: 'No settings', description: "This server isn't set up yet. Please ask an admin to set up Polaris."});
 			return;
 		}

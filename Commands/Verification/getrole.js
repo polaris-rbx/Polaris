@@ -11,8 +11,8 @@ class getRoleCommand extends Polaris.command {
 		// Check for settings
 
 		const settings = await this.client.db.getSettings(msg.member.guild.id);
-		if (!settings || (settings.binds.length === 0 && !settings.mainGroup.ranksToRoles)) {
-			msg.channel.sendError(msg.author, {title: 'No settings', description: "This server isn't set up yet. Please ask an admin to set up Polaris."});
+		if (!settings || !settings.mainGroup || (settings.mainGroup.binds === 0 && !settings.mainGroup.ranksToRoles)) {
+			msg.channel.sendError(msg.author, {title: 'No settings', description: "This server isn't set up yet. Please ask an admin to set up Polaris.\nTry adding the main group."});
 			return;
 		}
 		// Check for link
