@@ -3,6 +3,7 @@ const { Server } = require('../model/Server')
 
 module.exports = new EntitySchema({
     name: 'Server',
+    tableName: 'servers',
     target: Server,
     columns: {
         id: {

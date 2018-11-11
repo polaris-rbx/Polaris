@@ -4,6 +4,7 @@ const { Blacklist } = require('../model/Blacklist')
 module.exports = new EntitySchema({
     name: 'Blacklist',
     target: Blacklist,
+    tableName: 'blacklist',
     columns: {
         id: {
             primary: true,

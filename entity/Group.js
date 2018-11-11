@@ -3,6 +3,7 @@ const { Group } = require('../model/Group')
 
 module.exports = new EntitySchema({
     name: 'Group',
+    tableName: 'groups',
     target: Group,
     columns: {
         id: {
