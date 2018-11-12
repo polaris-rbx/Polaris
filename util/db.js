@@ -36,10 +36,10 @@ class Database {
 			]
 		});
 
-		this.User = this._connection.getRepository('User')
-		this.Server = this._connection.getRepository('Server')
-		this.Group = this._connection.getRepository('Group')
-		this.Blacklist = this._connection.getRepository('Blacklist')
+		this.User = this._connection.getRepository('User');
+		this.Server = this._connection.getRepository('Server');
+		this.Group = this._connection.getRepository('Group');
+		this.Blacklist = this._connection.getRepository('Blacklist');
 
 		return this._connection
 	}
