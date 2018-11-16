@@ -166,13 +166,14 @@ class getRoleCommand extends Polaris.command {
 		let nickChanged = false;
 		let newNick = await member.guild.updateNickname(settings, member, robloxId);
 		if (newNick) {
-			if (newNick.error) {
-				newNick = newNick.error.message;
-				throw new Error(newNick.error);
+			if (!newNick.error) {
+				nickChanged = true;
 			}
-			nickChanged = true;
-		}
 
+		}
+		if (newNick.error) {
+			embed.description = `${embed.description}\nNickname error: \`${newNick.error.message}\``;
+		}
 		if (embed.fields.length === 0) {
 			// Return false. No roles added.
 			if (nickChanged) {
@@ -185,6 +186,7 @@ class getRoleCommand extends Polaris.command {
 			if (nickChanged) embed.description = `${embed.description}\nChanged nickname to \`${newNick}\``;
 			return embed;
 		}
+
 	}
 	async verifiedRoles (isVerified, member) {
 		const verifiedName = 'Verified';
