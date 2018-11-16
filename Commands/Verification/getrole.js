@@ -171,7 +171,7 @@ class getRoleCommand extends Polaris.command {
 			}
 
 		}
-		if (newNick.error) {
+		if (newNick && newNick.error) {
 			embed.description = `${embed.description}\nNickname error: \`${newNick.error.message}\``;
 		}
 		if (embed.fields.length === 0) {
