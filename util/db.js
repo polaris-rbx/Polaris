@@ -1,18 +1,6 @@
 const { createConnection } = require('typeorm');
 const entities = require('../entity/');
 
-/*
-USERS:
-discordId: DISCORD ID
-robloxId: Roblox ID
-
-Servers:
-Id: guildID
-binds: array of binds [{role: discord role ID, rank: roblox rank ID, group: roblox group ID, exclusive: boolean}]
-mainGroup: {id: ID for main group, ranksToRoles: boolean}
-autoverify: false (boolean)
-*/
-
 'use strict';
 class Database {
 	constructor (client) {
