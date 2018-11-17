@@ -116,7 +116,7 @@ Raven.context(function () {
 				await client.db.setupGuild(guild);
 			}
 			// it is in a server. Check if they have a custom prefix. If so set prefix to it.
-			if (guildSettings.prefix && guildSettings.prefix !== '') {
+			else if (guildSettings.prefix && guildSettings.prefix !== '') {
 				prefix = guildSettings.prefix;
 				prefixMsg = prefix;
 			}
