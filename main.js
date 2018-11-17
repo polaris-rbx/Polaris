@@ -40,7 +40,7 @@ if (process.env.NODE_ENV === "production") {
 }
 // Metrics
 async function updateValues () {
-	accountLinks = await client.db.users.count().run();
+	accountLinks = await client.db.User.count();
 }
 
 const client = new Polaris.Client(process.env.NODE_ENV === "production" ? settings.token : settings.testToken, Raven, {maxShards: 'auto'});

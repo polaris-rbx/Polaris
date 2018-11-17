@@ -11,7 +11,7 @@ class getRoleCommand extends Polaris.command {
 		// Check for settings
 
 		const settings = await this.client.db.getSettings(msg.member.guild.id);
-		if (!settings || (settings.binds.length === 0 && !settings.mainGroup.ranksToRoles)) {
+		if (!settings || (settings.binds.length === 0 && !settings.mainGroup.ranks_to_roles)) {
 			msg.channel.sendError(msg.author, {title: 'No settings', description: "This server isn't set up yet. Please ask an admin to set up Polaris."});
 			return;
 		}
@@ -84,7 +84,7 @@ class getRoleCommand extends Polaris.command {
 		}
 
 		// ranks to roles
-		if (settings.mainGroup.ranksToRoles && settings.mainGroup.id) {
+		if (settings.mainGroup.ranks_to_roles && settings.mainGroup.id) {
 			let mainGroup = await this.client.roblox.getGroup(settings.mainGroup.id);
 			if (mainGroup.error) {
 				this.client.logError(mainGroup.error);

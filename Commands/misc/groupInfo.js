@@ -20,7 +20,7 @@ class getGroupCommand extends Polaris.command {
 			}
 		} else {
 			if (msg.channel.guild) {
-				const settings = await this.client.db.servers.get(msg.channel.guild.id);
+				const settings = await this.client.db.Server.findOne(msg.channel.guild.id);
 				if (settings.mainGroup && settings.mainGroup.id) {
 					groupId = settings.mainGroup.id;
 					fromSettings = true;

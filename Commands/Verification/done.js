@@ -33,18 +33,16 @@ class doneCommand extends Polaris.command {
 			// Check for existing link and update
 			if (await this.client.db.getLink(msg.author.id)) {
 				console.log('Updating for user ' + msg.author.username);
-				await this.client.db.users.get(msg.author.id).update({
-					robloxId: robloxUser.id
-
-				}).run();
+				await this.client.db.User.update(msg.author.id, {
+					roblox_id: robloxUser.id
+				});
 				return msg.channel.sendSuccess(msg.author, `You've successfully changed your account link! Please do \`${prefix}getroles\` to continue.\nNew Username: \`${robloxUser.username}\` UserID: \`${robloxUser.id}\``);
 			}
 			console.log('Inserting for user ' + msg.author.username);
-			await this.client.db.users.insert({
-				robloxId: robloxUser.id,
-				discordId: msg.author.id
-
-			}).run();
+			await this.client.db.User.save({
+				roblox_id: robloxUser.id,
+				discord_id: msg.author.id
+			});
 			const res = await this.client.commands.getrole.verifiedRoles(true, msg.member);
 			const embed = {
 				title: 'Account linked!',

@@ -16,15 +16,15 @@ class blacklistCommand extends Polaris.command {
 		if (msg.mentions.length !== 0) id = msg.mentions[0].id;
 		if (!id) return msg.channel.sendError(msg.author, 'You must provide an ID to blacklist!');
 		console.log(`ID: ${id} REASON: ${reason}`);
-		const blacklist = this.client.db.blacklist;
+		const blacklist = this.client.db.Blacklist;
 		if (id === this.client.ownerId) return msg.channel.sendError(msg.author, 'You cannot blacklist yourself!');
-		if (await blacklist.get(id)) {
+		if (await blacklist.findOne(id)) {
 			console.log(`Updating blacklist for ${id}`);
-			await blacklist.get(id).update({reason: reason, time: new Date()});
+			await blacklist.update(id, {reason: reason, set_at: new Date(), set_by: msg.author.id});
 			msg.channel.sendSuccess(msg.author, 'Successfully updated the blacklist!\nNew reason: ' + reason);
 		} else {
 			console.log(`Creating blacklist for ${id}, reason: ${reason}`);
-			await blacklist.insert({id: id, reason: reason, time: new Date()});
+			await blacklist.save({id, reason: reason, set_at: new Date(), set_by: msg.author.id});
 			msg.channel.sendSuccess(msg.author, 'Successfully added the blacklist!\n**Reason:** ' + reason);
 		}
 	}

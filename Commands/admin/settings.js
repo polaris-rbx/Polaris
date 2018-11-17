@@ -266,9 +266,9 @@ const menu = {
 function groupExtra (settings) {
 	if (!settings.mainGroup || !settings.mainGroup.id || settings.mainGroup.id === 0) {
 		return 'There is currently no main group set! Use `groupid` to set the ID of your Roblox Group.';
-	} else if (!settings.mainGroup.ranksToRoles && settings.mainGroup.id) {
+	} else if (!settings.mainGroup.ranks_to_roles && settings.mainGroup.id) {
 		return `Group ID is currently set to ${settings.mainGroup.id}. Ranks to roles is \`Disabled\`.`;
-	} else if (settings.mainGroup.ranksToRoles && settings.mainGroup.id) {
+	} else if (settings.mainGroup.ranks_to_roles && settings.mainGroup.id) {
 		return `Ranks to roles is \`enabled\` and the group ID is set to ${settings.mainGroup.id}`;
 	} else {
 		return 'Use `groupid` to set the ID of your Roblox Group!';
@@ -309,13 +309,13 @@ async function setMainGroupId (msg, settings, client) {
 	}
 }
 
-// Enable ranksToRoles
+// Enable ranks_to_roles
 async function enableRTR (msg, settings, client) {
 	if (!settings.mainGroup || !settings.mainGroup.id || settings.mainGroup.id === 0) {
 		return msg.channel.sendError(msg.author, 'You must set a Group ID first!');
 	} else {
 		let newMain = settings.mainGroup;
-		newMain.ranksToRoles = true;
+		newMain.ranks_to_roles = true;
 
 		const success = await client.db.updateSetting(msg.channel.guild.id, {mainGroup: newMain});
 		if (success) {
@@ -331,7 +331,7 @@ async function disableRTR (msg, settings, client) {
 		return msg.channel.sendError(msg.author, 'You must set a Group ID first!');
 	} else {
 		let newMain = settings.mainGroup;
-		newMain.ranksToRoles = false;
+		newMain.ranks_to_roles = false;
 		const success = await client.db.updateSetting(msg.channel.guild.id, {mainGroup: newMain});
 		if (success) {
 			msg.channel.sendSuccess(msg.author, `Successfully disabled \`ranks to roles\`!`);
@@ -343,7 +343,7 @@ async function disableRTR (msg, settings, client) {
 
 // AUTO-VERIFY
 async function enableAutoVerify (msg, settings, client) {
-	if (!settings || (settings.binds.length === 0 && !settings.mainGroup.ranksToRoles)) {
+	if (!settings || (settings.binds.length === 0 && !settings.mainGroup.ranks_to_roles)) {
 		return msg.channel.sendError(msg.author, 'You must set up binds or ranks to roles before enabling auto verification!');
 	}
 
@@ -406,7 +406,7 @@ async function viewBinds (msg, settings, client) {
 
 async function addBind (msg, settings, client) {
 	if (settings.binds.length >= 25) {
-		msg.channel.sendError(msg.author, 'Oops! You can only have up to 25 seperate binds. Please consider using `ranksToRoles` or `sub groups`.');
+		msg.channel.sendError(msg.author, 'Oops! You can only have up to 25 seperate binds. Please consider using `ranks_to_roles` or `sub groups`.');
 	}
 	// Variables
 	let groupId = await msg.channel.prompt(msg.author, {title: 'Please provide Group ID', description: 'What is the Roblox group ID?'});
@@ -671,8 +671,8 @@ function viewSettings (msg, settings) {
 		if (obj.id) {
 			returnString = `**Group id**: ${obj.id}\n`;
 		}
-		if (obj.ranksToRoles !== undefined) {
-			returnString += `**Ranks to roles**: ${obj.ranksToRoles}\n`;
+		if (obj.ranks_to_roles !== undefined) {
+			returnString += `**Ranks to roles**: ${obj.ranks_to_roles}\n`;
 		}
 		if (obj.binds) {
 			returnString += "**Binds**: \n"
