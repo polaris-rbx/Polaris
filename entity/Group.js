@@ -28,7 +28,8 @@ module.exports = new EntitySchema({
         server: {
             target: 'Server',
             type: 'many-to-one',
-            joinColumn: true
+            primary: true,
+            joinColumn: { name: 'server_id' }
         }
     }
 });
