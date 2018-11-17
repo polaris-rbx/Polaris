@@ -27,9 +27,8 @@ module.exports = new EntitySchema({
     relations: {
         server: {
             target: 'Server',
-            eager: true,
             type: 'many-to-one',
-            joinColumn: { name: 'server_id' }
+            joinColumn: true
         }
     }
 });

@@ -30,8 +30,9 @@ module.exports = new EntitySchema({
     relations: {
         groups: {
             target: 'Group',
+            type: 'one-to-many',
             eager: true,
-            type: 'one-to-many'
+            inverseSide: 'server'
         }
     }
 });
