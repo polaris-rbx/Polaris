@@ -99,10 +99,12 @@ Raven.context(function () {
 		if (!message.author) return message.channel.send('Oops. `message.author` is not defined. Please contact `Neztore#6998` if this issue persists.');
 		// If bot
 		if (message.author.bot) return;
-		client.autoRole(message.member);
+
 		// Stop if it's DBL/Discordbots.pw
 		if (message.channel.guild) {
 			if (message.channel.guild.id === "264445053596991498" || message.channel.guild.id === "110373943822540800") return;
+
+			client.autoRole(message.member);
 		}
 		// New prefix handler
 		const prefixMention = new RegExp(`^<@!?${client.user.id}> `);
