@@ -64,7 +64,6 @@ class Command {
 					this.client.createMessage(message.channel.id, ":exclamation: I couldn't get your guild member. Please re-try this command. :exclamation:");
 					throw new Error('Guild member is still not defined!');
 				} else if (message.channel.guild.members.get(message.author.id)) {
-					console.log('get author');
 					message.member = message.channel.guild.members.get(message.author.id);
 				}
 			}
@@ -133,8 +132,12 @@ module.exports.Client = class Client extends Eris.Client {
 		// Roblox lib
 		this.roblox = new PolarisRbx(this);
 
+
 		// Command cooldown
 		this.cooldown = new Set();
+
+		// auto update cooldown
+		this.autoUpdateCooldown = new Map();
 
 		this.ownerId = '183601072344924160';
 		this.start();
@@ -181,6 +184,36 @@ module.exports.Client = class Client extends Eris.Client {
 		console.log(err);
 		if (typeof err === 'object') err = util.inspect(err);
 		this.Raven.captureException(err);
+	}
+	async autoRole (member) {
+		if (member.bot) return;
+		const cooldown = this.autoUpdateCooldown.get(member.user.id);
+		if (cooldown) {
+			// 30min
+			if ((cooldown + 1800000 > Date.now())) {
+				// It hasn't expired
+				return;
+			} else {
+				this.autoUpdateCooldown.delete(member.user.id);
+			}//
+		}
+		this.autoUpdateCooldown.set(member.user.id, Date.now());
+		const settings = await this.db.getSettings(member.guild.id);
+		if (settings.autoVerify) {
+			const rbxId = await this.db.getLink(member.id);
+			if (settings && rbxId) {
+				const res = await this.commands.getrole.giveRoles(settings, member, rbxId);
+				if (res) {
+					if (res.error) return console.log(res.error); // If errors, fail silently. No need for user to see.
+
+					res.title = 'Auto update updated you';
+					const DMChannel = await member.user.getDMChannel();
+					DMChannel.sendSuccess(member.user, res);
+				}
+			} else if (!rbxId) {
+				await this.commands.getrole.verifiedRoles(false, member);
+			}
+		}
 	}
 };
 

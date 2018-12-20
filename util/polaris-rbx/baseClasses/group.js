@@ -62,7 +62,7 @@ class Group {
 			return res;
 		} catch (error) {
 			if (error.statusCode === 404 || 400) return {error: {status: 404, message: 'User or group not found'}};
-			if (error.statusCode === 503) return {error: {status: 503, message: 'Service Unavailible - Roblox is down.'}};
+			if (error.statusCode === 503) return {error: {status: 503, message: 'Service Unavailable - Roblox is down.'}};
 			throw new Error(error);
 		}
 	}

@@ -24,7 +24,7 @@ class Roblox {
 
 			console.log('Cleared Group rank cache');
 
-		}, 900000);
+		}, 600000);
 		this.clearRanks = ()=>	Roblox._groupCache.forEach((group)=>group.clearCache());
 
 	}
