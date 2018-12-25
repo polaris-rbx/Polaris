@@ -1,40 +1,21 @@
-#README FOR Polaris
-CONTAINS GENERAL INFO THAT I WILL FORGET.
+# Info
+Polaris is a Roblox verification bot that has been closed source since it's creation.
 
+This Christmas however we thought long and hard about this, and we think the best way to achieve our goal - to help as many people as possible power their server with as little effort as possible - is to open source.
 
-# COMMANDS CAN ONLY BE STORED IN "Commands/x"
+So here it is! The Polaris bot. We'll be open sourcing our webpanel and website in the coming days.
 
+Feel free to snoop, edit, hash, contribute to and remix our bot!
 
+# Installing
+1. Clone this repo - `git clone https://github.com/neztore/polaris`
+2. Navigate into new folder `cd polaris`
+3. Run `npm install` in this repo
+4. Create your settings.json. Set `sync` to true
+5. Make sure your PostgreSQL database is running (or rethinkdb depending on version)
+6. Run it!
 
-# Permission flags
-createInstantInvite: 1
-kickMembers: 2
-banMembers: 4
-administrator: 8
-manageChannels: 16
-manageGuild: 32
-addReactions: 64
-readMessages: 1024
-sendMessages: 2048
-sendTTSMessages: 4096
-manageMessages: 8192
-embedLinks: 16384
-attachFiles: 32768
-readMessageHistory: 65536
-mentionEveryone: 131072
-externalEmojis: 262144
-voiceConnect: 1048576
-voiceSpeak: 2097152
-voiceMuteMembers: 4194304
-voiceDeafenMembers: 8388608
-voiceMoveMembers: 16777216
-voiceUseVAD: 33554432
-changeNickname: 67108864
-manageNicknames: 134217728
-manageRoles: 268435456
-manageWebhooks: 536870912
-manageEmojis: 1073741824
-all: 2146958399
-allGuild: 2080374847
-allText: 805829649
-allVoice: 871366673
+# Support
+Join our [discord](https://discord.gg/QevWabU) for support. This open sourcing will not affect the main bot.
+
+The main [website](https://polaris-bot.xyz/)
