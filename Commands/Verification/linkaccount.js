@@ -1,4 +1,4 @@
-let Polaris = require('../../util/client.js');
+const Polaris = require('../../util/client.js');
 
 class linkAccountCommand extends Polaris.command {
 	constructor (client) {

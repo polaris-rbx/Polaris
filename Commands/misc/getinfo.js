@@ -1,5 +1,4 @@
-
-let Polaris = require('../../util/client.js');
+const Polaris = require('../../util/client.js');
 const settings = require('../../settings.json');
 const specialPeople = settings.specialPeople;
 
