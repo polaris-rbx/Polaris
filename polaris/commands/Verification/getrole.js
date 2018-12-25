@@ -1,6 +1,6 @@
-'use strict';
-let Polaris = require('../../util/client.js');
-class getRoleCommand extends Polaris.command {
+const BaseCommand = require('../baseCommand');
+
+class getRoleCommand extends BaseCommand {
 	constructor (client) {
 		super(client);
 		this.description = "Uses a previously linked account and a server's settings to give you roles according to your group rank(s).";

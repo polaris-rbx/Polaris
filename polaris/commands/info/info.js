@@ -1,6 +1,7 @@
-let Polaris = require('../../util/client.js');
+const BaseCommand = require('../baseCommand');
 const packageJson = require('../../package.json');
-class infoCommand extends Polaris.command {
+
+class InfoCommand extends BaseCommand {
 	constructor (client) {
 		super(client);
 		this.description = 'Get information about the bot, and some important links.';
@@ -29,4 +30,4 @@ class infoCommand extends Polaris.command {
 			});
 	}
 }
-module.exports = infoCommand;
+module.exports = InfoCommand;
