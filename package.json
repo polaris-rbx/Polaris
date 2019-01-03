@@ -1,9 +1,8 @@
 {
-	"name": "polaris",
-	"version": "3.3.0",
+	"name": "polaris-bot",
+	"version": "3.3.1",
 	"main": "index.js",
-	"private": true,
-	"description": "The new class based Polaris bot. Private.",
+	"description": "Polaris is a Roblox verification bot designed to provide additional features with greater ease.",
 	"author": "Neztore",
 	"dependencies": {
 		"cheerio": "^1.0.0-rc.2",

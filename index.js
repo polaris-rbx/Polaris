@@ -13,6 +13,6 @@ const Client = new Polaris.Client({
   token: process.env.NODE_ENV === 'production' ? settings.token : settings.testToken,
   Raven,
   erisSettings: {
-    maxShards: 'auto'
-  }
-})
+		maxShards: 'auto'
+	}
+});
