@@ -1,4 +1,7 @@
 # Info
+
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/934f50cd0c354d4ebd17c0a91fc4855d)](https://app.codacy.com/app/Neztore/Polaris?utm_source=github.com&utm_medium=referral&utm_content=Neztore/Polaris&utm_campaign=Badge_Grade_Settings)
+
 Polaris is a Roblox verification bot that has been closed source since it's creation.
 
 This Christmas however we thought long and hard about this, and we think the best way to achieve our goal - to help as many people as possible power their server with as little effort as possible - is to open source.
