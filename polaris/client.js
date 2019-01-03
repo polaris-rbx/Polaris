@@ -26,7 +26,7 @@ class Polaris extends Eris.Client {
 		this.db = new Database(this); // Database Manager
 		this.IPC = new IPC(this, {allowLog: false}); // IPC Manager
 		this.roblox = new RobloxManager(this); // Roblox Manager
-		this.ownerId = options.ownerId || '183601072344924160'; // Bot Owner Id
+		this.ownerId = this.options.ownerId || '183601072344924160'; // Bot Owner Id
 	}
 
 	loadEvents() {
