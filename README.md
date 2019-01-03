@@ -15,6 +15,28 @@ Feel free to snoop, edit, hash, contribute to and remix our bot!
 5. Make sure your PostgreSQL database is running (or rethinkdb depending on version)
 6. Run it!
 
+# Setup / config
+ ## Config
+The Polaris client takes a config object, which can contain:
+- `token` - The bot token to use
+- `erisOptions` - The options to pass to the underlying eris client
+- `Raven` - A Raven client for sentry. Use without this is planned, but currently untested.
+
+It also expects a `settings.json` to exist in the root, with example values as below. We also plan to stop moving this in the near future.
+```json
+{
+	"token": "Main bot token",
+	"testToken": "Test bot token",
+	"dblToken": "Discord bot list token",
+	"sentry": "Sentry token",
+	"specialPeople": {
+		"93968063": "This user works for Polaris.",
+		"66592931": "This user is the Polaris developer.",
+		"Roblox id": "Desc string to be shown"
+	}
+}
+```
+If you don't want any "special people" just leave that as an empty array.
 # Support
 Join our [discord](https://discord.gg/QevWabU) for support. This open sourcing will not affect the main bot.
 
