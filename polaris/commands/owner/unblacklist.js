@@ -1,6 +1,6 @@
-let Polaris = require('../../util/client.js');
+const BaseCommand = require('../baseCommand');
 
-class unblacklistCommand extends Polaris.command {
+class unblacklistCommand extends BaseCommand {
 	constructor (client) {
 		super(client);
 		this.description = '';

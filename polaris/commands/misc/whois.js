@@ -1,8 +1,8 @@
-let Polaris = require('../../util/client.js');
+const BaseCommand = require('../baseCommand');
 const settings = require('../../settings.json');
 const specialPeople = settings.specialPeople;
 
-class whoisCommand extends Polaris.command {
+class whoisCommand extends BaseCommand {
 	constructor (client) {
 		super(client);
 		this.description = "Tells you a user's Roblox Name";

@@ -1,6 +1,5 @@
-let Polaris = require('../../util/client.js');
-
-class linkAccountCommand extends Polaris.command {
+const BaseCommand = require('../baseCommand');
+class linkAccountCommand extends BaseCommand {
 	constructor (client) {
 		super(client);
 		this.description = 'Creates an account link to allow for role retrieval.';

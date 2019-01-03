@@ -1,6 +1,6 @@
-let Polaris = require('../../util/client.js');
+const BaseCommand = require('../baseCommand');
 
-class doneCommand extends Polaris.command {
+class doneCommand extends BaseCommand {
 	constructor (client) {
 		super(client);
 		this.description = 'Completes an in-progress account link by checking your Roblox profile for the code.';

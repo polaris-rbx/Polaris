@@ -2,9 +2,9 @@ const good = ['It is certain', 'It is decidedly so', 'Without a doubt', 'Yes def
 const none = ['Reply hazy try again', 'Ask again later', 'Better not tell you now', 'Cannot predict now', 'Concentrate and ask again'];
 const bad = [ 'Don\'t count on it', 'My reply is no', 'My sources say no', 'Outlook not so good', 'Very doubtful' ];
 
-let Polaris = require('../../util/client.js');
+const BaseCommand = require('../baseCommand');
 
-class BallCommand extends Polaris.command {
+class BallCommand extends BaseCommand {
 	constructor (client) {
 		super(client);
 		this.description = 'A magic 8ball. Pretty simple, right?';

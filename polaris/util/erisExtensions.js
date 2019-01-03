@@ -45,7 +45,7 @@ async function sendSuccess (author, content) {
 	this.client = this.guild ? this.guild.shard.client : this._client;
 	let embed = addParts(content, author, 'Success');
 	embed.timestamp = new Date();
-	embed.color = 0x23ff9f;
+	embed.color = 0x2ECC71;
 	try {
 		return await this.client.createMessage(this.id, {content: `<@${author.id}> `, embed: embed});
 	} catch (err) {
@@ -59,7 +59,7 @@ async function sendError (author, content) {
 	this.client = this.guild ? this.guild.shard.client : this._client;
 	let embed = addParts(content, author, 'Error');
 	embed.timestamp = new Date();
-	embed.color = 0xb3000a;
+	embed.color = 0xE74C3C;
 	try {
 		return await this.client.createMessage(this.id, {content: `<@${author.id}> `, embed: embed});
 	} catch (err) {

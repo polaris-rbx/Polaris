@@ -31,9 +31,9 @@ const quotes = ['Don\'t cry because it\'s over, smile because it happened. ― D
 	'“Love yourself first and everything else falls into line. You really have to love yourself to get anything done in this world.” – Lucille Ball'
 ];
 
-let Polaris = require('../../util/client.js');
+const BaseCommand = require('../baseCommand');
 
-class pingCommand extends Polaris.command {
+class pingCommand extends BaseCommand {
 	constructor (client) {
 		super(client);
 		this.description = 'Produces a random quote from a person of great wisdom.';

@@ -1,5 +1,6 @@
-let Polaris = require("../../util/client.js");
-class setupCommand extends Polaris.command {
+const BaseCommand = require('../baseCommand');
+
+class setupCommand extends BaseCommand {
 	constructor(client) {
 		super(client);
 		this.description =

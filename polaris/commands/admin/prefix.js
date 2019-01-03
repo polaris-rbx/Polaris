@@ -1,6 +1,6 @@
-let Polaris = require('../../util/client.js');
+const BaseCommand = require('../baseCommand');
 
-class prefixCommand extends Polaris.command {
+class prefixCommand extends BaseCommand {
 	constructor (client) {
 		super(client);
 		this.description = 'Allows you to view or edit the prefix for this server.';

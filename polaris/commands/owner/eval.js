@@ -1,6 +1,6 @@
-let Polaris = require('../../util/client.js');
+const BaseCommand = require('../baseCommand');
 
-class evalCommand extends Polaris.command {
+class evalCommand extends BaseCommand {
 	constructor (client) {
 		super(client);
 		this.description = 'EVAL COMMAND. OWNER ONLY. YOU SHOULD NOT BE ABLE TO SEE THIS.';

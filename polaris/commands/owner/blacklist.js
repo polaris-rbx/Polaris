@@ -1,6 +1,6 @@
-let Polaris = require('../../util/client.js');
+const BaseCommand = require('../baseCommand');
 
-class blacklistCommand extends Polaris.command {
+class blacklistCommand extends BaseCommand {
 	constructor (client) {
 		super(client);
 		this.description = 'Simple ping command to retrieve bot latency.';

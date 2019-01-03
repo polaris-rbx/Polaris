@@ -1,6 +1,6 @@
-let Polaris = require('../../util/client.js');
+const BaseCommand = require('../baseCommand');
 
-class reloadCommand extends Polaris.command {
+class reloadCommand extends BaseCommand {
 	constructor (client) {
 		super(client);
 		this.description = 'Reloads a command file';
