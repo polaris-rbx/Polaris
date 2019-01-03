@@ -101,7 +101,6 @@ class getRoleCommand extends BaseCommand {
 			}
 
 			if (!checkForPresence(member.roles, roleId)) {
-				console.log(`Give ${roleId}`);
 				const role = member.guild.roles.get(roleId);
 				try {
 					if (role) {

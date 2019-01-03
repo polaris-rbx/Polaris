@@ -56,7 +56,8 @@ class Polaris extends Eris.Client {
 					if (res) {
 						if (res.error) return;
 						res.title = 'Welcome to ' + guild.name;
-						await member.user.getDMChannel().sendSuccess(member.user, res);
+						const dm = await member.user.getDMChannel();
+						dm.sendSuccess(member.user, res);
 					}
 				} else {
 					await this.CommandManager.commands.getrole.verifiedRoles(false, member);
@@ -112,7 +113,8 @@ class Polaris extends Eris.Client {
 				if (res) {
 					if (res.error) return;
 					res.title = '[AUTOROLES] Roles Updated';
-					await member.user.getDMChannel().sendSuccess(member.user, res);
+					const dm = await member.user.getDMChannel();
+					dm.sendSuccess(member.user, res);
 				}
 			} else {
 				await this.CommandManager.commands.getrole.verifiedRoles(false, member);
