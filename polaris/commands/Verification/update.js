@@ -20,7 +20,7 @@ class updateRoleCommand extends BaseCommand {
 
 		var rbxId = await this.client.db.getLink(mentionedUser.id);
 		if (!rbxId) {
-			const res = await this.client.commands.getrole.verifiedRoles(false, mentionedMember);
+			const res = await this.client.CommandManager.commands.getrole.verifiedRoles(false, mentionedMember);
 			if (res.error) {
 				return msg.channel.sendError(msg.author, {title: 'No permissions', description: res.error});
 			}
@@ -35,7 +35,7 @@ class updateRoleCommand extends BaseCommand {
 			return;
 		}
 
-		const reply = await this.client.commands.getrole.giveRoles(settings, mentionedMember, rbxId);
+		const reply = await this.client.CommandManager.commands.getrole.giveRoles(settings, mentionedMember, rbxId);
 		if (reply) {
 			reply.title = 'Changed their roles:';
 

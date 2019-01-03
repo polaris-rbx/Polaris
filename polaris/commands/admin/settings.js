@@ -1,8 +1,8 @@
 'use strict';
-let Polaris = require('../../util/client.js');
+const BaseCommand = require('../baseCommand');
 var COOLDOWN = new Map();
 
-class settingsCommand extends Polaris.command {
+class settingsCommand extends BaseCommand {
 	constructor (client) {
 		super(client);
 		this.db = this.client.db;
@@ -28,7 +28,7 @@ class settingsCommand extends Polaris.command {
 
 		let raven = this.client.Raven;
 
-		const guildSettings = this.guildSettings = await this.db.getSettings(msg.channel.guild.id);
+		const guildSettings = this.guildSettings = await this.client.db.getSettings(msg.channel.guild.id);
 
 		if (!this.guildSettings) {
 			await this.db.setupGuild(msg.channel.guild);

@@ -45,7 +45,7 @@ class doneCommand extends BaseCommand {
 				discordId: msg.author.id
 
 			}).run();
-			const res = await this.client.commands.getrole.verifiedRoles(true, msg.member);
+			const res = await this.client.CommandManager.commands.getrole.verifiedRoles(true, msg.member);
 			const embed = {
 				title: 'Account linked!',
 				description: `You've successfully linked your account! Please do \`${prefix}getroles\` to continue, and recieve your roles.\nUsername: \`${robloxUser.username}\` UserID: \`${robloxUser.id}\``

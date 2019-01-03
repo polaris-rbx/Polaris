@@ -1,4 +1,4 @@
-const quotes = ['Don\'t cry because it\'s over, smile because it happened. ― Dr. Seuss',
+const quotes = ["Don\'t cry because it\'s over, smile because it happened. ― Dr. Seuss",
 	'I\'m selfish, impatient and a little insecure. I make mistakes, I am out of control and at times hard to handle. But if you can\'t handle me at my worst, then you sure as hell don\'t deserve me at my best.',
 	'“You only live once, but if you do it right, once is enough.”  ― Mae West',
 	'“Be the change that you wish to see in the world.”  ― Mahatma Gandhi',

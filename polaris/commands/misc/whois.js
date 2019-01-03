@@ -1,5 +1,5 @@
 const BaseCommand = require('../baseCommand');
-const settings = require('../../settings.json');
+const settings = require('../../../settings.json');
 const specialPeople = settings.specialPeople;
 
 class whoisCommand extends BaseCommand {

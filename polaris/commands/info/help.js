@@ -12,7 +12,7 @@ class helpCommand extends BaseCommand {
 		var DMChannel = await msg.author.getDMChannel();
 		if (args[0]) {
 			// Provide specific help info
-			let command = this.client.commands[args[0]] || this.client.commands[this.client.commands.aliases[args[0]]];
+			let command = this.client.CommandManager.commands[args[0]] || this.client.CommandManager.commands[this.client.CommandManager.commands.aliases[args[0]]];
 			if (!command) {
 				if (!this._assembled) this.assemble();
 
@@ -59,7 +59,7 @@ class helpCommand extends BaseCommand {
 
 	assemble (prefix) {
 		var organised = {};
-		var commands = Object.values(this.client.commands);
+		var commands = Object.values(this.client.CommandManager.commands);
 		commands.forEach(function (command) {
 			if (!command.client) return; // This means that it is the "aliases" object and not a command.
 			if (command.hidden) return; // this means that it is a HIDDEN COMMAND

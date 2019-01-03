@@ -3,7 +3,7 @@ const IPC = require('node-ipc');
 class IPCClient {
 	constructor(client, config) {
 		config = config || {};
-		this.allowLog = config.allowLog || true;
+		this.allowLog = config.allowLog !== undefined ? config.allowLog : true;
 		this.client = client;
 		IPC.config.id = config.id || 'polarisClient';
 		IPC.config.retry = config.retry || 3000;

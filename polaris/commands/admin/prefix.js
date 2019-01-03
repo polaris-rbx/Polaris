@@ -11,7 +11,7 @@ class prefixCommand extends BaseCommand {
 		if (msg.member.permission.has('administrator')) {
 			// user is admin
 			const settings = await this.client.db.getSettings(msg.channel.guild.id);
-			await this.client.commands.settings.changePrefix(msg, settings, this.client);
+			await this.client.CommandManager.commands.settings.changePrefix(msg, settings, this.client);
 		} else {
 			// user is not admin!
 			const settings = await this.client.db.getSettings(msg.channel.guild.id);

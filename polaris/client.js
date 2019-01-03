@@ -18,16 +18,15 @@ class Polaris extends Eris.Client {
 		this.linkQueue = new Collection();
 		this.cooldown = new Set();
 		this.autoUpdateCooldown = new Map();
+		this.start();
 	}
 
 	load() {
 		this.CommandManager = new CommandManager(this);
 		this.db = new Database(this); // Database Manager
-		this.IPC = new IPC(this); // IPC Manager
+		this.IPC = new IPC(this, {allowLog: false}); // IPC Manager
 		this.roblox = new RobloxManager(this); // Roblox Manager
-		this.ownerId = '183601072344924160'; // Bot Owner Id
-
-		this.loadEvents();
+		this.ownerId = options.ownerId || '183601072344924160'; // Bot Owner Id
 	}
 
 	loadEvents() {
@@ -92,7 +91,7 @@ class Polaris extends Eris.Client {
 	}
 
 	// this shouldnt really be here
-	autoRole(member) {
+	async autoRole(member) {
 		if (member.bot) return;
 		const cooldown = this.autoUpdateCooldown.get(member.user.id);
 		if (cooldown) {
@@ -112,7 +111,7 @@ class Polaris extends Eris.Client {
 				const res = await this.CommandManager.commands.getrole.giveRoles(settings, member, rbxId);
 				if (res) {
 					if (res.error) return;
-					res.title = '[AUTOROLES] Roles Updated'
+					res.title = '[AUTOROLES] Roles Updated';
 					await member.user.getDMChannel().sendSuccess(member.user, res);
 				}
 			} else {
@@ -123,8 +122,9 @@ class Polaris extends Eris.Client {
 
 	start() {
 		this.load();
+		this.loadEvents();
 		this.connect();
 	}
 }
 
-module.exports = Polaris
+module.exports = Polaris;
