@@ -1,6 +1,7 @@
 # Info
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/934f50cd0c354d4ebd17c0a91fc4855d)](https://app.codacy.com/app/Neztore/Polaris?utm_source=github.com&utm_medium=referral&utm_content=Neztore/Polaris&utm_campaign=Badge_Grade_Settings)
+[![Polaris project bot](https://img.shields.io/badge/Polaris%20Project-Roblox%20bot-2bbbad.svg)](https://polaris.codes)
 
 Polaris is a Roblox verification bot that has been closed source since it's creation.
 
