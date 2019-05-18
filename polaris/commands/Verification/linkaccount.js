@@ -98,7 +98,10 @@ class linkAccountCommand extends BaseCommand {
 				{name: "Code", value: `\`${code}\``},
 				{name: "After you are done", value: `Once you have put the code in your profile, run the \`${prefix}done\` command! :)`},
 				{name: "Timeout", value: `This request will time-out in **10 minutes.** Please run \`${prefix}done\` before then, or you'll need to restart!`}
-			]
+			],
+			image: {
+				url: 'https://media.discordapp.net/attachments/440756186258866176/579402610268831745/yess.png'	
+			}
 		});
 
 		this.client.linkQueue.set(msg.author.id, {
