@@ -4,7 +4,7 @@ class getGroupCommand extends BaseCommand {
 	constructor (client) {
 		super(client);
 		this.description = 'Shows information about the Group Id provided, or the main group currently set.';
-		this.aliases = ['getGroupInfo', 'group'];
+		this.aliases = ['getGroupInfo', 'group', 'getGroup', 'groupInfo'];
 		this.group = 'Roblox';
 		this.guildOnly = false;
 	}

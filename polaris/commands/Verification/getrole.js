@@ -275,7 +275,13 @@ class getRoleCommand extends BaseCommand {
 			const userRank = await group.getRole(robloxId);
 			if (!userRank) throw new Error('User rank is not defined?');
 			// Give user their role if it exists.
-			const role = member.guild.roles.find(current => current.name.toLowerCase() === userRank.toLowerCase());
+			let role;
+			if (userRank.toLowerCase()) {
+				role = member.guild.roles.find(current => current.name.toLowerCase() === userRank.toLowerCase());
+			} else {
+				this.client.logError("userRank not defined", {userRank: userRank});
+			}
+
 
 			if (role) {
 				rolesToGive[role.id] = role.id;
