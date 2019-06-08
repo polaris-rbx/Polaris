@@ -15,7 +15,7 @@ class getGroupCommand extends BaseCommand {
 			if (!isNaN(args[0])) {
 				groupId = args[0];
 			} else {
-				return msg.channel.sendInfo(msg.author, {title: "Not supported, here's the roblox search results!", description: `I don't currently support getting group info by name. Click [here](https://www.roblox.com/search/groups?keyword=${args[0]}) to view search results for that group.`});
+                groupId = this.client.roblox.getGroupByName(args[0]).ID
 			}
 		} else {
 			if (msg.channel.guild) {
