@@ -7,7 +7,26 @@ class Group {
 	clearCache () {
 		// Clear rank cache
 		this.users.clear();
-	}
+    }
+
+    async getGroupByName(name) { 
+        if (!name) return  
+        const options = {
+			method: 'GET',
+			uri: `https://www.roblox.com/search/groups/list-json?keyword=${name}&maxRows=10&startRow=0`,
+			resolveWithFullResponse: true
+        }
+        try {
+            let res = await request(options)
+            res = JSON.parse(res.body);
+            return res.GroupSearchResults[0]
+        } catch(error) {
+            if (error.statusCode === 404 || 400) return {error: {status: 404, message: 'User or group not found'}};
+			if (error.statusCode === 503) return {error: {status: 503, message: 'Service Unavailible - Roblox is down.'}};
+			throw new Error(error);
+        }
+    }
+    
 	async getRank (userIdOrUserClass) {
 		if (!userIdOrUserClass) return;
 		const id = typeof userIdOrUserClass === 'number' || typeof userIdOrUserClass === 'string' ? userIdOrUserClass : userIdOrUserClass.id;
