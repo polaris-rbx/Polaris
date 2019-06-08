@@ -15,7 +15,10 @@ class getGroupCommand extends BaseCommand {
 			if (!isNaN(args[0])) {
 				groupId = args[0];
 			} else {
-                groupId = this.client.roblox.getGroupByName(args[0]).ID
+				const grp = await this.client.roblox.getGroupByName(args[0]);
+				groupId = grp.ID;
+				if (!groupId) return msg.channel.sendError(msg.author, "Oops! Group not found.";
+
 			}
 		} else {
 			if (msg.channel.guild) {
