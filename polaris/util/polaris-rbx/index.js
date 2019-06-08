@@ -107,6 +107,25 @@ class Roblox {
 		}
 	}
 
+	async getGroupByName(name) {
+		if (!name) return false;
+		name = encodeURIComponent(name)
+		const options = {
+			method: 'GET',
+			uri: `https://www.roblox.com/search/groups/list-json?keyword=${name}&maxRows=10&startRow=0`,
+			resolveWithFullResponse: true
+		};
+		try {
+			let res = await request(options);
+			res = JSON.parse(res.body);
+			return res.GroupSearchResults[0];
+		} catch(error) {
+			if (error.statusCode === 404 || 400) return {error: {status: 404, message: 'User or group not found'}};
+			if (error.statusCode === 503) return {error: {status: 503, message: 'Service Unavailible - Roblox is down.'}};
+			throw new Error(error);
+		}
+	}
+
 	// API FUNCTIONS. Return simple things, not classes.
 	async getIdFromName (Username) {
 		const res = await this.getUserFromName(Username);

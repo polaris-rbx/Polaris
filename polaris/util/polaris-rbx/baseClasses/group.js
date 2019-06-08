@@ -8,6 +8,9 @@ class Group {
 		// Clear rank cache
 		this.users.clear();
 	}
+
+
+    
 	async getRank (userIdOrUserClass) {
 		if (!userIdOrUserClass) return;
 		const id = typeof userIdOrUserClass === 'number' || typeof userIdOrUserClass === 'string' ? userIdOrUserClass : userIdOrUserClass.id;
