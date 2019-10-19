@@ -11,16 +11,16 @@ class whoisCommand extends BaseCommand {
 		this.guildOnly = true;
 	}
 	async execute (msg, args) {
-        let mentionedUser;
+		let mentionedUser;
 		if (!msg.mentions[0]) {
-            const user = msg.guild.members.find(member => member.username.toLowerCase().startsWith(args.join(' ')))
-            if(!user) {
-                return msg.channel.sendError(msg.author, "Sorry, I can't find that user in this server.")
-            }
-            mentionedUser = user
+			const user = msg.guild.members.find(member => member.username.toLowerCase().startsWith(args.join(' ')));
+			if(!user) {
+				return msg.channel.sendError(msg.author, "Sorry, I can't find that user in this server.");
+			}
+			mentionedUser = user;
 		} else {
-            mentionedUser = msg.mentions[0]
-        }
+			mentionedUser = msg.mentions[0];
+		}
 		if (mentionedUser.bot) return msg.channel.sendError(msg.author, 'Do you really think a bot has linked their account?! **Please mention a normal user!**');
 
 		var rbxId = await this.client.db.getLink(mentionedUser.id);

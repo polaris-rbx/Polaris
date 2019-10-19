@@ -14,7 +14,7 @@ class getinfoCommand extends BaseCommand {
 		var robloxUser;
 		// Assign robloxUser to a roblox user class,using either the username given, or the user id if using a mention.
 		if (msg.mentions[0]) {
-			const mentionedUser = msg.mentions[1] || msg.mentions[0];
+			const mentionedUser = msg.mentions[0];
 			if (mentionedUser.bot) return msg.channel.sendError(msg.author, 'Do you really think a bot has linked their account?! **Please mention a normal user!**');
 
 			let rbxId = await this.client.db.getLink(mentionedUser.id);
