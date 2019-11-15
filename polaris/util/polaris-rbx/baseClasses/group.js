@@ -20,22 +20,24 @@ class Group {
 		}
 		const options = {
 			method: 'GET',
-			uri: `https://www.roblox.com/Game/LuaWebService/HandleSocialRequest.ashx?method=GetGroupRank&playerid=${id}&groupId=${this.id}`,
-			resolveWithFullResponse: true
+			uri: `https://api.roblox.com/users/${id}/groups`,
 		};
 		try {
 			let res = await request(options);
-			res = parseInt(res.body.substring(22), 10);
+			res = JSON.parse(res);
+			const groupObject = res.filter((group) => this.id === group.Id)[0] || {};
+			let rank = groupObject.Rank ? groupObject.Rank : 0;
+
 			if (this.users.get(id)) {
 				const cache = this.users.get(id);
-				cache.rank = res;
+				cache.rank = rank;
 				this.users.set(id, cache);
 			} else {
-				this.users.set(id, {rank: res});
+				this.users.set(id, {rank: rank});
 			}
-			return res;
+			return rank;
 		} catch (error) {
-			if (error.statusCode === 404 || 400) return {error: {status: 404, message: 'User or group not found'}};
+			if (error.statusCode === 404 ||error.statusCode === 400) return {error: {status: 404, message: 'User or group not found'}};
 			if (error.statusCode === 503) return {error: {status: 503, message: 'Service Unavailible - Roblox is down.'}};
 			throw new Error(error);
 		}
@@ -51,18 +53,22 @@ class Group {
 		}
 		const options = {
 			method: 'GET',
-			uri: `https://www.roblox.com/Game/LuaWebService/HandleSocialRequest.ashx?method=GetGroupRole&playerid=${id}&groupId=${this.id}`,
-			resolveWithFullResponse: true
+			uri: `https://api.roblox.com/users/${id}/groups`,
 		};
+
 		try {
 			let res = await request(options);
-			res = res.body;
+			res = JSON.parse(res);
+			const groupObject = res.filter((group) => this.id === group.Id)[0] || {};
+			const role = groupObject.Role ? groupObject.Role : "Guest";
+
+
 			if (this.users.get(id)) {
-				this.users.get(id).role = res;
+				this.users.get(id).role = role;
 			} else {
-				this.users.set(id, {role: res});
+				this.users.set(id, {role: role});
 			}
-			return res;
+			return role;
 		} catch (error) {
 			if (error.statusCode === 404 || 400) return {error: {status: 404, message: 'User or group not found'}};
 			if (error.statusCode === 503) return {error: {status: 503, message: 'Service Unavailable - Roblox is down.'}};

@@ -84,7 +84,7 @@ class getRoleCommand extends BaseCommand {
 		}
 
 		// ranks to roles
-		if (settings.mainGroup.ranksToRoles && settings.mainGroup.id) {
+		if ( settings.mainGroup.id) {
 			await this.processGroup(rolesToGive, rolesToRemove, member, settings.mainGroup, robloxId);
 		}
 
@@ -307,7 +307,7 @@ class getRoleCommand extends BaseCommand {
 				const rank = await group.getRank(robloxId);
 
 				if (current.exclusive) {
-					if (rank === current.rank) {
+					if (parseInt(rank, 10) === parseInt(current.rank, 10)) {
 						rolesToGive[current.role] = current.role;
 					} else {
 						rolesToRemove[current.role] = current.role;
