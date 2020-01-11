@@ -34,12 +34,13 @@ const quotes = [
 	["A man cannot be comfortable without his own approval.", "Mark Twain"],
 	["Love yourself first and everything else falls into line. You really have to love yourself to get anything done in this world.", "Lucille Ball"],
 	["Well done is better than well said.", "Benjamin Franklin"],
-	["Plan your work for today and every day, then work your plan.", "Margaret Thatcher"]
+	["Plan your work for today and every day, then work your plan.", "Margaret Thatcher"],
+	["Be who you are and say what you feel, because those who mind don't matter, and those who matter don't mind."]
 ];
 
 const BaseCommand = require('../baseCommand');
 
-class pingCommand extends BaseCommand {
+class quoteCommand extends BaseCommand {
 	constructor (client) {
 		super(client);
 		this.description = 'Produces a random quote from a person of great wisdom.';
@@ -52,13 +53,13 @@ class pingCommand extends BaseCommand {
 		msg.channel.sendInfo(msg.author, {
 			title: " ",
 			author: {
-				name: text[1] || "Unkown"
+				name: text[1] || "Unknown"
 			},
 			description: `:scroll: ${text[0]}`
 		});
 	}
 }
-module.exports = pingCommand;
+module.exports = quoteCommand;
 
 function getRandomIntInclusive (min, max) {
 	return Math.floor(Math.random() * max);
