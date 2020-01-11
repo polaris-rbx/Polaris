@@ -671,7 +671,7 @@ function viewSettings (msg, settings) {
 			returnString += `**Ranks to roles**: ${obj.ranksToRoles}\n`;
 		}
 		if (obj.binds) {
-			returnString += "**Binds**: \n"
+			returnString += "**Binds**: \n";
 			for (let bind of obj.binds) {
 				returnString += `Rank: ${bind.rank}, role: ${bind.role}\n`;
 			}

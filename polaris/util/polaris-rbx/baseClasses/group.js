@@ -70,7 +70,7 @@ class Group {
 			}
 			return role;
 		} catch (error) {
-			if (error.statusCode === 404 || 400) return {error: {status: 404, message: 'User or group not found'}};
+			if (error.statusCode === 404 || error.statusCode === 400) return {error: {status: 404, message: 'User or group not found'}};
 			if (error.statusCode === 503) return {error: {status: 503, message: 'Service Unavailable - Roblox is down.'}};
 			throw new Error(error);
 		}

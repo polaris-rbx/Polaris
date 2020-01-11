@@ -20,7 +20,7 @@ class InfoCommand extends BaseCommand {
 		} else if (upTime > 1440) {
 			upTime = upTime / 1440;
 			upTime = Math.round(upTime * 10) / 10;
-			suffix = "Days"
+			suffix = "Days";
 		}
 		const links = await this.client.db.users.count();
 		msg.channel.sendInfo(msg.author,

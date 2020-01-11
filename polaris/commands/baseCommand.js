@@ -12,43 +12,44 @@ class BaseCommand {
 	}
 
 	async process (message, args, prefix) {
-	    if (this.hidden && message.author.id !== this.client.ownerId) return;
-	    if (!message.author || message.author.bot) return;
+		if (this.hidden && message.author.id !== this.client.ownerId) return;
+		if (!message.author || message.author.bot) return;
 		const blacklist = await this.client.db.blacklist.get(message.author.id);
 		if (blacklist) {
-			return message.channel.sendError(message.author, {title: 'BLACKLISTED!', description: `You are blacklisted from using Polaris. This is likely due to a violation of our Terms of service.\n**Reason: **${blacklist.reason ? blacklist.reason : 'None provided.'}\n**Date: **${blacklist.time}`});
+			return message.channel.sendError(message.author, {title: 'Blacklisted', description: `You are blacklisted from using Polaris. This is likely due to a violation of our Terms of service, or some other equally grievous action.\n**Reason: **${blacklist.reason ? blacklist.reason : 'None provided.'}\n**Date: **${blacklist.time}`});
 		}
 
 		if (message.channel.guild) {
-	    	const serverBlacklist = await this.client.db.blacklist.get(message.channel.guild.id);
-	    	if (serverBlacklist) {
-				await message.channel.sendError(message.author, {title: 'BLACKLISTED!', description: `This server is blacklisted from using Polaris. This is likely due to a violation of our Terms of service.\n**Reason: **${blacklist.reason ? blacklist.reason : 'None provided.'}\n**Date: **${blacklist.time}`, fields: [{name: 'Leaving server', value: 'I am now leaving the server. Please do not re-invite me.'}]});
+			const serverBlacklist = await this.client.db.blacklist.get(message.channel.guild.id);
+			if (serverBlacklist) {
+				await message.channel.sendError(message.author, {title: 'Blacklisted!', description: `This server is blacklisted from using Polaris. This is likely due to a violation of our Terms of service, or some other equally grievous action.\n**Reason: **${blacklist.reason ? blacklist.reason : 'None provided.'}\n**Date: **${blacklist.time}`, fields: [{name: 'Leaving server', value: 'I am now leaving the server. Please do not re-invite me.'}]});
 				message.channel.guild.leave();
 				return;
-	      	}
+			}
 
-	      	if (!message.member) {
-				await getMembers(message.channel.guild);
-				if (message.channel.guild.members.get(message.author.id)) {
-		  			message.member = message.channel.guild.members.get(message.author.id)
+			if (!message.member) {
+				await message.channel.guild.fetchAllMembers(9000);
+				if (message.channel.guild.members.has(message.author.id)) {
+					// eslint-disable-next-line require-atomic-updates
+					message.member = message.channel.guild.members.get(message.author.id);
 				} else {
-		  			return;
+					return;
 				}
-	      	}
-	    } else {
-	      if (this.permissions.length !== 0 || this.guildOnly) return message.channel.sendError(message.author, 'This command **can only be ran in a server!**');
-	    }
+			}
+		} else {
+			if (this.permissions.length !== 0 || this.guildOnly) return message.channel.sendError(message.author, 'This command **can only be ran in a server!**');
+		}
 
 		if (this.client.cooldown.has(message.author.id)) {
 			return message.channel.send(':x: - There is a command cooldown of 3 seconds. Please wait!');
 		}
 		if (message.author.id !== this.client.ownerId) {
-	    	let permissionFails = []
+			let permissionFails = [];
 			this.permissions.forEach(permission => {
 				if (!message.member.permission.has(permission)) {
-					permissionFails.push(permission)
+					permissionFails.push(permission);
 				}
-	      	})
+			});
 			if (permissionFails.length !== 0) {
 				return message.channel.sendError(message.author, {title: 'Error', description: `The \`${this.name}\` command requires \`${permissionFails.join(', ')}\` permission(s)`});
 			}
@@ -56,7 +57,7 @@ class BaseCommand {
 		if (!message.member && this.guildOnly) {
 			console.log('MEMBER IS NULL. Content: ' + message.content + ' id: ' + message.id);
 			return message.channel.sendError(message.author, "I couldn't find your guildMember. Please switch to `Online`, `Idle` or `DnD`. If issue persists, join our discord.");
-	    }
+		}
 
 		// ERROR cATCHING
 		try {

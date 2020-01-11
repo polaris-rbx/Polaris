@@ -15,7 +15,6 @@ class blacklistCommand extends BaseCommand {
 		reason = reason.join(" ");
 		if (msg.mentions.length !== 0) id = msg.mentions[0].id;
 		if (!id) return msg.channel.sendError(msg.author, 'You must provide an ID to blacklist!');
-		console.log(`ID: ${id} REASON: ${reason}`);
 		const blacklist = this.client.db.blacklist;
 		if (id === this.client.ownerId) return msg.channel.sendError(msg.author, 'You cannot blacklist yourself!');
 		if (await blacklist.get(id)) {

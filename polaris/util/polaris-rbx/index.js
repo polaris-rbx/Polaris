@@ -100,7 +100,7 @@ class Roblox {
 			roblox._groupCache.set(id, newGroup);
 			return newGroup;
 		} catch (error) {
-			if (error.statusCode === 404 || 500) return {error: {status: 404, message: 'Group not found'}};
+			if (error.statusCode === 404 ||error.statusCode === 500) return {error: {status: 404, message: 'Group not found'}};
 			if (error.statusCode === 503) return {error: {status: 503, message: 'Group info not available'}};
 			// Not 404
 			this.client.logError(error);
@@ -109,7 +109,7 @@ class Roblox {
 
 	async getGroupByName(name) {
 		if (!name) return false;
-		name = encodeURIComponent(name)
+		name = encodeURIComponent(name);
 		const options = {
 			method: 'GET',
 			uri: `https://www.roblox.com/search/groups/list-json?keyword=${name}&maxRows=10&startRow=0`,
@@ -120,7 +120,7 @@ class Roblox {
 			res = JSON.parse(res.body);
 			return res.GroupSearchResults[0];
 		} catch(error) {
-			if (error.statusCode === 404 || 400) return {error: {status: 404, message: 'User or group not found'}};
+			if (error.statusCode === 404 || error.statusCode === 400) return {error: {status: 404, message: 'User or group not found'}};
 			if (error.statusCode === 503) return {error: {status: 503, message: 'Service Unavailible - Roblox is down.'}};
 			throw new Error(error);
 		}

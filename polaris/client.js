@@ -79,7 +79,7 @@ class Polaris extends Eris.Client {
 			
 			// Process Message
 			await this.CommandManager.processMessage(message);
-		})
+		});
 	}
 
 	logError(err, obj) {

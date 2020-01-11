@@ -6,30 +6,46 @@ class getinfoCommand extends BaseCommand {
 	constructor (client) {
 		super(client);
 		this.description = 'Retrieves the Roblox information of a user.';
-		this.aliases = [];
+		this.aliases = ['whois'];
 		this.group = 'Roblox';
 		this.guildOnly = true;
 	}
 	async execute (msg, args) {
 		var robloxUser;
-		// Assign robloxUser to a roblox user class,using either the username given, or the user id if using a mention.
-		if (msg.mentions[0]) {
-			const mentionedUser = msg.mentions[0];
+
+		let mentionedUser;
+		if (!msg.mentions[0]) {
+			// Isn't a mention
+			const user = msg.channel.guild.members.find(member => member.username.toLowerCase().startsWith(args.join(' ').toLowerCase()));
+			const userTwo = msg.channel.guild.members.get(args[0]);
+			if(user) {
+				mentionedUser = user;
+
+			} else if (userTwo){
+				mentionedUser = userTwo;
+			} else {
+				if (args[0]) {
+					robloxUser = await this.client.roblox.getUserFromName(args[0]);
+				} else {
+					return msg.channel.sendError(msg.author, 'You must either mention a user, or provide the username of a Roblox or discord account.');
+				}
+			}
+		} else {
+			mentionedUser = msg.mentions[0];
+		}
+
+		if (mentionedUser) {
 			if (mentionedUser.bot) return msg.channel.sendError(msg.author, 'Do you really think a bot has linked their account?! **Please mention a normal user!**');
 
 			let rbxId = await this.client.db.getLink(mentionedUser.id);
 			if (!rbxId) {
 				return msg.channel.sendError(msg.author, "I couldn't find that user's info. Have they linked their account?");
 			}
-
 			robloxUser = await this.client.roblox.getUser(rbxId);
-		} else {
-			if (args[0]) {
-				robloxUser = await this.client.roblox.getUserFromName(args[0]);
-			} else {
-				return msg.channel.sendError(msg.author, 'You must either mention a user, or provide the username of a Roblox account.');
-			}
 		}
+
+		// Assign robloxUser to a roblox user class,using either the username given, or the user id if using a mention.
+
 		if (robloxUser.error) {
 			if (robloxUser.error.status === 404) {
 				return msg.channel.sendError(msg.author, {

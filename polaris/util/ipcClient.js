@@ -83,6 +83,6 @@ class IPCClient {
 			console.log(`IPC: `, ...args);
 		}
 	}
-	sendObject (type, object) { this.ws.emit(type, JSON.stringify(object)) }
+	sendObject (type, object) { this.ws.emit(type, JSON.stringify(object)); }
 }
 module.exports = IPCClient;
