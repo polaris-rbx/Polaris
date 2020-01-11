@@ -1,5 +1,4 @@
 module.exports = {
-	"parser": "babel-eslint",
 	"env": {
 		"es6": true,
 		"node": true
@@ -8,7 +7,7 @@ module.exports = {
 
 	"parserOptions": {
 		"sourceType": "module",
-		"ecmaVersion": "8"
+		"ecmaVersion": 8
 	},
 	"rules": {
 		"no-unused-vars": ["warn", { "vars": "all", "args": "after-used", "ignoreRestSiblings": false }],

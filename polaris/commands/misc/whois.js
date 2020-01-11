@@ -13,11 +13,17 @@ class whoisCommand extends BaseCommand {
 	async execute (msg, args) {
 		let mentionedUser;
 		if (!msg.mentions[0]) {
-			const user = msg.guild.members.find(member => member.username.toLowerCase().startsWith(args.join(' ')));
-			if(!user) {
+			const user = msg.channel.guild.members.find(member => member.username.toLowerCase().startsWith(args.join(' ').toLowerCase()));
+			const userTwo = msg.channel.guild.members.get(args[0]);
+			if(user) {
+				mentionedUser = user;
+
+			} else if (userTwo){
+				mentionedUser = userTwo;
+			} else {
 				return msg.channel.sendError(msg.author, "Sorry, I can't find that user in this server.");
 			}
-			mentionedUser = user;
+
 		} else {
 			mentionedUser = msg.mentions[0];
 		}
@@ -35,13 +41,13 @@ class whoisCommand extends BaseCommand {
 			/// Exta bit for me/Polaris employees.
 			if (specialPeople["" + robloxUser.id]) {
 				return msg.channel.sendInfo(msg.author, {
-					title: 'Player name',
+					title: `${msg.author.username}#${msg.author.discriminator}'s roblox name`,
 					description: `That user is \`${robloxUser.username}\`.\n\n**${specialPeople["" + robloxUser.id]}**`,
 					url: `https://www.roblox.com/users/${rbxId}/profile`
 				});
 			} 
 			msg.channel.sendInfo(msg.author, {
-				title: 'Player name',
+				title: `${msg.author.username}#${msg.author.discriminator}'s roblox name`,
 				description: `That user is \`${robloxUser.username}\`.`,
 				url: `https://www.roblox.com/users/${rbxId}/profile`
 			});
