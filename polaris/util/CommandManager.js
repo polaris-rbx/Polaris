@@ -44,7 +44,6 @@ class CommandManager {
 		if (message.author.bot || !message.author) return;
 		if (message.channel.guild && (message.channel.guild.id === '264445053596991498' || message.channel.guild.id === '110373943822540800')) return; // Block Server List Guilds
 		let prefix = ".";
-		// TODO: Do AutoRoling?	client.autoRole(message.member);
 		let prefixMsg = prefix;
 
 		if (message.channel.guild) { // Handle Custom Prefix - It's in a guild.

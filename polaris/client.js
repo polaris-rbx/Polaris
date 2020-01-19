@@ -109,13 +109,17 @@ class Polaris extends Eris.Client {
 		if (settings.autoVerify) {
 			const rbxId = await this.db.getLink(member.id);
 			if (rbxId) {
+				// eslint-disable-next-line no-unused-vars
 				const res = await this.CommandManager.commands.getrole.giveRoles(settings, member, rbxId);
+				/*
+				Got a lot of complaints regarding this
 				if (res) {
+
 					if (res.error) return;
 					res.title = '[AUTOROLES] Roles Updated';
 					const dm = await member.user.getDMChannel();
 					dm.sendSuccess(member.user, res);
-				}
+				}*/
 			} else {
 				await this.CommandManager.commands.getrole.verifiedRoles(false, member);
 			}
