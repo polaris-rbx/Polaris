@@ -35,7 +35,8 @@ const quotes = [
 	["Love yourself first and everything else falls into line. You really have to love yourself to get anything done in this world.", "Lucille Ball"],
 	["Well done is better than well said.", "Benjamin Franklin"],
 	["Plan your work for today and every day, then work your plan.", "Margaret Thatcher"],
-	["Be who you are and say what you feel, because those who mind don't matter, and those who matter don't mind."]
+	["Be who you are and say what you feel, because those who mind don't matter, and those who matter don't mind."],
+	["You tell yourself that you're the ones in control.\n They obey you, your technology, your machines. But what would you do without your car, your telephone? What if all the airplanes just stopped? 10 years ago, computers were expensive toys. Today, civilization as we know would fall apart without them. You live in terror of a blackout, a computer crash, a car won't start, a phone doesn't ring. So you construct your lives, your whole society so that won't happen. Everything revolves around their needs, not yours. They buzz, you jump. They beep, you answer. So ask yourself Who's really in control? **You or them?**", "Ted Kaczynski"]
 ];
 
 const BaseCommand = require('../baseCommand');
