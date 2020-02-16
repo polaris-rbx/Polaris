@@ -276,7 +276,8 @@ class getRoleCommand extends BaseCommand {
 			if (!userRank) throw new Error('User rank is not defined?');
 			// Give user their role if it exists.
 			let role;
-			if (userRank.toLowerCase()) {
+
+			if (userRank.toLowerCase) {
 				role = member.guild.roles.find(current => current.name.toLowerCase() === userRank.toLowerCase());
 			} else {
 				this.client.logError("userRank not defined", {userRank: userRank});
