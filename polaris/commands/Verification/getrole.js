@@ -267,7 +267,7 @@ class getRoleCommand extends BaseCommand {
 		const group = await this.client.roblox.getGroup(groupSettings.id);
 		if (group.error) {
 			this.client.logError(group.error);
-			return {error: {title: 'HTTP Error', description: 'A HTTP Error has occured. Is Roblox Down?\n`' + group.error.message + '`'}};
+			return {error: {title: 'HTTP Error', description: 'A HTTP Error has occurred. Is Roblox Down?\n`' + group.error.message + '`'}};
 		}
 		// Check ranks to roles
 		if (groupSettings.ranksToRoles) {

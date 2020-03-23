@@ -66,10 +66,13 @@ class doneCommand extends BaseCommand {
 module.exports = doneCommand;
 
 function checkMatch (code, status, description) {
-	if (status === code) {
+	if (!code) return false;
+	const lowered = code.toLowerCase();
+	if (status && (status.toLowerCase().includes(lowered))) {
 		return true;
 	} else if (description) {
-		if (description.includes(code)) return true;
+		return description.toLowerCase().includes(lowered);
+
 	} else {
 		return false;
 	}
