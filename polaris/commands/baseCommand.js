@@ -22,7 +22,7 @@ class BaseCommand {
 		if (message.channel.guild) {
 			const serverBlacklist = await this.client.db.blacklist.get(message.channel.guild.id);
 			if (serverBlacklist) {
-				await message.channel.sendError(message.author, {title: 'Blacklisted!', description: `This server is blacklisted from using Polaris. This is likely due to a violation of our Terms of service, or some other equally grievous action.\n**Reason: **${blacklist.reason ? blacklist.reason : 'None provided.'}\n**Date: **${blacklist.time}`, fields: [{name: 'Leaving server', value: 'I am now leaving the server. Please do not re-invite me.'}]});
+				await message.channel.sendError(message.author, {title: 'Blacklisted!', description: `This server is blacklisted from using Polaris. This is likely due to a violation of our Terms of service, or some other equally grievous action.\n**Reason: **${serverBlacklist.reason ? serverBlacklist.reason : 'None provided.'}\n**Date: **${serverBlacklist.time}`, fields: [{name: 'Leaving server', value: 'I am now leaving the server. Please do not re-invite me.'}]});
 				message.channel.guild.leave();
 				return;
 			}
