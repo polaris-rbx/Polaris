@@ -1,30 +1,31 @@
-# Info
+# Polaris
 
 [![Codacy Badge](https://api.codacy.com/project/badge/Grade/934f50cd0c354d4ebd17c0a91fc4855d)](https://app.codacy.com/app/Neztore/Polaris?utm_source=github.com&utm_medium=referral&utm_content=Neztore/Polaris&utm_campaign=Badge_Grade_Settings)
 [![Polaris project bot](https://img.shields.io/badge/Polaris%20Project-Roblox%20bot-2bbbad.svg)](https://polaris.codes)
 
-Polaris is a Roblox verification bot that has been closed source since it's creation.
+Polaris is an open source Roblox verification bot, created in November 2017 and open sourced in December 2018.
 
-This Christmas however we thought long and hard about this, and we think the best way to achieve our goal - to help as many people as possible power their server with as little effort as possible - is to open source.
+It is currently labelled as `unmaintained` in the sense that I will not be actively improving it or fixing less critical bugs.
+If you'd like to take over maintaining the bot, feel free to contact me or just fork and PR some fixes!
 
-So here it is! The Polaris bot. We'll be open sourcing our webpanel and website in the coming days.
+This bot is designed to work in tandem with the [Polaris-React webpanel and site](https://github.com/neztore/polaris-react).
 
-Feel free to snoop, edit, hash, contribute to and remix our bot!
+Feel free to snoop, edit, hash, contribute to and remix the bot.
 
-# Installing
-1. Clone this repo - `git clone https://github.com/neztore/polaris`
-2. Navigate into new folder `cd polaris`
-3. Run `npm install` in this repo
-4. Create your settings.json. Set `sync` to true
-5. Make sure your PostgreSQL database is running (or rethinkdb depending on version)
-6. Run it!
+## Installing
+ 1. Clone this repo - `git clone https://github.com/neztore/polaris`
+ 2. Navigate into new folder `cd polaris`
+ 3. Run `npm install` in this repo
+ 4. Create your settings.json. Set `sync` to true
+ 5. Make sure your PostgreSQL database is running (or rethinkdb depending on version)
+ 6. Run it!
 
-# Setup / config
- ## Config
+##  Setup / config
+ ### Config
 The Polaris client takes a config object, which can contain:
-- `token` - The bot token to use
-- `erisOptions` - The options to pass to the underlying eris client
-- `Raven` - A Raven client for sentry. Use without this is planned, but currently untested.
+ - `token` - The bot token to use
+ - `erisOptions` - The options to pass to the underlying eris client
+ - `Raven` - A Raven client for sentry. Use without this is planned, but currently untested.
 
 It also expects a `settings.json` to exist in the root, with example values as below. We also plan to stop moving this in the near future.
 ```json
@@ -41,7 +42,7 @@ It also expects a `settings.json` to exist in the root, with example values as b
 }
 ```
 If you don't want any "special people" just leave that as an empty array.
-# Support
-Join our [discord](https://discord.gg/QevWabU) for support. This open sourcing will not affect the main bot.
+## Support
+Join our [discord](https://discord.gg/QevWabU) for support.
 
-The main [website](https://polaris-bot.xyz/)
+The main [website](https://polaris-bot.xyz/).

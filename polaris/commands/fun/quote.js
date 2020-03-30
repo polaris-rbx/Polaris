@@ -21,7 +21,3 @@ class quoteCommand extends BaseCommand {
 	}
 }
 module.exports = quoteCommand;
-
-function getRandomIntInclusive (min, max) {
-	return Math.floor(Math.random() * max);
-}

@@ -114,8 +114,8 @@ module.exports = Eris => {
 		promptUsers.add(author.id);
 		// Fill embed object & assemble options
 		if (typeof msgOrObj === 'string')msgOrObj = {description: msgOrObj};
-		var optDesc = ``;
-    options.forEach(element => optDesc = `${optDesc}- ${element}\n`) // eslint-disable-line
+		let optDesc = ``;
+    options.forEach(element => optDesc = `${optDesc}- ${element}\n`); // eslint-disable-line
 		optDesc = `${optDesc}\nto cancel this prompt, say **cancel**.`;
 
 		msgOrObj.title = msgOrObj.title || 'Question prompt';
@@ -214,28 +214,29 @@ module.exports = Eris => {
 				}
 
 			} else if (settings.nicknameTemplate && settings.nicknameTemplate !== ''){
-				return await finishNickname(this, settings.nicknameTemplate + "")
+				return await finishNickname(this, settings.nicknameTemplate + "");
 			}
-			// Does any user-specific stuff that doesn't require a group.
-			async function finishNickname(guild, template) {
-				// User will be required in virtually every case. Idek why people wouldn't use it
-				const user = await client.roblox.getUser(robloxId);
-				if (user.error) return user;
-				template = template.replace(/{robloxName}/g, user.username);
-				template = template.replace(/{robloxId}/g, user.id);
 
-				template = template.replace(/{discordName}/g, member.user.username);
+		}
+		// Does any user-specific stuff that doesn't require a group.
+		async function finishNickname(guild, template) {
+			// User will be required in virtually every case. Idek why people wouldn't use it
+			const user = await client.roblox.getUser(robloxId);
+			if (user.error) return user;
+			template = template.replace(/{robloxName}/g, user.username);
+			template = template.replace(/{robloxId}/g, user.id);
 
-				if (template.length > 32) {
-					template = template.substring(0, 32);
-				}
+			template = template.replace(/{discordName}/g, member.user.username);
 
-				if (member.nick !== template) {
-					await guild.editMember(member.id, {
-						nick: template
-					});
-					return template;
-				}
+			if (template.length > 32) {
+				template = template.substring(0, 32);
+			}
+
+			if (member.nick !== template) {
+				await guild.editMember(member.id, {
+					nick: template
+				});
+				return template;
 			}
 		}
 	}
@@ -256,19 +257,13 @@ module.exports = Eris => {
 		}
 		// Get bot's highest role
 		const editorRoles = editor.roles;
-		var highestEditorPos = 0;
+		let highestEditorPos = 0;
 		for (let currentRoleId of editorRoles) {
 			const currentRole = guild.roles.get(currentRoleId);
 			if (currentRole.position > highestEditorPos) highestEditorPos = currentRole.position;
 		}
 		// is user below editor
-		if (highestTargetPos < highestEditorPos) {
-			return true;
-			// Editor can edit user.
-		} else {
-			// Edior cannot edit user
-			return false;
-		}
+		return highestTargetPos < highestEditorPos;
 	}
 
 	Eris.Channel.prototype.sendInfo = sendInfo;
