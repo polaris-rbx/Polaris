@@ -210,14 +210,14 @@ module.exports = Eris => {
 					if (rankId.error) return rankId; // Return error. Can be accessed with returnedValue.error
 					// Replace
 					template = template.replace(/{rankId}/g, rankId);
-					return await finishNickname()
+					return await finishNickname(template)
 				}
 
 			} else if (settings.nicknameTemplate && settings.nicknameTemplate !== ''){
-				return await finishNickname()
+				return await finishNickname(settings.nicknameTemplate + "")
 			}
 			// Does any user-specific stuff that doesn't require a group.
-			async function finishNickname() {
+			async function finishNickname(template) {
 				// User will be required in virtually every case. Idek why people wouldn't use it
 				const user = await client.roblox.getUser(robloxId);
 				if (user.error) return user;
