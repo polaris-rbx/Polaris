@@ -13,19 +13,19 @@ This bot is designed to work in tandem with the [Polaris-React webpanel and site
 Feel free to snoop, edit, hash, contribute to and remix the bot.
 
 ## Installing
- 1. Clone this repo - `git clone https://github.com/neztore/polaris`
- 2. Navigate into new folder `cd polaris`
- 3. Run `npm install` in this repo
- 4. Create your settings.json. Set `sync` to true
- 5. Make sure your PostgreSQL database is running (or rethinkdb depending on version)
- 6. Run it!
+1.  Clone this repo - `git clone https://github.com/neztore/polaris`
+2.  Navigate into new folder `cd polaris`
+3.  Run `npm install` in this repo
+4.  Create your settings.json. Set `sync` to true
+5.  Make sure your PostgreSQL database is running (or rethinkdb depending on version)
+6.  Run it!
 
 ##  Setup / config
  ### Config
 The Polaris client takes a config object, which can contain:
- - `token` - The bot token to use
- - `erisOptions` - The options to pass to the underlying eris client
- - `Raven` - A Raven client for sentry. Use without this is planned, but currently untested.
+-  `token` - The bot token to use
+-  `erisOptions` - The options to pass to the underlying eris client
+-  `Raven` - A Raven client for sentry. Use without this is planned, but currently untested.
 
 It also expects a `settings.json` to exist in the root, with example values as below. We also plan to stop moving this in the near future.
 ```json
