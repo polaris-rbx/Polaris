@@ -231,7 +231,7 @@ module.exports = Eris => {
 				}
 
 				if (member.nick !== template) {
-					this.editMember(member.id, {
+					await guild.editMember(member.id, {
 						nick: template
 					});
 					return template;
