@@ -303,7 +303,6 @@ class getRoleCommand extends BaseCommand {
 		}
 		// Check binds
 		if (groupSettings.binds && groupSettings.binds.length > 0) {
-			console.log(groupSettings.binds);
 			for (let current of groupSettings.binds) {
 				const rank = await group.getRank(robloxId);
 
