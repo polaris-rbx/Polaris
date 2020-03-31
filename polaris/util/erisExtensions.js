@@ -210,9 +210,9 @@ module.exports = Eris => {
 					if (rankId.error) return rankId; // Return error. Can be accessed with returnedValue.error
 					// Replace
 					template = template.replace(/{rankId}/g, rankId);
-					return await finishNickname(this, template);
-				}
 
+				}
+				return await finishNickname(this, template);
 			} else if (settings.nicknameTemplate && settings.nicknameTemplate !== ''){
 				return await finishNickname(this, settings.nicknameTemplate + "");
 			}
@@ -236,8 +236,8 @@ module.exports = Eris => {
 				await guild.editMember(member.id, {
 					nick: template
 				});
-				return template;
 			}
+			return template;
 		}
 	}
 	// Editor: Member
