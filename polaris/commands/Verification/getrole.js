@@ -236,7 +236,7 @@ class getRoleCommand extends BaseCommand {
 			if (checkForPresence(member.roles, verifiedRole.id)) {
 				// Add role
 				try {
-					member.guild.removeMemberRole(member.id, verifiedRole.id, 'User is not verified');
+					await member.guild.removeMemberRole(member.id, verifiedRole.id, 'User is not verified');
 				} catch (error) {
 					return {error: 'I do not have permission to add roles. Please ask a server admin to grant me this permission, or move my role.'};
 				}
@@ -245,7 +245,7 @@ class getRoleCommand extends BaseCommand {
 			if (!checkForPresence(member.roles, unverifiedRole.id)) {
 				// Add role
 				try {
-					member.guild.addMemberRole(member.id, unverifiedRole.id, 'User is not verified');
+					await member.guild.addMemberRole(member.id, unverifiedRole.id, 'User is not verified');
 				} catch (error) {
 					return {error: 'I do not have permission to remove roles. Please ask a server admin to grant me this permission, or move my role.'};
 				}
