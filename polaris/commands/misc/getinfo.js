@@ -71,13 +71,13 @@ class getinfoCommand extends BaseCommand {
 		} else {
 			text = `${text}\n**Blurb:** ${playerInfo.blurb.substring(0, 200)}**...**`;
 		}
-		// Exta bit for me/Polaris employees.
+		// Extra bit for me/Polaris affiliates.
 		if (specialPeople["" + robloxUser.id]) {
 			return sentMsg.edit({embed: {
 				title: 'Player info',
 				description: `${text}`,
 				fields: [
-					{name: 'Polaris employee', value: specialPeople["" + robloxUser.id]}
+					{name: 'Polaris affiliate', value: specialPeople["" + robloxUser.id]}
 				],
 				url: `https://www.roblox.com/users/${rbxId}/profile`,
 				thumbnail: {
