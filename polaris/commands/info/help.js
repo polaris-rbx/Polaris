@@ -72,7 +72,7 @@ class helpCommand extends BaseCommand {
 		// Turn that into an embed.
 		var embed = {
 			title: 'Help menu',
-			description: `Listed below is all of Polaris' commands. You can also see them on our [website](http://polaris-bot.xyz/commands). Need more help? Join our [Discord](https://discord.gg/4nw3WeZ). Do \`${prefix}settings\` to set up the bot.`,
+			description: `Listed below is all of Polaris' commands. You can also see them on our [website](http://polaris-bot.xyz/commands). Need more help? Join our [Discord](https://discord.gg/QevWabU). Do \`${prefix}settings\` to set up the bot.`,
 			fields: []
 		};
 

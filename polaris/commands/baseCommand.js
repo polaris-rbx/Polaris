@@ -82,7 +82,7 @@ class BaseCommand {
 			console.log('Command catch: ' + e);
 			await message.channel.sendError(message.author, {
 				title: 'Oops! An error has occured.',
-				description: `Polaris has encounted an unexpected and fatal error. We're right on it! You may want to join to join our [discord](https://discord.gg/eVyVK5J) to help with fixing this.\n \`\`\` ${e.message} \`\`\``
+				description: `Polaris has encounted an unexpected and fatal error. We're right on it! You may want to join to join our [discord](https://discord.gg/QevWabU) to help with fixing this.\n \`\`\` ${e.message} \`\`\``
 			});
 			this.client.Raven.captureException(e);
 		}
