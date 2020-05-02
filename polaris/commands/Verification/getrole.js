@@ -265,7 +265,10 @@ class getRoleCommand extends BaseCommand {
 	 */
 	async processGroup(rolesToGive, rolesToRemove,member, groupSettings, robloxId) {
 		const group = await this.client.roblox.getGroup(groupSettings.id);
-		if (group.error) {
+		if (!group || group.error) {
+			if (!group) {
+				return {error: {title: 'HTTP Error', description: 'A HTTP Error has occurred. No group obtained.'}};
+			}
 			this.client.logError(group.error);
 			return {error: {title: 'HTTP Error', description: 'A HTTP Error has occurred. Is Roblox Down?\n`' + group.error.message + '`'}};
 		}

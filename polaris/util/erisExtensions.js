@@ -233,10 +233,15 @@ module.exports = Eris => {
 			}
 
 			if (member.nick !== template) {
-				await guild.editMember(member.id, {
-					nick: template
-				});
+				try {
+					await guild.editMember(member.id, {
+						nick: template
+					});
+				} catch (e) {
+					// we dont care :Sunglasses:
+				}
 			}
+
 			return template;
 		}
 	}
@@ -260,7 +265,11 @@ module.exports = Eris => {
 		let highestEditorPos = 0;
 		for (let currentRoleId of editorRoles) {
 			const currentRole = guild.roles.get(currentRoleId);
-			if (currentRole.position > highestEditorPos) highestEditorPos = currentRole.position;
+			// Shouldn't be undefined but sometimes is
+			if (currentRole) {
+				if (currentRole.position > highestEditorPos) highestEditorPos = currentRole.position;
+			}
+
 		}
 		// is user below editor
 		return highestTargetPos < highestEditorPos;

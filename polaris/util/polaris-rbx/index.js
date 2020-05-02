@@ -104,6 +104,7 @@ class Roblox {
 			if (error.statusCode === 503) return {error: {status: 503, message: 'Group info not available'}};
 			// Not 404
 			this.client.logError(error);
+			return error;
 		}
 	}
 
