@@ -258,7 +258,10 @@ module.exports = Eris => {
 		var highestTargetPos = 0;
 		for (let currentRoleId of targetRoles) {
 			const currentRole = guild.roles.get(currentRoleId);
-			if (currentRole.position > highestTargetPos) highestTargetPos = currentRole.position;
+			if (currentRole) {
+				if (currentRole.position > highestTargetPos) highestTargetPos = currentRole.position;
+			}
+
 		}
 		// Get bot's highest role
 		const editorRoles = editor.roles;
