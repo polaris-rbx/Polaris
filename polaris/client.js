@@ -10,7 +10,6 @@ const util = require('util');
 class Polaris extends Eris.Client {
 	constructor(options) {
 		super(options.token, options.erisSettings);
-
 		this.Raven = options.Raven;
 		this.eris = Eris;
 
@@ -34,21 +33,32 @@ class Polaris extends Eris.Client {
 			console.log(`Bot now running on ${this.guilds.size} servers`);
 			this.editStatus('online', {name: `${this.guilds.size} servers | .help`, type: 3});
 		});
+		if (process.env.NODE_ENV !== "production") {
+			this.on('debug', (m) => {
+				console.log(`DEBUG: `, m)
+			});
+
+			this.on('disconnect', () => {
+				console.error(`Client disconnect!`)
+			});
+		}
+
+
 
 		this.on('guildCreate', async guild => {
 			console.log(`New guild joined: ${guild.name} (id: ${guild.id}). This guild has ${guild.memberCount} members!`);
 			this.editStatus('online', {name: `${this.guilds.size} servers | .help`, type: 3});
 		});
-	
+
 		this.on('guildDelete', async guild => {
 			console.log(`Guild ${guild.name} has removed Polaris.`);
 			this.editStatus('online', {name: `${this.guilds.size} servers | .help`, type: 3});
 		});
-	
+
 		this.on('guildMemberAdd', async (guild, member) => {
 			if (member.bot) return;
 			const settings = await this.db.getSettings(guild.id);
-			
+
 			if (settings.autoVerify) {
 				const rbxId = await this.db.getLink(member.id);
 				if (rbxId) {
@@ -64,7 +74,7 @@ class Polaris extends Eris.Client {
 				}
 			}
 		});
-	
+
 		this.on('error', (error, shardId) => {
 			this.Raven.captureException(error, {
 				level: 'fatal',
@@ -76,7 +86,7 @@ class Polaris extends Eris.Client {
 
 		this.on('messageCreate', async (message) => {
 			// Auto Roling
-			
+
 			// Process Message
 			await this.CommandManager.processMessage(message);
 		});

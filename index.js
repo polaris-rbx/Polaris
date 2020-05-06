@@ -8,11 +8,17 @@ Raven.config(settings.sentry, {
 	autoBreadcrumbs: true,
 	sendTimeout: 3
 }).install();
-
 const Client = new Polaris.Client({
 	token: process.env.NODE_ENV === 'production' ? settings.token : settings.testToken,
 	Raven,
 	erisSettings: {
-		maxShards: 'auto'
+		maxShards: 'auto',
+		intents: [
+			"guilds",
+			"guildMembers",
+			"guildMessages",
+			"directMessages"
+		]
 	}
 });
+Client.on('error', console.error);
