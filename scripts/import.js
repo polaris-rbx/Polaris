@@ -2,33 +2,56 @@
 const r = require('rethinkdbdash')();
 const db = r.db('main');
 
-function importTable(tbl) {
-	const table = db.table(tbl);
+async function importTable(tbl) {
+	const t = db.table(tbl);
+	let queries = 0;
+	const table = {
+		get: function (...args) {
+			console.log(`Performing GET: ${queries}`);
+			queries++;
+			return t.get(...args);
+		},
+		update: function (...args) {
+			console.log(`Performing UPDATE: ${queries}`);
+			return t.update(...args);
+		},
+		insert: function (...args) {
+			console.log(`Performing INSERT: ${queries}`);
+			return t.insert(...args);
+		}
+	};
 	const fileName = tbl + ".json";
 
 	const data = require('./' + fileName);
-	data.forEach(async function (item) {
-		if (await table.get(item.id || item.discordId)) {
+	let num = 0;
+	for (let counter =0; counter<data.length; counter++) {
+		let item = data[counter];
+
+		let id = item.id ? item.id : item.discordId;
+		const existing = await table.get(id);
+		if (existing) {
 			// Update
 			try {
 				await table.update(item);
 			} catch (err) {
-				console.log(`FAILED to update item ${item.id || item.discordId}`);
+				console.log(`FAILED to update item in ${tbl} ${id}`);
 				return;
 			}
-			console.log(`Updated item ${item.id || item.discordId}`);
+			console.log(`Updated item in ${tbl} ${id}`);
 
 		} else {
 			try {
 				await table.insert(item);
 			} catch (err) {
-				console.log(`FAILED to add item ${item.id || item.discordId}`);
+				console.log(`FAILED to add item to ${tbl} ${id}`);
 				return;
 			}
-			console.log(`Added item ${item.id || item.discordId}`);
+			console.log(`Added item to ${tbl} ${id}`);
 		}
-	});
+	}
+
+	console.log(`Performed ${num} reads...`)
 
 }
 importTable('users');
-importTable('servers');
+//importTable('servers');

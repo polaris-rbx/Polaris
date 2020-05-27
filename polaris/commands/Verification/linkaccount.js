@@ -36,6 +36,7 @@ class linkAccountCommand extends BaseCommand {
 			}
 			return await msg.channel.sendInfo(msg.author, {
 				title: "You are already linking your Roblox account",
+				url: "https://verify.nezto.re/discord",
 				description: `You have already started linking your Roblox account!\nPlease put the code in your Roblox profile.\n**Account name**: \`${currentProcess.robloxUser.username}\`\nYou can cancel this link attempt by doing \`${prefix}link cancel\`.`,
 				fields: [
 					{
@@ -52,7 +53,11 @@ class linkAccountCommand extends BaseCommand {
 		}
 		if (!username) {
 			// Prompt for username
-			let rbxMsg = await msg.channel.prompt(msg.author, {title: "I need your Roblox name", description: `Hey there \`${msg.author.username}\`! I need your Roblox name to get started. What is your Roblox username?`});
+			let rbxMsg = await msg.channel.prompt(msg.author, {title: "I need your Roblox name", description: `Hey there \`${msg.author.username}\`! I need your Roblox name to get started. What is your Roblox username?`, fields: [{
+				name: "Try the web version",
+					value: "The web version is easier to use, and allows for game verification. [Try it out](https://verify.nezto.re/discord)!"
+				}],
+				url: "https://verify.nezto.re/discord",});
 			if (!rbxMsg) return;
 			username = rbxMsg.content;
 		}
@@ -78,7 +83,8 @@ class linkAccountCommand extends BaseCommand {
 				if (robloxUser.username === username) {
 					return await msg.channel.sendError(msg.author, {
 						title: "You are already linked to that account",
-						description: `You are already linked to the Roblox account \`${robloxUser.username}\` and id \`${robloxUser.id}\`!\nDo \`${prefix}getroles\` to get started.`
+						description: `You are already linked to the Roblox account \`${robloxUser.username}\` and id \`${robloxUser.id}\`!\nDo \`${prefix}getroles\` to get started.`,
+						url: "https://verify.nezto.re/discord"
 					});
 				}
 				let opt = await msg.channel.restrictedPrompt(msg.author, {title: "Hold up! You have already linked your account.", description: `**PLEASE READ FULLY**\nAccount details: \`${user}\` and ID \`${current}\`.\n If this the Roblox account you want to use, just do \`${prefix}getroles\`! \nDo you want to contiue?`}, ["Yes", "No"]);
@@ -97,8 +103,10 @@ class linkAccountCommand extends BaseCommand {
 			fields: [
 				{name: "Code", value: `\`${code}\``},
 				{name: "After you are done", value: `Once you have put the code in your profile, run the \`${prefix}done\` command! :)`},
-				{name: "Timeout", value: `This request will time-out in **10 minutes.** Please run \`${prefix}done\` before then, or you'll need to restart!`}
-			]
+				{name: "Timeout", value: `This request will time-out in **10 minutes.** Please run \`${prefix}done\` before then, or you'll need to restart!`},
+				{name: "Web version", value: `We **recommend** that you use the [web version](https://verify.nezto.re/discord), and this allows you to verify by joining a verification game. See it [here](https://verify.nezto.re/discord)`}
+			],
+			url: "https://verify.nezto.re/discord",
 		});
 
 		this.client.linkQueue.set(msg.author.id, {

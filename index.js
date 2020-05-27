@@ -8,8 +8,9 @@ Raven.config(settings.sentry, {
 	autoBreadcrumbs: true,
 	sendTimeout: 3
 }).install();
+const token = process.env.NODE_ENV === 'production' ? settings.token : settings.testToken;
 const Client = new Polaris.Client({
-	token: process.env.NODE_ENV === 'production' ? settings.token : settings.testToken,
+	token: `Bot ${token}`,
 	Raven,
 	erisSettings: {
 		maxShards: 'auto',
