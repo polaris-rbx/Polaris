@@ -42,7 +42,6 @@ class MessageCollector extends EventEmitter {
 // SEND FUNCTIONS FOR INTERACTING WITH CHANNELS.
 async function sendSuccess (author, content) {
 	if (!author || !content) return console.log(`You forgot author or content! ${author} - ${content}`);
-	this.client = this.guild ? this.guild.shard.client : this._client;
 	let embed = addParts(content, author, 'Success');
 	embed.timestamp = new Date();
 	embed.color = 0x2ECC71;
@@ -56,7 +55,6 @@ async function sendSuccess (author, content) {
 
 async function sendError (author, content) {
 	if (!author || !content) return console.log(`You forgot author or content! ${author} - ${content}`);
-	this.client = this.guild ? this.guild.shard.client : this._client;
 	let embed = addParts(content, author, 'Error');
 	embed.timestamp = new Date();
 	embed.color = 0xE74C3C;
@@ -70,7 +68,6 @@ async function sendError (author, content) {
 
 async function sendInfo (author, content) {
 	if (!author || !content) return console.log(`You forgot author or content! ${author} - ${content}`);
-	this.client = this.guild ? this.guild.shard.client : this._client;
 	let embed = addParts(content, author, 'Info');
 	embed.timestamp = new Date();
 	embed.color = 0x168776;
@@ -85,7 +82,6 @@ async function sendInfo (author, content) {
 
 async function send (content) {
 	if (!content) return;
-	this.client = this.guild ? this.guild.shard.client : this._client;
 	try {
 		return await this.client.createMessage(this.id, {content: content});
 	} catch (err) {
