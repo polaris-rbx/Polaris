@@ -45,8 +45,11 @@ async function sendSuccess (author, content) {
 	let embed = addParts(content, author, 'Success');
 	embed.timestamp = new Date();
 	embed.color = 0x2ECC71;
+	const allowedMentions = {
+		users: [author.id]
+	}
 	try {
-		return await this.client.createMessage(this.id, {content: `<@${author.id}> `, embed: embed});
+		return await this.client.createMessage(this.id, {content: `<@${author.id}> `, embed: embed, allowedMentions});
 	} catch (err) {
 		console.log(`Couldn't send message to ${this.id}`);
 		return null;
@@ -58,8 +61,11 @@ async function sendError (author, content) {
 	let embed = addParts(content, author, 'Error');
 	embed.timestamp = new Date();
 	embed.color = 0xE74C3C;
+	const allowedMentions = {
+		users: [author.id]
+	}
 	try {
-		return await this.client.createMessage(this.id, {content: `<@${author.id}> `, embed: embed});
+		return await this.client.createMessage(this.id, {content: `<@${author.id}> `, embed: embed, allowedMentions});
 	} catch (err) {
 		console.log(`Couldn't send message to ${this.id}`);
 		return null;
@@ -71,8 +77,11 @@ async function sendInfo (author, content) {
 	let embed = addParts(content, author, 'Info');
 	embed.timestamp = new Date();
 	embed.color = 0x168776;
+	const allowedMentions = {
+		users: [author.id]
+	}
 	try {
-		return await this.client.createMessage(this.id, {content: `<@${author.id}> `, embed: embed});
+		return await this.client.createMessage(this.id, {content: `<@${author.id}> `, embed: embed, allowedMentions});
 	} catch (err) {
 		console.log(`Couldn't send message to ${this.id}`);
 		console.log(err);
@@ -297,5 +306,6 @@ function addParts (content, author, type) {
 	if (!content.footer) {
 		content.footer = {text: 'Sent for: ' + author.username, icon_url: author.avatarURL};
 	}
+
 	return content;
 }

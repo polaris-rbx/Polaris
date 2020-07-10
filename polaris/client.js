@@ -33,6 +33,10 @@ class Polaris extends Eris.Client {
 			console.log(`Bot now running on ${this.guilds.size} servers`);
 			this.editStatus('online', {name: `${this.guilds.size} servers | .help`, type: 3});
 		});
+		this.on('error', (e) => {
+			console.error(e);
+			this.logError(e);
+		});
 		if (process.env.NODE_ENV !== "production") {
 			this.on('debug', (m) => {
 				console.log(`DEBUG: `, m)

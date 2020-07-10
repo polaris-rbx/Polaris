@@ -19,7 +19,10 @@ const Client = new Polaris.Client({
 			"guildMembers",
 			"guildMessages",
 			"directMessages"
-		]
+		],
+		allowedMentions: {
+			users: true
+		}
 	}
 });
 Client.on('error', console.error);
