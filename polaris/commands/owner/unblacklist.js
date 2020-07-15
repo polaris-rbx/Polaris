@@ -17,7 +17,6 @@ class unblacklistCommand extends BaseCommand {
 		const blacklist = this.client.db.blacklist;
 		var blacklistRecord = await blacklist.get(id);
 		if (blacklistRecord) {
-			console.log(`Removing blacklist for ${id}`);
 			await blacklist.get(id).delete();
 			msg.channel.sendSuccess(msg.author, 'Successfully removed the blacklist!');
 		} else {

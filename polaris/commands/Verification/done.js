@@ -32,14 +32,12 @@ class doneCommand extends BaseCommand {
 
 			// Check for existing link and update
 			if (await this.client.db.getLink(msg.author.id)) {
-				console.log('Updating for user ' + msg.author.username);
 				await this.client.db.users.get(msg.author.id).update({
 					robloxId: robloxUser.id
 
 				}).run();
 				return msg.channel.sendSuccess(msg.author, `You've successfully changed your account link! Please do \`${prefix}getroles\` to continue.\nNew Username: \`${robloxUser.username}\` UserID: \`${robloxUser.id}\``);
 			}
-			console.log('Inserting for user ' + msg.author.username);
 			await this.client.db.users.insert({
 				robloxId: robloxUser.id,
 				discordId: msg.author.id

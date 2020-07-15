@@ -1,4 +1,4 @@
-const request = require('request-promise');
+const request = require('./request');
 const userClass = require('./baseClasses/user.js');
 const groupClass = require('./baseClasses/group.js');
 
@@ -16,14 +16,11 @@ class Roblox {
 		const Roblox = this;
 
 		// Clear group cache (Group info & ranks - everything.)
-		setInterval(function () { Roblox._groupCache.clear(); console.log('Cleared full Group cache'); }, 3600000);
-		setInterval(function () { Roblox._userCache.clear(); console.log('Cleared user cache'); }, 7200000);
+		setInterval(function () { Roblox._groupCache.clear(); }, 3600000);
+		setInterval(function () { Roblox._userCache.clear(); }, 7200000);
 		// Clear group RANK cache
 		setInterval(function () {
 			Roblox.clearRanks();
-
-			console.log('Cleared Group rank cache');
-
 		}, 600000);
 		this.clearRanks = ()=>	Roblox._groupCache.forEach((group)=>group.clearCache());
 
@@ -35,16 +32,16 @@ class Roblox {
 			let res = await request(`https://api.roblox.com/users/${id}`);
 			if (res) {
 				const newUser = new roblox._user(this, id);
-				res = JSON.parse(res);
+				res = await res.json();
 				newUser.username = res.Username;
 				roblox._userCache.set(id, newUser);
 				return newUser;
 			} else return {error: {status: 404, message: 'User does not exist'}};
 		} catch (err) {
-			if (err.statusCode === 404) {
+			if (err.status === 404) {
 				return {error: {status: 404, message: 'User does not exist'}};
 			}
-			if (err.statusCode === 503) return {error: {status: 503, message: 'Service Unavailible - Roblox is down.'}};
+			if (err.status === 503) return {error: {status: 503, message: 'Service Unavailible - Roblox is down.'}};
 			// Not 404, put to sentry in future
 			throw Error(err);
 		}
@@ -60,7 +57,7 @@ class Roblox {
 		try {
 			let res = await request(`https://api.roblox.com/users/get-by-username?username=${name}`);
 			if (res) {
-				res = JSON.parse(res);
+				res = await res.json()
 				if (!res.Id) {
 					if (res.errorMessage === 'User not found') return {error: {status: 404, message: res.errorMessage}};
 					this.client.logError(res);
@@ -73,10 +70,10 @@ class Roblox {
 				return newUser;
 			} else return {error: {status: 404, message: 'User does not exist'}};
 		} catch (err) {
-			if (err.statusCode === 404) {
+			if (err.status === 404) {
 				return {error: {status: 404, message: 'User does not exist'}};
 			}
-			if (err.statusCode === 503) return {error: {status: 503, message: 'Service Unavailible - Roblox is down.'}};
+			if (err.status === 503) return {error: {status: 503, message: 'Service Unavailible - Roblox is down.'}};
 			this.client.logError(err);
 		}
 	}
@@ -89,7 +86,7 @@ class Roblox {
 		// Group does not already exist!
 		try {
 			let res = await request(`https://api.roblox.com/groups/${id}`);
-			res = JSON.parse(res);
+			res = await res.json()
 			const newGroup = new roblox._group(res.Id);
 			newGroup.name = res.Name;
 			newGroup.roles = res.Roles;
@@ -100,8 +97,8 @@ class Roblox {
 			roblox._groupCache.set(id, newGroup);
 			return newGroup;
 		} catch (error) {
-			if (error.statusCode === 404 ||error.statusCode === 500) return {error: {status: 404, message: 'Group not found'}};
-			if (error.statusCode === 503) return {error: {status: 503, message: 'Group info not available'}};
+			if (error.status === 404 ||error.status === 500) return {error: {status: 404, message: 'Group not found'}};
+			if (error.status === 503) return {error: {status: 503, message: 'Group info not available'}};
 			// Not 404
 			this.client.logError(error);
 			return error;
@@ -111,18 +108,13 @@ class Roblox {
 	async getGroupByName(name) {
 		if (!name) return false;
 		name = encodeURIComponent(name);
-		const options = {
-			method: 'GET',
-			uri: `https://www.roblox.com/search/groups/list-json?keyword=${name}&maxRows=10&startRow=0`,
-			resolveWithFullResponse: true
-		};
 		try {
-			let res = await request(options);
-			res = JSON.parse(res.body);
+			let res = await request(`https://www.roblox.com/search/groups/list-json?keyword=${name}&maxRows=10&startRow=0`);
+			res = await res.json()
 			return res.GroupSearchResults[0];
 		} catch(error) {
-			if (error.statusCode === 404 || error.statusCode === 400) return {error: {status: 404, message: 'User or group not found'}};
-			if (error.statusCode === 503) return {error: {status: 503, message: 'Service Unavailible - Roblox is down.'}};
+			if (error.status === 404 || error.status === 400) return {error: {status: 404, message: 'User or group not found'}};
+			if (error.status === 503) return {error: {status: 503, message: 'Service Unavailible - Roblox is down.'}};
 			throw new Error(error);
 		}
 	}

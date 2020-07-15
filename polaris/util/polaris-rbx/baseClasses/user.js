@@ -1,4 +1,4 @@
-const request = require('request-promise');
+const request = require("../request");
 const Cheerio = require('cheerio');
 /* INFO WITH USER CLASS:
   * User.id: User ID. Always set
@@ -21,14 +21,9 @@ class User {
 	// RETURNS: USERNAME OR NULL FOR FAIL.
 	async updateUsername () {
 		const user = this;
-		request(`https://api.roblox.com/users/${this.id}`)
-			.then(function (res) {
-				res = JSON.parse(res);
-				user.username = res.Username;
-			})
-			.catch(function (err) {
-				throw new Error(err);
-			});
+		let res = await request(`https://api.roblox.com/users/${this.id}`);
+		res = await res.json();
+		user.username = res.Username;
 	}
 
 	async getInfo () {
@@ -53,7 +48,8 @@ class User {
 		const user = this;
 		try {
 			const res = await request(`https://www.roblox.com/users/${user.id}/profile`);
-			const body = Cheerio.load(res);
+			const rawBody = await res.text();
+			const body = Cheerio.load(rawBody);
 
 			user.blurb = body('.profile-about-content-text').text();
 			user.status = body('div[data-statustext]').attr('data-statustext');

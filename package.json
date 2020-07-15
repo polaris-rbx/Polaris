@@ -1,6 +1,6 @@
 {
 	"name": "polaris-bot",
-	"version": "3.6.1",
+	"version": "3.6.2",
 	"main": "index.js",
 	"description": "Polaris is a Roblox verification bot designed to provide additional features with greater ease.",
 	"keywords": [
@@ -11,13 +11,13 @@
 	],
 	"author": "Neztore",
 	"dependencies": {
-		"cheerio": "^1.0.0-rc.2",
+		"@sentry/integrations": "^5.19.2",
+		"@sentry/node": "^5.19.2",
+		"cheerio": "^1.0.0-rc.3",
 		"eris": "^0.13.3",
+		"node-fetch": "^2.6.0",
 		"node-ipc": "^9.1.1",
 		"polaris-quote-engine": "^1.0.2",
-		"raven": "^2.6.4",
-		"request": "^2.88.0",
-		"request-promise": "^4.2.2",
 		"rethinkdbdash": "^2.3.31"
 	}
 }

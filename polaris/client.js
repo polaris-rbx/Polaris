@@ -2,15 +2,14 @@
 const Eris = require('eris');
 const { CommandManager, RobloxManager, Database, ErisExtensions, IPC } = require('./util');
 ErisExtensions(Eris); // Adds Extensions to Eris
+const {withScope, captureException, Severity, captureEvent, captureMessage} = require("@sentry/node")
 
 const Collection = require('./util/Collection.js');
-const util = require('util');
-
+const util = require("util");
 
 class Polaris extends Eris.Client {
 	constructor(options) {
 		super(options.token, options.erisSettings);
-		this.Raven = options.Raven;
 		this.eris = Eris;
 
 		// Queue Stuff (Really shouldn't be here)
@@ -34,20 +33,40 @@ class Polaris extends Eris.Client {
 			this.editStatus('online', {name: `${this.guilds.size} servers | .help`, type: 3});
 		});
 		this.on('error', (e) => {
-			console.error(e);
 			this.logError(e);
 		});
-		if (process.env.NODE_ENV !== "production") {
-			this.on('debug', (m) => {
-				console.log(`DEBUG: `, m)
-			});
+		this.on('debug', (m) => {
+			// Removes token from debug output
+			const token = this.token;
+			function checkObj (obj, depth = 0) {
+				if (depth === 4) {
+					return false;
+				} else {
+					for (const key of Object.keys(obj)) {
+						if (key === "token" || obj[key] === token) {
+							obj[key] = "Token removed"
+						} else if (typeof obj[key] === "object") {
+							return checkObj(obj[key], depth + 1)
+						} else if (typeof obj[key] === "string") {
+							obj[key] = obj[key].replace(new RegExp(token), "TokenRemoved");
+						}
+					}
+				}
+			}
+			if (typeof m === "string") {
+				m = m.replace(new RegExp(token, "g"), "TokenRemoved");
+			} else if (typeof m === "object") {
+				checkObj(m);
+			}
 
-			this.on('disconnect', () => {
-				console.error(`Client disconnect!`)
-			});
-		}
-
-
+			console.log(`DEBUG: `, util.inspect(m, {
+				depth: 4,
+			}))
+		});
+		this.on('disconnect', () => {
+			captureMessage("Client Disconnect");
+			console.error(`Client disconnect!`)
+		});
 
 		this.on('guildCreate', async guild => {
 			console.log(`New guild joined: ${guild.name} (id: ${guild.id}). This guild has ${guild.memberCount} members!`);
@@ -80,29 +99,29 @@ class Polaris extends Eris.Client {
 		});
 
 		this.on('error', (error, shardId) => {
-			this.Raven.captureException(error, {
-				level: 'fatal',
-				extra: {
-					shardId: shardId
-				}
+			withScope((scope) =>{
+				scope.setLevel(Severity.Fatal);
+				scope.setExtra("shard", shardId);
+				captureException(error);
 			});
 		});
 
 		this.on('messageCreate', async (message) => {
-			// Auto Roling
-
 			// Process Message
 			await this.CommandManager.processMessage(message);
 		});
 	}
 
 	logError(err, obj) {
-		this.Raven.mergeContext({
-			extra: obj
+		withScope((scope) =>{
+			scope.setLevel(Severity.Fatal);
+			if (obj) {
+				for (let key of Object.keys(obj)) {
+					scope.setExtra(key, obj[key]);
+				}
+			}
+			captureException(err);
 		});
-		console.log(err);
-		if (typeof err === 'object') err = util.inspect(err);
-		this.Raven.captureException(err);
 	}
 
 	// this shouldnt really be here

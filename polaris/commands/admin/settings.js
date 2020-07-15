@@ -76,7 +76,6 @@ class settingsCommand extends BaseCommand {
 						await current.func(msg, guildSettings, client);
 					} catch (err) {
 						done = true;
-						console.log(err);
 						throw new Error(err);
 					}
 					done = true;

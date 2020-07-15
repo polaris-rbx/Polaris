@@ -46,6 +46,7 @@ class CommandManager {
 		let prefix = ".";
 		let prefixMsg = prefix;
 
+
 		if (message.channel.guild) { // Handle Custom Prefix - It's in a guild.
 
 			let guild = message.channel.guild;

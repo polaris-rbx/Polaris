@@ -18,11 +18,9 @@ class blacklistCommand extends BaseCommand {
 		const blacklist = this.client.db.blacklist;
 		if (id === this.client.ownerId) return msg.channel.sendError(msg.author, 'You cannot blacklist yourself!');
 		if (await blacklist.get(id)) {
-			console.log(`Updating blacklist for ${id}`);
 			await blacklist.get(id).update({reason: reason, time: new Date()});
 			msg.channel.sendSuccess(msg.author, 'Successfully updated the blacklist!\nNew reason: ' + reason);
 		} else {
-			console.log(`Creating blacklist for ${id}, reason: ${reason}`);
 			await blacklist.insert({id: id, reason: reason, time: new Date()});
 			msg.channel.sendSuccess(msg.author, 'Successfully added the blacklist!\n**Reason:** ' + reason);
 		}

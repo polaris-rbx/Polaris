@@ -1,17 +1,21 @@
 const settings = require('./settings');
-const Raven = require('raven');
+const Sentry = require('@sentry/node');
 const Polaris = require('./polaris');
+const {name, version} = require("./package.json");
+const { Transaction } = require("@sentry/integrations");
+//
+// Setup Sentry Configuration
+if (settings.sentry && settings.sentry !== "") {
+	Sentry.init({
+		dsn: settings.sentry,
+		integrations: [new Transaction()],
+		release: `${name}@${version}`
+	});
+}
 
-// Setup Raven Configuration
-Raven.config(settings.sentry, {
-	captureUnhandledRejections: true,
-	autoBreadcrumbs: true,
-	sendTimeout: 3
-}).install();
 const token = process.env.NODE_ENV === 'production' ? settings.token : settings.testToken;
 const Client = new Polaris.Client({
 	token: `Bot ${token}`,
-	Raven,
 	erisSettings: {
 		maxShards: 'auto',
 		intents: [

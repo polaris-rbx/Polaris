@@ -1,3 +1,5 @@
+const { configureScope, captureException } = require("@sentry/node");
+
 class BaseCommand {
 	constructor (client) {
 		this.client = client;
@@ -18,6 +20,19 @@ class BaseCommand {
 		if (blacklist) {
 			return message.channel.sendError(message.author, {title: 'Blacklisted', description: `You are blacklisted from using Polaris. This is likely due to a violation of our Terms of service, or some other equally grievous action.\n**Reason: **${blacklist.reason ? blacklist.reason : 'None provided.'}\n**Date: **${blacklist.time}`});
 		}
+		let commandName = this.name;
+		configureScope(function (scope) {
+			const { username, discriminator, id } = message.author;
+			scope.setUser({
+				username,
+				discriminator,
+				id
+			});
+			scope.setTag("command", commandName);
+			if (message.channel && message.channel.guild) {
+				scope.setExtra("guild", message.channel.guild.id);
+			}
+		})
 
 		if (message.channel.guild) {
 			const serverBlacklist = await this.client.db.blacklist.get(message.channel.guild.id);
@@ -61,30 +76,16 @@ class BaseCommand {
 
 		// ERROR cATCHING
 		try {
-			let commandName = this.name;
-			this.client.Raven.setContext({
-				extra: {
-					args: args,
-					command: commandName
-				},
-				user: {
-					username: message.author.username,
-					discriminator: message.author.discriminator,
-					ID: message.author.id
-				}
-			});
 			const cooldown = this.client.cooldown;
 			cooldown.add(message.author.id);
 			setTimeout(() => cooldown.delete(message.author.id), 3000);
 			await this.execute(message, args, prefix);
 		} catch (e) {
-			// this.client.Raven.captureException(e);
-			console.log('Command catch: ' + e);
 			await message.channel.sendError(message.author, {
 				title: 'Oops! An error has occured.',
 				description: `Polaris has encounted an unexpected and fatal error. We're right on it! You may want to join to join our [discord](https://discord.gg/QevWabU) to help with fixing this.\n \`\`\` ${e.message} \`\`\``
 			});
-			this.client.Raven.captureException(e);
+			captureException(e);
 		}
 	}
 }
