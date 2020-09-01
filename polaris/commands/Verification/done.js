@@ -70,6 +70,7 @@ class doneCommand extends BaseCommand {
 				} else {
 					res.title = `Verified and fetched roles`
 					res.description = `You have successfully verified your account!\n${res.description}`
+					return msg.channel.sendSuccess(msg.author, res);
 				}
 		} else {
 			return msg.channel.sendError(msg.author, `I couldn't find the code in your profile. Please ensure that it is in your **description** / **blurb**.\nUsername: \`${robloxUser.username}\` UserID: \`${robloxUser.id}\``);

@@ -35,34 +35,37 @@ class Polaris extends Eris.Client {
 		this.on('error', (e) => {
 			this.logError(e);
 		});
-		this.on('debug', (m) => {
-			// Removes token from debug output
-			const token = this.token;
-			function checkObj (obj, depth = 0) {
-				if (depth === 4) {
-					return false;
-				} else {
-					for (const key of Object.keys(obj)) {
-						if (key === "token" || obj[key] === token) {
-							obj[key] = "Token removed"
-						} else if (typeof obj[key] === "object") {
-							return checkObj(obj[key], depth + 1)
-						} else if (typeof obj[key] === "string") {
-							obj[key] = obj[key].replace(new RegExp(token), "TokenRemoved");
+		if (process.env.NODE_ENV !== "production") {
+			this.on('debug', (m) => {
+				// Removes token from debug output
+				const token = this.token;
+				function checkObj (obj, depth = 0) {
+					if (depth === 4) {
+						return false;
+					} else {
+						for (const key of Object.keys(obj)) {
+							if (key === "token" || obj[key] === token) {
+								obj[key] = "Token removed"
+							} else if (typeof obj[key] === "object") {
+								return checkObj(obj[key], depth + 1)
+							} else if (typeof obj[key] === "string") {
+								obj[key] = obj[key].replace(new RegExp(token), "TokenRemoved");
+							}
 						}
 					}
 				}
-			}
-			if (typeof m === "string") {
-				m = m.replace(new RegExp(token, "g"), "TokenRemoved");
-			} else if (typeof m === "object") {
-				checkObj(m);
-			}
+				if (typeof m === "string") {
+					m = m.replace(new RegExp(token, "g"), "TokenRemoved");
+				} else if (typeof m === "object") {
+					checkObj(m);
+				}
 
-			console.log(`DEBUG: `, util.inspect(m, {
-				depth: 4,
-			}))
-		});
+				console.log(`DEBUG: `, util.inspect(m, {
+					depth: 4,
+				}))
+			});
+		}
+
 		this.on('disconnect', () => {
 			captureMessage("Client Disconnect");
 			console.error(`Client disconnect!`)
