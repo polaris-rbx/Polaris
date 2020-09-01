@@ -43,18 +43,34 @@ class doneCommand extends BaseCommand {
 				discordId: msg.author.id
 
 			}).run();
-			const res = await this.client.CommandManager.commands.getrole.verifiedRoles(true, msg.member);
-			const embed = {
-				title: 'Account linked!',
-				description: `You've successfully linked your account! Please do \`${prefix}getroles\` to continue, and recieve your roles.\nUsername: \`${robloxUser.username}\` UserID: \`${robloxUser.id}\``
-			};
-			if (res.error) {
-				embed.fields = [
-					{name: 'Permission error',
-						value: `${res.error}`}
-				];
+			const verified = await this.client.CommandManager.commands.getrole.verifiedRoles(true, msg.member);
+			if (verified.error) {
+				return msg.channel.sendError(msg.author, {
+					title: "Permission error",
+					description: verified.error
+				})
 			}
-			return msg.channel.sendSuccess(msg.author, embed);
+
+			const settings = await this.client.db.getSettings(msg.channel.guild.id);
+			const res = await this.client.CommandManager.commands.getrole.giveRoles(settings, msg.member, robloxUser.id);
+			if (!res) {
+				return msg.channel.sendSuccess(msg.author, {
+					title: "Successfully verified",
+					description: `There were no ranks to give you.\nRank data is cached for up to 10 minutes: Try using \`${prefix}getroles\` in a few minutes if you think you should have roles.`
+				})
+			} else if (res.error) {
+					return msg.channel.sendError(msg.author, {
+						title: "Verified with errors",
+						description: "Successfully verified you. I tried to fetch your roles, but encountered an error.",
+						fields: [{
+							name: "Error details",
+							value: (res && res.error) || "No response from Fetch roles."
+						}]
+					})
+				} else {
+					res.title = `Verified and fetched roles`
+					res.description = `You have successfully verified your account!\n${res.description}`
+				}
 		} else {
 			return msg.channel.sendError(msg.author, `I couldn't find the code in your profile. Please ensure that it is in your **description** / **blurb**.\nUsername: \`${robloxUser.username}\` UserID: \`${robloxUser.id}\``);
 		}

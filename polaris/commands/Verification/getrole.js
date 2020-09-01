@@ -32,7 +32,7 @@ class getRoleCommand extends BaseCommand {
 			msg.channel.sendSuccess(msg.author, reply);
 			return;
 		} else {
-			msg.channel.sendError(msg.author, 'I could not find any roles to give or remove from you.\nRank data is cached for up to 15 minutes. If you were ranked recently, retry later.');
+			msg.channel.sendError(msg.author, 'I could not find any roles to give or remove from you.\nRank data is cached for up to 10 minutes. If you were ranked recently, retry later.');
 			return;
 		}
 	}
