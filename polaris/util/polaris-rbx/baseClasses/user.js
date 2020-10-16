@@ -48,7 +48,7 @@ class User {
 		const user = this;
 		
 		try {
-			const resStatus = await request(`https://users.roblox.com/${user.id}/users/1`);
+			const resStatus = await request(`https://users.roblox.com/users/users/${user.id}`);
 			if (resStatus.status !== 200){
 			    return {error: {message: "The user id is invalid.", status: 404}}
 			}else{
