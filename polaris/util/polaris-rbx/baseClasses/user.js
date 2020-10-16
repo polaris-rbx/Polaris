@@ -54,7 +54,7 @@ class User {
 			}else{
 				const jsonStatus = await resStatus.json();
 				user.blurb = jsonStatus.description;
-				user.joinDate = jsonStatus.created;
+				user.joinDate = new Data(jsonStatus.created);
 			}
 		}catch (error) {
 			return {error: {message: 'Something happened that should not have happened.', status: 403, robloxId: user.id, userName: user.username}};
@@ -75,7 +75,6 @@ class User {
 			throw new Error(error);
 		}
 		
-		user.joinDate = rbxDate(this.joinDate, 'CT');
 		const currentTime = new Date();
 		user.age = Math.round(Math.abs((user.joinDate.getTime() - currentTime.getTime()) / (24 * 60 * 60 * 1000)));
 		
@@ -121,8 +120,4 @@ function isDST (time) {
 		return previousSunday >= 8;
 	}
 	return previousSunday <= 0;
-}
-
-function rbxDate (time, timezone) {
-	return new Date(time + ' ' + timezone.substring(0, 1) + (isDST(time) ? 'D' : 'S') + timezone.substring(1));
 }
