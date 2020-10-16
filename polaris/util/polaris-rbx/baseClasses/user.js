@@ -49,12 +49,12 @@ class User {
 		
 		try {
 			const resStatus = await request(`https://users.roblox.com/users/users/${user.id}`);
-			if (resStatus.status !== 200){
-			    return {error: {message: "The user id is invalid.", status: 404}}
-			}else{
+			if (res) {
 				const jsonStatus = await resStatus.json();
 				user.blurb = jsonStatus.description;
 				user.joinDate = new Data(jsonStatus.created);
+			}else{
+				return {error: {message: "The user id is invalid.", status: 404}}
 			}
 		}catch (error) {
 			return {error: {message: 'Something happened that should not have happened.', status: 403, robloxId: user.id, userName: user.username}};
@@ -64,11 +64,11 @@ class User {
 		//user status
 		try {
 			const resStatus = await request(`https://users.roblox.com/v1/users/${user.id}/status`);
-			if (resStatus.status !== 200){
-			    return {error: {message: "Invalid user", status: 400}}
-			}else{
-			    const jsonStatus = await resStatus.json();
+			if (res) {
+				const jsonStatus = await resStatus.json();
 				user.status = jsonStatus.status;
+			}else{
+				return {error: {message: "Invalid user", status: 400}}
 			}
 		}catch (error) {
 			return {error: {message: 'Something happened that should not have happened.', status: 403, robloxId: user.id, userName: user.username}};
