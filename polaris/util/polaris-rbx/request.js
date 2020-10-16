@@ -6,5 +6,4 @@ module.exports = async function request(url) {
     } else {
         throw new Error(resp);
     }
-
 }
