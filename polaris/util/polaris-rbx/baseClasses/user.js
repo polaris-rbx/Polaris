@@ -46,33 +46,47 @@ class User {
 			return {error: {message: 'Id is not defined. Please try again - We\'re onto it.', status: 400}};
 		}
 		const user = this;
+		
 		try {
-			const res = await request(`https://www.roblox.com/users/${user.id}/profile`);
-			const rawBody = await res.text();
-			const body = Cheerio.load(rawBody);
-
-			user.blurb = body('.profile-about-content-text').text();
-			user.status = body('div[data-statustext]').attr('data-statustext');
-			user.joinDate = body('.profile-stats-container .text-lead').eq(0).text();
-
-			user.joinDate = rbxDate(this.joinDate, 'CT');
-
-			const currentTime = new Date();
-			user.age = Math.round(Math.abs((user.joinDate.getTime() - currentTime.getTime()) / (24 * 60 * 60 * 1000)));
-			const obj = {
-				username: user.username,
-				status: user.status,
-				blurb: user.blurb,
-				joinDate: user.joinDate,
-				age: user.age
-			};
-			return obj;
-		} catch (error) {
-			if (error.statusCode === 400 || error.statusCode === 404) {
-				return {error: {message: 'User not found - User is likely banned from Roblox.', status: error.statusCode, robloxId: user.id, userName: user.username}};
+			const resStatus = await request(`https://users.roblox.com/${user.id}/users/1`);
+			if (resStatus.status !== 200){
+			    return {error: {message: "The user id is invalid.", status: 404}}
+			}else{
+				const jsonStatus = await resStatus.json();
+				user.blurb = jsonStatus.description;
+				user.joinDate = jsonStatus.created;
 			}
+		}catch (error) {
+			return {error: {message: 'Something happened that should not have happened.', status: 403, robloxId: user.id, userName: user.username}};
 			throw new Error(error);
 		}
+
+		//user status
+		try {
+			const resStatus = await request(`https://users.roblox.com/v1/users/${user.id}/status`);
+			if (resStatus.status !== 200){
+			    return {error: {message: "Invalid user", status: 400}}
+			}else{
+			    const jsonStatus = await resStatus.json();
+				user.status = jsonStatus.status;
+			}
+		}catch (error) {
+			return {error: {message: 'Something happened that should not have happened.', status: 403, robloxId: user.id, userName: user.username}};
+			throw new Error(error);
+		}
+		
+		user.joinDate = rbxDate(this.joinDate, 'CT');
+		const currentTime = new Date();
+		user.age = Math.round(Math.abs((user.joinDate.getTime() - currentTime.getTime()) / (24 * 60 * 60 * 1000)));
+		
+		const obj = {
+			username: user.username,
+			status: user.status,
+			blurb: user.blurb,
+			joinDate: user.joinDate,
+			age: user.age
+		};
+		return obj;
 	}
 }
 
