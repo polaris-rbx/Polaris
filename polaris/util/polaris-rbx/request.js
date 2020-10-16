@@ -4,6 +4,7 @@ module.exports = async function request(url) {
     if (resp.ok) {
         return resp;
     } else {
+        return resp; //For for error handling
         throw new Error(resp);
     }
 
