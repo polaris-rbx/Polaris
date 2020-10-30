@@ -17,7 +17,7 @@ Feel free to snoop, edit, hash, contribute to and remix the bot.
 2.  Navigate into new folder `cd polaris`
 3.  Run `npm install` in this repo
 4.  Create your settings.json. Set `sync` to true
-5.  Make sure your PostgreSQL database is running (or rethinkdb depending on version)
+5.  Make sure your rethinkdb database is running
 6.  Run it!
 
 ##  Setup / config
