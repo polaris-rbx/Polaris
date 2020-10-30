@@ -12,16 +12,6 @@ autoverify: false (boolean)
 
 'use strict';
 class Database {
-	const fetch = require("node-fetch");
-	// Variables
-	let noMade = 0;
-	let cache = {};
-	let disabled = false;
-	let since = Date.now();
-	// Clear your cache
-	setInterval(function () {
-		cache = {}
-	}, 300000)
 	
 	constructor (client) {
 		this.client = client;
@@ -38,32 +28,6 @@ class Database {
 		var link = await this.users.get(discordId).run();
 		if (link) {
 			return link.robloxId;
-		}
-
-		
-		
-		if (noMade >= 59 && (Date.now() - since) < 60000) {
-			// If more than 60 made and within 60 seconds -- too fast
-			console.log("Local ratelimit hit!")
-			return false;
-		} else if ( (Date.now() - since) > 60000) {
-			noMade = 0
-			since = Date.now()
-		}
-		noMade++
-		const prom = await fetch(`https://verify.nezto.re/api/roblox/${discordId}`);
-		const res = await prom.json();
-		if (res.error) {
-				if (res.error.status === 429) {
-					// Handle rate limit error
-					console.error(`Hit ratelimit!`);
-					disabled = true
-					setTimeout(function () {
-					disabled = false
-				}, (res.error.retryAfter + 2))
-			}
-		} else {
-			return res.robloxId;
 		}
 	}
 
