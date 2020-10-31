@@ -71,7 +71,7 @@ class User {
 				return {error: {message: "Invalid user", status: 400}}
 			}
 		}catch (error) {
-			return {error: {message: 'Something happened that should not have happened.', status: 500, robloxId: user.id, userName: user.username}};
+			return {error: {message: error.message, status: 500, robloxId: user.id, userName: user.username}};
 			throw new Error(error);
 		}
 		
