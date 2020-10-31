@@ -52,7 +52,7 @@ class User {
 			if (resStatus) {
 				const jsonStatus = await resStatus.json();
 				user.blurb = jsonStatus.description;
-				user.joinDate = new Data(jsonStatus.created);
+				user.joinDate = new Date(jsonStatus.created);
 			}else{
 				return {error: {message: "The user id is invalid.", status: 404}}
 			}
