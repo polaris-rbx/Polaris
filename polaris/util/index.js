@@ -6,5 +6,6 @@ module.exports = {
 	ErisExtensions: require('./erisExtensions'),
 
 	Database: require('./Database'),
-	Collection: require('./Collection')
+	Collection: require('./Collection'),
+	linkManager: require("./linkManager")
 };

@@ -1,4 +1,5 @@
 const BaseCommand = require('../baseCommand');
+const { getLink } = require("../../util/linkManager");
 
 class doneCommand extends BaseCommand {
 	constructor (client) {
@@ -31,7 +32,8 @@ class doneCommand extends BaseCommand {
 			this.client.linkQueue.delete(msg.author.id);
 
 			// Check for existing link and update
-			if (await this.client.db.getLink(msg.author.id)) {
+
+			if (await getLink(msg.author.id)) {
 				await this.client.db.users.get(msg.author.id).update({
 					robloxId: robloxUser.id
 
