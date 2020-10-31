@@ -6,6 +6,7 @@ const {withScope, captureException, Severity, captureEvent, captureMessage} = re
 
 const Collection = require('./util/Collection.js');
 const util = require("util");
+const { getLink } = require("./util/linkManager");
 
 class Polaris extends Eris.Client {
 	constructor(options) {
@@ -86,7 +87,7 @@ class Polaris extends Eris.Client {
 			const settings = await this.db.getSettings(guild.id);
 
 			if (settings.autoVerify) {
-				const rbxId = await this.db.getLink(member.id);
+				const rbxId = await getLink(member.id);
 				if (rbxId) {
 					const res = await this.CommandManager.commands.getrole.giveRoles(settings, member, rbxId);
 					if (res) {
@@ -143,7 +144,7 @@ class Polaris extends Eris.Client {
 		this.autoUpdateCooldown.set(member.user.id, Date.now());
 		const settings = await this.db.getSettings(member.guild.id);
 		if (settings.autoVerify) {
-			const rbxId = await this.db.getLink(member.id);
+			const rbxId = await getLink(member.id);
 			if (rbxId) {
 				// eslint-disable-next-line no-unused-vars
 				const res = await this.CommandManager.commands.getrole.giveRoles(settings, member, rbxId);

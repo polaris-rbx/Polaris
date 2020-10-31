@@ -1,4 +1,6 @@
 const BaseCommand = require("../baseCommand");
+const { getLink } = require("../../util/linkManager");
+
 class linkAccountCommand extends BaseCommand {
 	constructor (client) {
 		super(client);
@@ -75,7 +77,7 @@ class linkAccountCommand extends BaseCommand {
 			return this.client.logError(newUser.error);
 		}
 		// ALREADY EXIST CHECK
-		let current = await this.client.db.getLink(msg.author.id);
+		let current = await getLink(msg.author.id);
 		if (current) {
 			const robloxUser = await this.client.roblox.getUser(current);
 			if (!newUser.error) {

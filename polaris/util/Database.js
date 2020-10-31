@@ -12,6 +12,7 @@ autoverify: false (boolean)
 
 'use strict';
 class Database {
+	
 	constructor (client) {
 		this.client = client;
 		this._r = require('rethinkdbdash')({db: 'main'});

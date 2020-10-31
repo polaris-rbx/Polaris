@@ -1,5 +1,5 @@
 const BaseCommand = require('../baseCommand');
-
+const { getLink } = require("../../util/linkManager");
 class getRoleCommand extends BaseCommand {
 	constructor (client) {
 		super(client);
@@ -16,7 +16,7 @@ class getRoleCommand extends BaseCommand {
 			return;
 		}
 		// Check for link
-		const rbxId = await this.client.db.getLink(msg.author.id);
+		const rbxId = await getLink(msg.author.id);
 		if (!rbxId) {
 			const res = await this.verifiedRoles(false, msg.member);
 			if (res.error) {

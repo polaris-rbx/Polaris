@@ -1,4 +1,5 @@
 const BaseCommand = require('../baseCommand');
+const { getLink } = require("../../util/linkManager");
 
 class updateRoleCommand extends BaseCommand {
 	constructor (client) {
@@ -18,7 +19,7 @@ class updateRoleCommand extends BaseCommand {
 		const mentionedMember = msg.channel.guild.members.get(mentionedUser.id);
 		if (mentionedUser.bot) return msg.channel.sendError(msg.author, 'Do you really think a bot has linked their account?! **Please mention a normal user!**');
 
-		var rbxId = await this.client.db.getLink(mentionedUser.id);
+		const rbxId = await getLink(mentionedUser.id);
 		if (!rbxId) {
 			const res = await this.client.CommandManager.commands.getrole.verifiedRoles(false, mentionedMember);
 			if (res.error) {
@@ -29,7 +30,7 @@ class updateRoleCommand extends BaseCommand {
 
 		// Check for settings
 
-		var settings = await this.client.db.getSettings(msg.member.guild.id);
+		const settings = await this.client.db.getSettings(msg.member.guild.id);
 		if (!settings || !settings.mainGroup || (settings.mainGroup.binds === 0 && !settings.mainGroup.ranksToRoles)) {
 			msg.channel.sendError(msg.author, {title: 'No settings', description: "This server isn't set up yet. Please ask an admin to set up Polaris."});
 			return;

@@ -1,6 +1,7 @@
 const BaseCommand = require('../baseCommand');
 const settings = require('../../../settings.json');
 const specialPeople = settings.specialPeople;
+const { getLink } = require("../../util/linkManager");
 
 class getinfoCommand extends BaseCommand {
 	constructor (client) {
@@ -39,7 +40,7 @@ class getinfoCommand extends BaseCommand {
 		if (!robloxUser) {
 			mentionedUser = mentionedUser || msg.author;
 			if (mentionedUser.bot) return msg.channel.sendError(msg.author, 'Do you really think a bot has linked their account?! **Please mention a normal user!**');
-			const rbxId = await this.client.db.getLink(mentionedUser.id);
+			const rbxId = await getLink(mentionedUser.id);
 			if (!rbxId) {
 				return msg.channel.sendError(msg.author, "I couldn't find that user's info. Have they linked their account?");
 			}
