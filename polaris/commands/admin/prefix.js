@@ -8,7 +8,7 @@ class prefixCommand extends BaseCommand {
 		this.guildOnly = true;
 	}
 	async execute (msg) {
-		if (msg.member.permission.has('administrator')) {
+		if (msg.member.permissions.has('administrator')) {
 			// user is admin
 			const settings = await this.client.db.getSettings(msg.channel.guild.id);
 			await this.client.CommandManager.commands.settings.changePrefix(msg, settings, this.client);

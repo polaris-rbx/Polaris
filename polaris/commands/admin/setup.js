@@ -11,7 +11,7 @@ class setupCommand extends BaseCommand {
 	}
 	async execute(msg, args) {
 		const botMember = msg.channel.guild.members.get(this.client.user.id);
-		if (!botMember.permission.has("manageRoles")) {
+		if (!botMember.permissions.has("manageRoles")) {
 			return msg.channel.sendError(msg.author, {
 				title: "I don't have permission!",
 				description:

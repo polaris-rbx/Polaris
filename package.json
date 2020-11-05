@@ -1,6 +1,6 @@
 {
 	"name": "polaris-bot",
-	"version": "3.7.0",
+	"version": "3.7.1",
 	"main": "index.js",
 	"description": "Polaris is a Roblox verification bot designed to provide additional features with greater ease.",
 	"keywords": [
@@ -14,7 +14,7 @@
 		"@sentry/integrations": "^5.19.2",
 		"@sentry/node": "^5.19.2",
 		"cheerio": "^1.0.0-rc.3",
-		"eris": "^0.13.3",
+		"eris": "^0.14.0",
 		"node-fetch": "^2.6.0",
 		"node-ipc": "^9.1.1",
 		"polaris-quote-engine": "^1.0.2",

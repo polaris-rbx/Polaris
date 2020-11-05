@@ -61,7 +61,7 @@ class BaseCommand {
 		if (message.author.id !== this.client.ownerId) {
 			let permissionFails = [];
 			this.permissions.forEach(permission => {
-				if (!message.member.permission.has(permission)) {
+				if (!message.member.permissions.has(permission)) {
 					permissionFails.push(permission);
 				}
 			});
