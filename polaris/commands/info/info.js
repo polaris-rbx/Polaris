@@ -23,7 +23,6 @@ class InfoCommand extends BaseCommand {
       upTime = Math.round(upTime * 10) / 10;
       suffix = "Days";
     }
-    const links = await this.client.db.users.count();
     msg.channel.sendInfo(msg.author,
       {
         title: "Bot information",
@@ -68,11 +67,6 @@ class InfoCommand extends BaseCommand {
             value: `${upTime} ${suffix}`,
             inline: true
           },
-          {
-            name: "Account links",
-            value: links,
-            inline: true
-          }
 
         ]
       });
