@@ -1,11 +1,11 @@
 module.exports = {
-	CommandManager: require('./CommandManager'),
-	RobloxManager: require('./polaris-rbx'),
-	IPC: require('./ipcClient'),
+  CommandManager: require("./CommandManager"),
+  RobloxManager: require("./polaris-rbx"),
+  IPC: require("./ipcClient"),
 
-	ErisExtensions: require('./erisExtensions'),
+  ErisExtensions: require("./erisExtensions"),
 
-	Database: require('./Database'),
-	Collection: require('./Collection'),
-	linkManager: require("./linkManager")
+  Database: require("./Database"),
+  Collection: require("./Collection"),
+  linkManager: require("./linkManager")
 };

@@ -1,3 +1,1 @@
-module.exports = {
-	BaseCommand: require('./baseCommand')
-};
+module.exports = { BaseCommand: require("./baseCommand") };

@@ -1,311 +1,332 @@
 // awaitMessages message collector
-const EventEmitter = require('events').EventEmitter;
+const { EventEmitter } = require("events");
+
 class MessageCollector extends EventEmitter {
-	constructor (channel, filter, options = {}) {
-		// wrongFun called every time an incorrect attempt is found.
-		super();
-		this.filter = filter;
-		this.channel = channel;
-		this.options = options;
-		this.ended = false;
-		this.collected = [];
-		this.bot = channel.guild ? channel.guild.shard.client : channel._client;
+  constructor (channel, filter, options = {}) {
+    // wrongFun called every time an incorrect attempt is found.
+    super();
+    this.filter = filter;
+    this.channel = channel;
+    this.options = options;
+    this.ended = false;
+    this.collected = [];
+    this.bot = channel.guild ? channel.guild.shard.client : channel._client;
 
-		this.listener = message => this.verify(message);
-		this.bot.on('messageCreate', this.listener);
-		if (options.time) setTimeout(() => this.stop('time'), options.time);
-	}
+    this.listener = message => this.verify(message);
+    this.bot.on("messageCreate", this.listener);
+    if (options.time) setTimeout(() => this.stop("time"), options.time);
+  }
 
-	verify (message) {
-		if (this.channel.id !== message.channel.id) return false;
-		if (this.filter(message)) {
-			this.collected.push(message);
+  verify (message) {
+    if (this.channel.id !== message.channel.id) return false;
+    if (this.filter(message)) {
+      this.collected.push(message);
 
-			this.emit('message', message);
-			if (this.collected.length >= this.options.maxMatches) this.stop('maxMatches');
-			return true;
-		} else {
-			this.emit('nonMatch', message);
-		}
-		return false;
-	}
+      this.emit("message", message);
+      if (this.collected.length >= this.options.maxMatches) this.stop("maxMatches");
+      return true;
+    }
+    this.emit("nonMatch", message);
 
-	stop (reason) {
-		if (this.ended) return;
-		this.ended = true;
-		this.bot.removeListener('messageCreate', this.listener);
+    return false;
+  }
 
-		this.emit('end', this.collected, reason);
-	}
+  stop (reason) {
+    if (this.ended) return;
+    this.ended = true;
+    this.bot.removeListener("messageCreate", this.listener);
+
+    this.emit("end", this.collected, reason);
+  }
 }
 
 // SEND FUNCTIONS FOR INTERACTING WITH CHANNELS.
 async function sendSuccess (author, content) {
-	if (!author || !content) return console.log(`You forgot author or content! ${author} - ${content}`);
-	let embed = addParts(content, author, 'Success');
-	embed.timestamp = new Date();
-	embed.color = 0x2ECC71;
-	const allowedMentions = {
-		users: [author.id]
-	}
-	try {
-		return await this.client.createMessage(this.id, {content: `<@${author.id}> `, embed: embed, allowedMentions});
-	} catch (err) {
-		console.log(`Couldn't send message to ${this.id}`);
-		return null;
-	}
+  if (!author || !content) return console.log(`You forgot author or content! ${author} - ${content}`);
+  const embed = addParts(content, author, "Success");
+  embed.timestamp = new Date();
+  embed.color = 0x2ECC71;
+  const allowedMentions = { users: [author.id] };
+  try {
+    return await this.client.createMessage(this.id, {
+      content: `<@${author.id}> `,
+      embed,
+      allowedMentions
+    });
+  } catch (err) {
+    console.log(`Couldn't send message to ${this.id}`);
+    return null;
+  }
 }
 
 async function sendError (author, content) {
-	if (!author || !content) return console.log(`You forgot author or content! ${author} - ${content}`);
-	let embed = addParts(content, author, 'Error');
-	embed.timestamp = new Date();
-	embed.color = 0xE74C3C;
-	const allowedMentions = {
-		users: [author.id]
-	}
-	try {
-		return await this.client.createMessage(this.id, {content: `<@${author.id}> `, embed: embed, allowedMentions});
-	} catch (err) {
-		console.log(`Couldn't send message to ${this.id}`);
-		return null;
-	}
+  if (!author || !content) return console.log(`You forgot author or content! ${author} - ${content}`);
+  const embed = addParts(content, author, "Error");
+  embed.timestamp = new Date();
+  embed.color = 0xE74C3C;
+  const allowedMentions = { users: [author.id] };
+  try {
+    return await this.client.createMessage(this.id, {
+      content: `<@${author.id}> `,
+      embed,
+      allowedMentions
+    });
+  } catch (err) {
+    console.log(`Couldn't send message to ${this.id}`);
+    return null;
+  }
 }
 
 async function sendInfo (author, content) {
-	if (!author || !content) return console.log(`You forgot author or content! ${author} - ${content}`);
-	let embed = addParts(content, author, 'Info');
-	embed.timestamp = new Date();
-	embed.color = 0x168776;
-	const allowedMentions = {
-		users: [author.id]
-	}
-	try {
-		return await this.client.createMessage(this.id, {content: `<@${author.id}> `, embed: embed, allowedMentions});
-	} catch (err) {
-		console.log(`Couldn't send message to ${this.id}`);
-		console.log(err);
-		return null;
-	}
+  if (!author || !content) return console.log(`You forgot author or content! ${author} - ${content}`);
+  const embed = addParts(content, author, "Info");
+  embed.timestamp = new Date();
+  embed.color = 0x168776;
+  const allowedMentions = { users: [author.id] };
+  try {
+    return await this.client.createMessage(this.id, {
+      content: `<@${author.id}> `,
+      embed,
+      allowedMentions
+    });
+  } catch (err) {
+    console.log(`Couldn't send message to ${this.id}`);
+    console.log(err);
+    return null;
+  }
 }
 
 async function send (content) {
-	if (!content) return;
-	try {
-		return await this.client.createMessage(this.id, {content: content});
-	} catch (err) {
-		console.log(`Couldn't send message to ${this.id}`);
-		return null;
-	}
+  if (!content) return;
+  try {
+    return await this.client.createMessage(this.id, { content });
+  } catch (err) {
+    console.log(`Couldn't send message to ${this.id}`);
+    return null;
+  }
 }
 
 // ASSEMBLE PROTOTYPES ONTO ERIS
 module.exports = Eris => {
-	Eris.Channel.prototype.awaitMessages = function (filter, options) {
-		const collector = new MessageCollector(this, filter, options);
-		return new Promise(resolve => collector.on('end', resolve));
-	};
+  Eris.Channel.prototype.awaitMessages = function (filter, options) {
+    const collector = new MessageCollector(this, filter, options);
+    return new Promise(resolve => collector.on("end", resolve));
+  };
 
-	Eris.Client.prototype.MessageCollector = MessageCollector;
-	// To track those currently using prompts, and stop them from starting more.
-	const promptUsers = new Set();
-	// Restricted prompt function. Input = Embed message or a string. Must provide author. Options is array of strings. Returns null if cancelled or timed out.
-	Eris.Channel.prototype.restrictedPrompt = function (author, msgOrObj, options) {
-		var channel = this;
-		if (promptUsers.has(author.id)) {
-			this.sendError(author, 'Please finish all other prompts before starting a new one!\nThink this is an error? Join our Discord.');
-			return;
-		}
-		promptUsers.add(author.id);
-		// Fill embed object & assemble options
-		if (typeof msgOrObj === 'string')msgOrObj = {description: msgOrObj};
-		let optDesc = ``;
+  Eris.Client.prototype.MessageCollector = MessageCollector;
+  // To track those currently using prompts, and stop them from starting more.
+  const promptUsers = new Set();
+  // Restricted prompt function. Input = Embed message or a string. Must provide author. Options is array of strings. Returns null if cancelled or timed out.
+  Eris.Channel.prototype.restrictedPrompt = function (author, msgOrObj, options) {
+    const channel = this;
+    if (promptUsers.has(author.id)) {
+      this.sendError(author, "Please finish all other prompts before starting a new one!\nThink this is an error? Join our Discord.");
+      return;
+    }
+    promptUsers.add(author.id);
+    // Fill embed object & assemble options
+    if (typeof msgOrObj === "string")msgOrObj = { description: msgOrObj };
+    let optDesc = ``;
     options.forEach(element => optDesc = `${optDesc}- ${element}\n`); // eslint-disable-line
-		optDesc = `${optDesc}\nto cancel this prompt, say **cancel**.`;
+    optDesc = `${optDesc}\nto cancel this prompt, say **cancel**.`;
 
-		msgOrObj.title = msgOrObj.title || 'Question prompt';
-		msgOrObj.fields = [{name: 'Please select one of the following options.', value: optDesc}];
+    msgOrObj.title = msgOrObj.title || "Question prompt";
+    msgOrObj.fields = [{
+      name: "Please select one of the following options.",
+      value: optDesc
+    }];
 
-		this.sendInfo(author, msgOrObj);
-		// Make it so that options are capitalisation insensitive for user ease.
-		options = options.join('¬').toLowerCase().split('¬');
+    this.sendInfo(author, msgOrObj);
+    // Make it so that options are capitalisation insensitive for user ease.
+    options = options.join("¬").toLowerCase().split("¬");
 
-		var fn = msg => (options.includes(msg.content.toLowerCase()) && msg.author.id === author.id) || (msg.content.toLowerCase() === 'cancel' && msg.author.id === author.id);
-		const collector = new MessageCollector(this, fn, {maxMatches: 1, time: 30000});
+    const fn = msg => (options.includes(msg.content.toLowerCase()) && msg.author.id === author.id) || (msg.content.toLowerCase() === "cancel" && msg.author.id === author.id);
+    const collector = new MessageCollector(this, fn, {
+      maxMatches: 1,
+      time: 30000
+    });
 
-		return new Promise(function (resolve) {
-			collector.on('end', function (msg, reason) {
-				if (reason === 'time') {
-					channel.sendInfo(author, 'Prompt timed out');
-					promptUsers.delete(author.id);
-					return resolve(null);
-				}
+    return new Promise(resolve => {
+      collector.on("end", (msg, reason) => {
+        if (reason === "time") {
+          channel.sendInfo(author, "Prompt timed out");
+          promptUsers.delete(author.id);
+          return resolve(null);
+        }
 
-				if (msg[0].content.toLowerCase() === 'cancel') {
-					channel.sendInfo(author, 'Prompt cancelled');
-					promptUsers.delete(author.id);
-					return resolve(null);
-				}
-				promptUsers.delete(author.id);
-				resolve(msg[0], reason);
-			});
-		});
-	};
+        if (msg[0].content.toLowerCase() === "cancel") {
+          channel.sendInfo(author, "Prompt cancelled");
+          promptUsers.delete(author.id);
+          return resolve(null);
+        }
+        promptUsers.delete(author.id);
+        resolve(msg[0], reason);
+      });
+    });
+  };
 
-	// Message prompt function. Input = Embed message or a string. Must provide author. RETURNS NULL IF TIMED OUT OR CANCELLED.
-	Eris.Channel.prototype.prompt = function (author, msgOrObj, allowDot) {
-		var channel = this;
-		if (promptUsers.has(author.id)) {
-			this.sendError(author, 'Please finish all other prompts before starting a new one!\nThink this is an error? Join our Discord.');
-			return;
-		}
-		promptUsers.add(author.id);
+  // Message prompt function. Input = Embed message or a string. Must provide author. RETURNS NULL IF TIMED OUT OR CANCELLED.
+  Eris.Channel.prototype.prompt = function (author, msgOrObj, allowDot) {
+    const channel = this;
+    if (promptUsers.has(author.id)) {
+      this.sendError(author, "Please finish all other prompts before starting a new one!\nThink this is an error? Join our Discord.");
+      return;
+    }
+    promptUsers.add(author.id);
 
-		if (typeof msgOrObj === 'string')msgOrObj = {description: msgOrObj};
+    if (typeof msgOrObj === "string")msgOrObj = { description: msgOrObj };
 
-		msgOrObj.description = `${msgOrObj.description}\nTo cancel this prompt, say **cancel**.`;
+    msgOrObj.description = `${msgOrObj.description}\nTo cancel this prompt, say **cancel**.`;
 
-		msgOrObj.title = msgOrObj.title || 'Message Prompt';
+    msgOrObj.title = msgOrObj.title || "Message Prompt";
 
-		this.sendInfo(author, msgOrObj);
-		// If allow dot don't check for . at start of msg.
-		var fn = allowDot ? (msg => msg.author.id === author.id) : (msg => msg.author.id === author.id && !msg.content.startsWith('.'));
+    this.sendInfo(author, msgOrObj);
+    // If allow dot don't check for . at start of msg.
+    const fn = allowDot ? (msg => msg.author.id === author.id) : (msg => msg.author.id === author.id && !msg.content.startsWith("."));
 
-		const collector = new MessageCollector(this, fn, {maxMatches: 1, time: 30000});
-		return new Promise(function (resolve) {
-			collector.on('end', function (msg, reason) {
-				if (reason === 'time') {
-					channel.sendInfo(author, 'Prompt timed out');
-					promptUsers.delete(author.id);
-					return resolve(null);
-				}
+    const collector = new MessageCollector(this, fn, {
+      maxMatches: 1,
+      time: 30000
+    });
+    return new Promise(resolve => {
+      collector.on("end", (msg, reason) => {
+        if (reason === "time") {
+          channel.sendInfo(author, "Prompt timed out");
+          promptUsers.delete(author.id);
+          return resolve(null);
+        }
 
-				if (msg[0].content.toLowerCase() === 'cancel') {
-					channel.sendInfo(author, 'Prompt cancelled');
-					promptUsers.delete(author.id);
-					return resolve(null);
-				}
-				promptUsers.delete(author.id);
-				resolve(msg[0], reason);
-			});
-		});
-	};
-	async function updateNickname (settings, member, robloxId) {
-		const client = this.shard.client;
-		if (member.canEdit(this.members.get(client.user.id))) {
-			if (settings.mainGroup.id && settings.nicknameTemplate && settings.nicknameTemplate !== '') {
-				// Group is set and it nickname management is enabled
-				var template = '' + settings.nicknameTemplate;
-				if (template.includes('{rankName}')) {
-					// Make rankName request
-					const group = await client.roblox.getGroup(settings.mainGroup.id);
-					if (group.error) return group; // Return error. Can be accessed with returnedValue.error
+        if (msg[0].content.toLowerCase() === "cancel") {
+          channel.sendInfo(author, "Prompt cancelled");
+          promptUsers.delete(author.id);
+          return resolve(null);
+        }
+        promptUsers.delete(author.id);
+        resolve(msg[0], reason);
+      });
+    });
+  };
+  async function updateNickname (settings, member, robloxId) {
+    const { client } = this.shard;
+    if (member.canEdit(this.members.get(client.user.id))) {
+      if (settings.mainGroup.id && settings.nicknameTemplate && settings.nicknameTemplate !== "") {
+        // Group is set and it nickname management is enabled
+        let template = `${settings.nicknameTemplate}`;
+        if (template.includes("{rankName}")) {
+          // Make rankName request
+          const group = await client.roblox.getGroup(settings.mainGroup.id);
+          if (group.error) return group; // Return error. Can be accessed with returnedValue.error
 
-					const rank = await group.getRole(robloxId);
-					if (rank.error) return rank; // Return error. Can be accessed with returnedValue.error
-					// Replace
-					template = template.replace(/{rankName}/g, rank);
-				}
+          const rank = await group.getRole(robloxId);
+          if (rank.error) return rank; // Return error. Can be accessed with returnedValue.error
+          // Replace
+          template = template.replace(/{rankName}/g, rank);
+        }
 
-				if (template.includes('{rankId}')) {
-					const group = await client.roblox.getGroup(settings.mainGroup.id);
-					if (group.error) return group; // Return error. Can be accessed with returnedValue.error
+        if (template.includes("{rankId}")) {
+          const group = await client.roblox.getGroup(settings.mainGroup.id);
+          if (group.error) return group; // Return error. Can be accessed with returnedValue.error
 
-					const rankId = await group.getRank(robloxId);
-					if (rankId.error) return rankId; // Return error. Can be accessed with returnedValue.error
-					// Replace
-					template = template.replace(/{rankId}/g, rankId);
+          const rankId = await group.getRank(robloxId);
+          if (rankId.error) return rankId; // Return error. Can be accessed with returnedValue.error
+          // Replace
+          template = template.replace(/{rankId}/g, rankId);
+        }
+        return await finishNickname(this, template);
+      } if (settings.nicknameTemplate && settings.nicknameTemplate !== "") {
+        return await finishNickname(this, `${settings.nicknameTemplate}`);
+      }
+    }
+    // Does any user-specific stuff that doesn't require a group.
+    async function finishNickname (guild, template) {
+      // User will be required in virtually every case. Idek why people wouldn't use it
+      const user = await client.roblox.getUser(robloxId);
+      if (user.error) return user;
+      template = template.replace(/{robloxName}/g, user.username);
+      template = template.replace(/{robloxId}/g, user.id);
 
-				}
-				return await finishNickname(this, template);
-			} else if (settings.nicknameTemplate && settings.nicknameTemplate !== ''){
-				return await finishNickname(this, settings.nicknameTemplate + "");
-			}
+      template = template.replace(/{discordName}/g, member.user.username);
 
-		}
-		// Does any user-specific stuff that doesn't require a group.
-		async function finishNickname(guild, template) {
-			// User will be required in virtually every case. Idek why people wouldn't use it
-			const user = await client.roblox.getUser(robloxId);
-			if (user.error) return user;
-			template = template.replace(/{robloxName}/g, user.username);
-			template = template.replace(/{robloxId}/g, user.id);
+      if (template.length > 32) {
+        template = template.substring(0, 32);
+      }
 
-			template = template.replace(/{discordName}/g, member.user.username);
+      if (member.nick !== template) {
+        try {
+          await guild.editMember(member.id, { nick: template });
+        } catch (e) {
+          // we dont care :Sunglasses:
+        }
+      }
 
-			if (template.length > 32) {
-				template = template.substring(0, 32);
-			}
+      return template;
+    }
+  }
+  // Editor: Member
+  function canEdit (editor) {
+    const { guild } = this;
 
-			if (member.nick !== template) {
-				try {
-					await guild.editMember(member.id, {
-						nick: template
-					});
-				} catch (e) {
-					// we dont care :Sunglasses:
-				}
-			}
+    // Check if owner
+    if (this.id === guild.ownerID) {
+      return false; // User owns guild. Cannot edit!
+    }
+    // Get target's highest role
+    const targetRoles = this.roles;
+    let highestTargetPos = 0;
+    for (const currentRoleId of targetRoles) {
+      const currentRole = guild.roles.get(currentRoleId);
+      if (currentRole) {
+        if (currentRole.position > highestTargetPos) highestTargetPos = currentRole.position;
+      }
+    }
+    // Get bot's highest role
+    const editorRoles = editor.roles;
+    let highestEditorPos = 0;
+    for (const currentRoleId of editorRoles) {
+      const currentRole = guild.roles.get(currentRoleId);
+      // Shouldn't be undefined but sometimes is
+      if (currentRole) {
+        if (currentRole.position > highestEditorPos) highestEditorPos = currentRole.position;
+      }
+    }
+    // is user below editor
+    return highestTargetPos < highestEditorPos;
+  }
 
-			return template;
-		}
-	}
-	// Editor: Member
-	function canEdit (editor) {
-		const guild = this.guild;
+  Eris.Channel.prototype.sendInfo = sendInfo;
+  Eris.Channel.prototype.sendError = sendError;
+  Eris.Channel.prototype.sendSuccess = sendSuccess;
+  Eris.Channel.prototype.send = send;
 
-		// Check if owner
-		if (this.id === guild.ownerID) {
-			return false; // User owns guild. Cannot edit!
-		}
-		// Get target's highest role
-		const targetRoles = this.roles;
-		var highestTargetPos = 0;
-		for (let currentRoleId of targetRoles) {
-			const currentRole = guild.roles.get(currentRoleId);
-			if (currentRole) {
-				if (currentRole.position > highestTargetPos) highestTargetPos = currentRole.position;
-			}
-
-		}
-		// Get bot's highest role
-		const editorRoles = editor.roles;
-		let highestEditorPos = 0;
-		for (let currentRoleId of editorRoles) {
-			const currentRole = guild.roles.get(currentRoleId);
-			// Shouldn't be undefined but sometimes is
-			if (currentRole) {
-				if (currentRole.position > highestEditorPos) highestEditorPos = currentRole.position;
-			}
-
-		}
-		// is user below editor
-		return highestTargetPos < highestEditorPos;
-	}
-
-	Eris.Channel.prototype.sendInfo = sendInfo;
-	Eris.Channel.prototype.sendError = sendError;
-	Eris.Channel.prototype.sendSuccess = sendSuccess;
-	Eris.Channel.prototype.send = send;
-
-	Eris.Guild.prototype.updateNickname = updateNickname;
-	Eris.Member.prototype.canEdit = canEdit;
+  Eris.Guild.prototype.updateNickname = updateNickname;
+  Eris.Member.prototype.canEdit = canEdit;
 };
 
 // Adds in fields that are left undefined when the send message functions are run for embeds.
 function addParts (content, author, type) {
-	if (typeof content === 'string') {
-		return { title: type, description: content, footer: {text: 'Sent for: ' + author.username, icon_url: author.avatarURL}, timestamp: new Date() };
-	}
-	if (!content.title) {
-		content.title = type;
-	}
-	if (!content.description) {
-		content.description = 'Empty description';
-	}
-	if (!content.footer) {
-		content.footer = {text: 'Sent for: ' + author.username, icon_url: author.avatarURL};
-	}
+  if (typeof content === "string") {
+    return {
+      title: type,
+      description: content,
+      footer: {
+        text: `Sent for: ${author.username}`,
+        icon_url: author.avatarURL
+      },
+      timestamp: new Date()
+    };
+  }
+  if (!content.title) {
+    content.title = type;
+  }
+  if (!content.description) {
+    content.description = "Empty description";
+  }
+  if (!content.footer) {
+    content.footer = {
+      text: `Sent for: ${author.username}`,
+      icon_url: author.avatarURL
+    };
+  }
 
-	return content;
+  return content;
 }
