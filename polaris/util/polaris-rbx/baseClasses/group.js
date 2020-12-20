@@ -41,15 +41,15 @@ class Group {
           }
         };
       }
-      if (error.status === 503) {
+      if (error.status === 503 || error.status === 500) {
         return {
           error: {
             status: 503,
-            message: "Service Unavailible - Roblox is down."
+            message: "Service Unavailable - Roblox is down."
           }
         };
       }
-      throw new Error(error);
+      throw new Error(await error.text());
     }
   }
 
@@ -82,7 +82,7 @@ class Group {
           }
         };
       }
-      if (error.status === 503) {
+      if (error.status === 503 || error.status === 500) {
         return {
           error: {
             status: 503,
@@ -90,7 +90,7 @@ class Group {
           }
         };
       }
-      throw new Error(error);
+      throw new Error(await error.text());
     }
   }
 
@@ -112,7 +112,7 @@ class Group {
           }
         };
       }
-      if (error.status === 503) {
+      if (error.status === 503 || error.status === 500) {
         return {
           error: {
             status: 503,
@@ -121,7 +121,7 @@ class Group {
         };
       }
       // Not 404
-      throw new Error(error);
+      throw new Error(await error.text());
     }
   }
 

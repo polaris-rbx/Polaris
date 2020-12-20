@@ -302,6 +302,10 @@ class getRoleCommand extends BaseCommand {
     // Check ranks to roles
     if (groupSettings.ranksToRoles) {
       const groupRanks = group.roles;
+      if (!group.getRole) {
+        console.log(group);
+        throw new Error(`Role does not exist`);
+      }
       const userRank = await group.getRole(robloxId);
       if (!userRank) throw new Error("User rank is not defined?");
       // Give user their role if it exists.
