@@ -1,6 +1,6 @@
 // Export.js
-const r = require("rethinkdbdash")();
 const fs = require("fs");
+const r = require("rethinkdbdash")();
 
 const db = r.db("main");
 

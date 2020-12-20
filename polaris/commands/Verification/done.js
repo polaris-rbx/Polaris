@@ -1,4 +1,5 @@
 const { checkCode } = require("../../util/linkManager");
+const { getLink } = require("../../util/linkManager");
 const BaseCommand = require("../baseCommand");
 
 class doneCommand extends BaseCommand {
@@ -15,7 +16,7 @@ class doneCommand extends BaseCommand {
 
     // Search for code
     if (aquariusResponse && aquariusResponse.success) {
-      const { robloxId } = aquariusResponse;
+      let { robloxId } = aquariusResponse;
       const verified = await this.client.CommandManager.commands.getrole.verifiedRoles(true, msg.member);
       if (verified.error) {
         return msg.channel.sendError(msg.author, {
@@ -23,7 +24,10 @@ class doneCommand extends BaseCommand {
           description: verified.error
         });
       }
-
+      if (!robloxId) {
+        console.error(`No Roblox id returned from aquarius!`);
+        robloxId = await getLink(msg.author.id);
+      }
       const settings = await this.client.db.getSettings(msg.channel.guild.id);
       const res = await this.client.CommandManager.commands.getrole.giveRoles(settings, msg.member, robloxId);
       if (!res) {
@@ -53,7 +57,7 @@ class doneCommand extends BaseCommand {
         const {
           robloxId,
           robloxUsername
-        } = aquariusResponse;
+        } = error;
         return msg.channel.sendError(msg.author, `I couldn't find the code in your profile. Please ensure that it is in your **description** / **blurb**.\nUsername: \`${robloxUsername}\` UserID: \`${robloxId}\`\nIf still having difficulties, have a look at the [website](https://verify.neztore/dashboard)`);
       } if (error.status === 404) {
         // No link

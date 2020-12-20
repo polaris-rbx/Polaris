@@ -66,7 +66,7 @@ class InfoCommand extends BaseCommand {
             name: "Uptime",
             value: `${upTime} ${suffix}`,
             inline: true
-          },
+          }
 
         ]
       });

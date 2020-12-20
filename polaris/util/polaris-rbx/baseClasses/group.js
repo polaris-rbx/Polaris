@@ -54,13 +54,12 @@ class Group {
   }
 
   async getRole (userIdOrUserClass) {
-    if (!userIdOrUserClass) return;
+    if (!userIdOrUserClass) throw new Error("Getrole was not passed a user");
     const id = typeof userIdOrUserClass === "number" || typeof userIdOrUserClass === "string" ? userIdOrUserClass : userIdOrUserClass.id;
     const cache = this.users.get(id);
-    if (cache) {
-      // Possible cache hit
-      const { role } = this.users.get(id);
-      if (role) return role;
+    if (cache && cache.role) {
+      // Possible cache hi
+      return cache.role;
     }
     try {
       let res = await request(`https://api.roblox.com/users/${id}/groups`);

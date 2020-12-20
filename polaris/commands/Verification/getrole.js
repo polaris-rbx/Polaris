@@ -46,6 +46,9 @@ class getRoleCommand extends BaseCommand {
 
   // Return true for success, false for otherwise.
   async giveRoles (settings, member, robloxId) {
+    if (!robloxId) {
+      throw new Error("getrole.giveRoles was not passed a roblox id");
+    }
     const res = await this.verifiedRoles(true, member);
     if (res.error) {
       return {
