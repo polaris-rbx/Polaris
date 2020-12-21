@@ -27,7 +27,12 @@ class doneCommand extends BaseCommand {
       if (!robloxId) {
         console.error(`No Roblox id returned from aquarius!`);
         robloxId = await getLink(msg.author.id);
+
+        if (!robloxId) {
+          throw new Error("Failed to get your account link: Please try again.");
+        }
       }
+
       const settings = await this.client.db.getSettings(msg.channel.guild.id);
       const res = await this.client.CommandManager.commands.getrole.giveRoles(settings, msg.member, robloxId);
       if (!res) {
