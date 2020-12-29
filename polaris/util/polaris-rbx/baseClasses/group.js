@@ -12,7 +12,7 @@ class Group {
   }
 
   async getRank (userIdOrUserClass) {
-    if (!userIdOrUserClass) return;
+    if (!userIdOrUserClass) return 0;
     const id = typeof userIdOrUserClass === "number" || typeof userIdOrUserClass === "string" ? userIdOrUserClass : userIdOrUserClass.id;
     if (this.users.get(id)) {
       // Possible cache hit
@@ -49,7 +49,11 @@ class Group {
           }
         };
       }
-      throw new Error(await error.text());
+      if (error.text) {
+        throw new Error(await error.text());
+      } else {
+        throw new Error(error);
+      }
     }
   }
 
@@ -90,7 +94,11 @@ class Group {
           }
         };
       }
-      throw new Error(await error.text());
+      if (error.text) {
+        throw new Error(await error.text());
+      } else {
+        throw new Error(error);
+      }
     }
   }
 
@@ -121,7 +129,11 @@ class Group {
         };
       }
       // Not 404
-      throw new Error(await error.text());
+      if (error.text) {
+        throw new Error(await error.text());
+      } else {
+        throw new Error(error);
+      }
     }
   }
 
