@@ -26,6 +26,7 @@ class doneCommand extends BaseCommand {
       }
       if (!robloxId) {
         console.error(`No Roblox id returned from aquarius!`);
+        console.log(aquariusResponse);
         robloxId = await getLink(msg.author.id);
 
         if (!robloxId) {
