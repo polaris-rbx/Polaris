@@ -79,7 +79,6 @@ class getRoleCommand extends BaseCommand {
         }
 
         const rank = await group.getRank(robloxId);
-
         if (current.exclusive) {
           if (rank === current.rank) {
             rolesToGive[current.role] = current.role;
