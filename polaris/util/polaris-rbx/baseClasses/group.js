@@ -14,8 +14,8 @@ class Group {
   async _getRankObject (id) {
     let res = await request(`https://groups.roblox.com/v2/users/${id}/groups/roles`);
     res = await res.json();
-    const b = res.data.filter(i => this.id === i.group.id)
-    return b ? b[0].role : {};
+    const b = res.data.filter(i => this.id === i.group.id);
+    return b && b.length !== 0 ? b[0].role : {};
   }
 
   async getRank (userIdOrUserClass) {
