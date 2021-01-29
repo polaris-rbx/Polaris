@@ -82,39 +82,26 @@ class Roblox {
     try {
       let res = await request(`https://users.roblox.com/v1/userames/users`, {
         method: "POST",
-        body: [name]
+        body: JSON.stringify({ usernames: [name] })
       });
       if (res) {
         res = await res.json();
-        if (!res.Id) {
-          if (res.errorMessage === "User not found") {
-            return {
-              error: {
-                status: 404,
-                message: res.errorMessage
-              }
-            };
-          }
-          this.client.logError(res);
+        if (res.data.length === 0) {
           return {
             error: {
-              status: 0,
-              message: res
+              status: 404,
+              message: "User not found"
             }
           };
         }
-        const newUser = new this._user(this, res.Id);
+        const { id, name: username } = res.data[0];
+        const newUser = new this._user(this, id);
 
-        newUser.username = res.Username;
-        this._userCache.set(res.Id, newUser);
+        newUser.username = username;
+        this._userCache.set(id, newUser);
         return newUser;
       }
-      return {
-        error: {
-          status: 404,
-          message: "User does not exist"
-        }
-      };
+      return false;
     } catch (err) {
       if (err.status === 404) {
         return {

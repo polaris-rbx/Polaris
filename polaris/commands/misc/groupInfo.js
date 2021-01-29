@@ -91,12 +91,12 @@ class getGroupCommand extends BaseCommand {
       let ranksText1 = "";
       for (let r = 0; r < groupInfo.roles.length / 2; r++) {
         const role = groupInfo.roles[r];
-        ranksText1 += `${r + 1}: **Name**: \`${role.Name}\` - **Id:**: \`${role.Rank}\`\n`;
+        ranksText1 += `${r + 1}: **Name**: \`${role.name}\` - **Id:**: \`${role.rank}\`\n`;
       }
       let ranksText2 = "";
       for (let r = groupInfo.roles.length / 2; r < groupInfo.roles.length; r++) {
         const role = groupInfo.roles[r];
-        ranksText2 += `${r + 1}: **Name**: \`${role.Name}\` - **Id:**: \`${role.Rank}\`\n`;
+        ranksText2 += `${r + 1}: **Name**: \`${role.name}\` - **Id:**: \`${role.rank}\`\n`;
       }
       fields.push({
         name: `Group ranks 1`,

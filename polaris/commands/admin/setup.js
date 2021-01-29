@@ -78,9 +78,9 @@ class setupCommand extends BaseCommand {
     let createdRoles = "";
     for (var current of roles) {
       // Check for role with same name.
-      if (!msg.channel.guild.roles.find(a => a.name === current.Name)) {
-        await msg.channel.guild.createRole({ name: current.Name }, `Set-up command run by ${msg.author.username}#${msg.author.discriminator}`);
-        createdRoles = `${createdRoles}**-** ${current.Name}\n`;
+      if (!msg.channel.guild.roles.find(a => a.name === current.name)) {
+        await msg.channel.guild.createRole({ name: current.name }, `Set-up command run by ${msg.author.username}#${msg.author.discriminator}`);
+        createdRoles = `${createdRoles}**-** ${current.name}\n`;
       }
     }
     if (createdRoles === "") {

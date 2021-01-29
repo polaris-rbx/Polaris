@@ -322,7 +322,7 @@ class getRoleCommand extends BaseCommand {
       }
 
       for (const thisOne of groupRanks) {
-        const check = member.guild.roles.find(current => current.name.toLowerCase() === thisOne.Name.toLowerCase());
+        const check = member.guild.roles.find(current => current.name.toLowerCase() === thisOne.name.toLowerCase());
         if (check) {
           if (!rolesToGive[check.id]) {
             rolesToRemove[check.id] = check.id;
