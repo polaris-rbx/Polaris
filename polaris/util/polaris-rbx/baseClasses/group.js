@@ -11,6 +11,12 @@ class Group {
     this.users.clear();
   }
 
+  async _getRankObject (id) {
+    let res = await request(`https://groups.roblox.com/v2/users/${id}/groups/roles`);
+    res = await res.json();
+    return res.data.filter(i => this.id === i.group.id).role || {};
+  }
+
   async getRank (userIdOrUserClass) {
     if (!userIdOrUserClass) return 0;
     const id = typeof userIdOrUserClass === "number" || typeof userIdOrUserClass === "string" ? userIdOrUserClass : userIdOrUserClass.id;
@@ -19,10 +25,8 @@ class Group {
       if (this.users.get(id).rank !== undefined) return this.users.get(id).rank;
     }
     try {
-      let res = await request(`https://api.roblox.com/users/${id}/groups`);
-      res = await res.json();
-      const groupObject = res.filter(group => this.id === group.Id)[0] || {};
-      const rank = groupObject.Rank ? groupObject.Rank : 0;
+      const roleObject = await this._getRankObject(id);
+      const rank = roleObject.rank || 0;
 
       if (this.users.get(id)) {
         const cache = this.users.get(id);
@@ -66,10 +70,8 @@ class Group {
       return cache.role;
     }
     try {
-      let res = await request(`https://api.roblox.com/users/${id}/groups`);
-      res = await res.json();
-      const groupObject = res.filter(group => this.id === group.Id)[0] || {};
-      const role = groupObject.Role ? groupObject.Role : "Guest";
+      const roleObject = await this._getRankObject(id);
+      const role = roleObject.role || "Guest";
 
       if (this.users.get(id)) {
         this.users.get(id).role = role;
@@ -104,7 +106,53 @@ class Group {
 
   async updateInfo () {
     try {
-      let res = await request(`https://api.roblox.com/groups/${this.id}`);
+      const res = request(`https://groups.roblox.com/v1/groups/${this.id}`);
+      const emblemPromise = request(`https://thumbnails.roblox.com/v1/groups/icons?groupIds=${this.id}&size=150x150&format=Png`);
+      const rolesPromise = request(`https://groups.roblox.com/v1/groups/${this.id}/roles`);
+
+      const [groupRes, emblemRes, rolesRes] = await Promise.all([res, emblemPromise, rolesPromise]);
+      const [groupInfo, emblem, roles] = await Promise.all([groupRes.json(), emblemRes.json(), rolesRes.json()]);
+
+      const newGroup = this;
+      newGroup.name = groupInfo.name;
+      newGroup.description = groupInfo.description;
+      newGroup.owner = groupInfo.owner;
+      newGroup.memberCount = groupInfo.memberCount;
+
+      newGroup.emblemUrl = emblem.data ? emblem.data[0].imageUrl : "";
+      newGroup.roles = roles.roles;
+
+      if (groupInfo.shout) {
+        newGroup.shout = {
+          message: groupInfo.shout.body,
+          postedBy: groupInfo.shout.poster.username
+        };
+      }
+      return newGroup;
+    } catch (error) {
+      if (error.status === 404 || error.status === 500) {
+        return {
+          error: {
+            status: 404,
+            message: "Group not found"
+          }
+        };
+      }
+      if (error.status === 503) {
+        return {
+          error: {
+            status: 503,
+            message: "Group info not available"
+          }
+        };
+      }
+      // Not 404
+      this.client.logError(error);
+      return error;
+    }
+
+    try {
+      let res = await request(`https://groups.roblox.com/v1/groups/${this.id}`);
       res = await res.json();
       this.name = res.Name;
       this.roles = res.Roles;

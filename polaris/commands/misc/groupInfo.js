@@ -17,7 +17,7 @@ class getGroupCommand extends BaseCommand {
         groupId = args[0];
       } else {
         const grp = await this.client.roblox.getGroupByName(args[0]);
-        groupId = grp.ID;
+        groupId = grp.id;
         if (!groupId) return msg.channel.sendError(msg.author, "Oops! Group not found.");
       }
     } else if (msg.channel.guild) {
@@ -56,7 +56,7 @@ class getGroupCommand extends BaseCommand {
       return sentMsg.edit({
         embed: {
           title: "HTTP Error",
-          description: `A HTTP Error has occured. Is Roblox Down?\n\`${groupInfo.error.message}\``,
+          description: `A HTTP Error has occurred. Is Roblox Down?\n\`${groupInfo.error.message}\``,
           timestamp: new Date(),
           color: 0xb3000a
         }
@@ -66,12 +66,11 @@ class getGroupCommand extends BaseCommand {
     // EMBED PART
 
     const title = fromSettings ? `Main group information` : `Group information for ${groupInfo.name}`;
-
     // Build rank test bit
     let ranksText = "";
     for (let r = 0; r < groupInfo.roles.length; r++) {
       const role = groupInfo.roles[r];
-      ranksText += `${r + 1}: **Name**: \`${role.Name}\` - **Rank Id:**: \`${role.Rank}\`\n`;
+      ranksText += `${r + 1}: **Name**: \`${role.name}\` - **Rank Id:**: \`${role.rank}\`\n`;
     }
 
     // Build fields. Only show desc if it exists.
@@ -109,9 +108,22 @@ class getGroupCommand extends BaseCommand {
       });
     }
 
+    if (groupInfo.shout) {
+      fields.push({
+        name: "Group shout",
+        value: `${groupInfo.shout.message}\n  **By**: ${groupInfo.shout.postedBy}`,
+        inline: true
+      });
+    }
+    fields.push({
+      name: "Members",
+      value: groupInfo.memberCount,
+      inline: true
+    });
+
     let ownerText;
     if (groupInfo.owner) {
-      ownerText = `[${groupInfo.owner.Name}](https://www.roblox.com/users/${groupInfo.owner.Id})`;
+      ownerText = `[${groupInfo.owner.username}](https://www.roblox.com/users/${groupInfo.owner.userId}/profile)`;
     } else {
       ownerText = `Unowned`;
     }
@@ -120,11 +132,11 @@ class getGroupCommand extends BaseCommand {
         title,
         color: 0x168776,
         description: `**Group name**: ${groupInfo.name}\n**Group ID:**: ${groupInfo.id}\n**Owned by**: ${ownerText}`,
-        //	thumbnail: { roblox is bad. no image extension = no discord support.
-        //	url: groupInfo.emblemUrl,
-        //	height: 100,
-        //	width: 100
-        // },
+        thumbnail: {
+          url: groupInfo.emblemUrl,
+          height: 100,
+          width: 100
+        },
         timestamp: new Date(),
         url: `https://www.roblox.com/Groups/group.aspx?gid=${groupInfo.id}`,
         fields

@@ -1,5 +1,3 @@
-const Cheerio = require("cheerio");
-
 const request = require("../request");
 /* INFO WITH USER CLASS:
   * User.id: User ID. Always set
@@ -23,9 +21,10 @@ class User {
   // RETURNS: USERNAME OR NULL FOR FAIL.
   async updateUsername () {
     const user = this;
-    let res = await request(`https://api.roblox.com/users/${this.id}`);
+    let res = await request(`https://users.roblox.com/v1/users/${this.id}`);
     res = await res.json();
     user.username = res.Username;
+    user.id = res.id || user.id;
   }
 
   async getInfo () {
@@ -120,34 +119,3 @@ class User {
 }
 
 module.exports = User;
-
-// Froast's (sentanos') time function. I don't want to re-make something similar. Repo: https://github.com/sentanos/roblox-js/
-function isDST (time) {
-  const today = new Date(time);
-  const month = today.getMonth();
-  const dow = today.getDay();
-  const day = today.getDate();
-  const hours = today.getHours();
-  if (month < 2 || month > 10) {
-    return false;
-  }
-  if (month > 2 && month < 10) {
-    return true;
-  }
-  if (dow === 0) {
-    if (month === 2) {
-      if (day >= 8 && day <= 14) {
-        return hours >= 2;
-      }
-    } else if (month === 10) {
-      if (day >= 1 && day <= 7) {
-        return hours < 2;
-      }
-    }
-  }
-  const previousSunday = day - dow;
-  if (month === 2) {
-    return previousSunday >= 8;
-  }
-  return previousSunday <= 0;
-}

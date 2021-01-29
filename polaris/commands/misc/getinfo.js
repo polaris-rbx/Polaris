@@ -77,7 +77,6 @@ class getinfoCommand extends BaseCommand {
     const robloxId = robloxUser.id;
     const { joinDate } = playerInfo;
     const date = `${(joinDate.getDate())}/${(joinDate.getMonth() + 1)}/${(joinDate.getFullYear())} (D/M/Y)`;
-
     let text = `**Username:** ${playerInfo.username}\n**User ID:** ${robloxId}\n**Join date**: ${date}\n**Player age:** ${playerInfo.age}\n**Player status:** "${playerInfo.status}"`;
     if (playerInfo.blurb.length <= 200) {
       text = `${text}\n**Blurb:** ${playerInfo.blurb}`;

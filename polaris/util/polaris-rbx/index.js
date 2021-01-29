@@ -2,6 +2,8 @@ const groupClass = require("./baseClasses/group.js");
 const userClass = require("./baseClasses/user.js");
 const request = require("./request");
 
+const THUMBNAILS_API_URL = "https://thumbnails.roblox.com";
+
 class Roblox {
   constructor (client) {
     this.client = client;
@@ -22,17 +24,23 @@ class Roblox {
     setInterval(() => {
       Roblox.clearRanks();
     }, 600000);
-    this.clearRanks = () =>	Roblox._groupCache.forEach(group => group.clearCache());
+    this.clearRanks = () => Roblox._groupCache.forEach(group => group.clearCache());
   }
 
   async _createUser (id) {
     const roblox = this;
     try {
-      let res = await request(`https://api.roblox.com/users/${id}`);
+      let res = await request(`https://users.roblox.com/v1/users/${id}`);
       if (res) {
         const newUser = new roblox._user(this, id);
         res = await res.json();
-        newUser.username = res.Username;
+        newUser.username = res.name;
+        newUser.created = new Date(res.created);
+        newUser.name = res.name;
+        newUser.id = res.id || id;
+        newUser.isBanned = res.isBanned;
+        newUser.blurb = res.description;
+
         roblox._userCache.set(id, newUser);
         return newUser;
       } return {
@@ -72,7 +80,10 @@ class Roblox {
 
   async getUserFromName (name) {
     try {
-      let res = await request(`https://api.roblox.com/users/get-by-username?username=${name}`);
+      let res = await request(`https://users.roblox.com/v1/userames/users`, {
+        method: "POST",
+        body: [name]
+      });
       if (res) {
         res = await res.json();
         if (!res.Id) {
@@ -97,7 +108,8 @@ class Roblox {
         newUser.username = res.Username;
         this._userCache.set(res.Id, newUser);
         return newUser;
-      } return {
+      }
+      return {
         error: {
           status: 404,
           message: "User does not exist"
@@ -116,11 +128,12 @@ class Roblox {
         return {
           error: {
             status: 503,
-            message: "Service Unavailible - Roblox is down."
+            message: "Service Unavailable - Roblox is down."
           }
         };
       }
       this.client.logError(err);
+      return false;
     }
   }
 
@@ -139,15 +152,28 @@ class Roblox {
     const roblox = this;
     // Group does not already exist!
     try {
-      let res = await request(`https://api.roblox.com/groups/${id}`);
-      res = await res.json();
-      const newGroup = new roblox._group(res.Id);
-      newGroup.name = res.Name;
-      newGroup.roles = res.Roles;
-      newGroup.description = res.Description;
-      newGroup.owner = res.Owner;
-      newGroup.emblemUrl = res.EmblemUrl;
+      const res = request(`https://groups.roblox.com/v1/groups/${id}`);
+      const emblemPromise = request(`${THUMBNAILS_API_URL}/v1/groups/icons?groupIds=${id}&size=150x150&format=Png`);
+      const rolesPromise = request(`https://groups.roblox.com/v1/groups/${id}/roles`);
 
+      const [groupRes, emblemRes, rolesRes] = await Promise.all([res, emblemPromise, rolesPromise]);
+      const [groupInfo, emblem, roles] = await Promise.all([groupRes.json(), emblemRes.json(), rolesRes.json()]);
+
+      const newGroup = new roblox._group(groupInfo.id);
+      newGroup.name = groupInfo.name;
+      newGroup.description = groupInfo.description;
+      newGroup.owner = groupInfo.owner;
+      newGroup.memberCount = groupInfo.memberCount;
+
+      newGroup.emblemUrl = emblem.data ? emblem.data[0].imageUrl : "";
+      newGroup.roles = roles.roles;
+
+      if (groupInfo.shout) {
+        newGroup.shout = {
+          message: groupInfo.shout.body,
+          postedBy: groupInfo.shout.poster.username
+        };
+      }
       roblox._groupCache.set(id, newGroup);
       return newGroup;
     } catch (error) {
@@ -172,14 +198,13 @@ class Roblox {
       return error;
     }
   }
-
   async getGroupByName (name) {
     if (!name) return false;
     name = encodeURIComponent(name);
     try {
-      let res = await request(`https://www.roblox.com/search/groups/list-json?keyword=${name}&maxRows=10&startRow=0`);
+      let res = await request(`https://grousp.roblox.com/v1/groups/search?keyword=${name}&prioritizeExactMatch=true&limit=10`);
       res = await res.json();
-      return res.GroupSearchResults[0];
+      return res.data[0];
     } catch (error) {
       if (error.status === 404 || error.status === 400) {
         return {
@@ -193,7 +218,7 @@ class Roblox {
         return {
           error: {
             status: 503,
-            message: "Service Unavailible - Roblox is down."
+            message: "Service Unavailable - Roblox is down."
           }
         };
       }

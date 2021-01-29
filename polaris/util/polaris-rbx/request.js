@@ -5,5 +5,5 @@ module.exports = async function request (url) {
   if (resp.ok) {
     return resp;
   }
-  throw new Error(resp);
+  throw new Error(await resp.text());
 };
