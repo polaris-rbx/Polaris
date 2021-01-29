@@ -1,9 +1,10 @@
 const fetch = require("node-fetch");
 
-module.exports = async function request (url) {
-  const resp = await fetch(url);
+module.exports = async function request (url, opt) {
+  const resp = await fetch(url, opt);
   if (resp.ok) {
     return resp;
   }
-  throw new Error(await resp.text());
+  const text = await resp.text();
+  throw new Error(text);
 };

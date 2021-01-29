@@ -80,9 +80,10 @@ class Roblox {
 
   async getUserFromName (name) {
     try {
-      let res = await request(`https://users.roblox.com/v1/userames/users`, {
+      let res = await request(`https://users.roblox.com/v1/usernames/users`, {
         method: "POST",
-        body: JSON.stringify({ usernames: [name] })
+        body: JSON.stringify({ usernames: [name] }),
+        headers: { "Content-Type": "application/json" }
       });
       if (res) {
         res = await res.json();
@@ -185,6 +186,7 @@ class Roblox {
       return error;
     }
   }
+
   async getGroupByName (name) {
     if (!name) return false;
     name = encodeURIComponent(name);
