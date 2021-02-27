@@ -87,7 +87,7 @@ class linkAccountCommand extends BaseCommand {
     }
     msg.channel.sendInfo(msg.author, {
       title: "Account link code - Please read FULLY",
-      description: `You are linking account with account \`${username}\` with UserID \`${newUser.id}\`.\nPlease place the following code in your Roblox profile - Put it in your blurb, accessible through [settings](https://www.roblox.com/my/account).`,
+      description: `You are linking account with account \`${username}\` with UserID \`${newUser.id}\`.\nPlease place the following code in your Roblox profile - Put it in your status, accessible through [my feed](https://www.roblox.com/feeds/).`,
       fields: [
         {
           name: "Code",
