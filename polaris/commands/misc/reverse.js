@@ -10,7 +10,7 @@ const { getLink } = require("../../util/linkManager");
 
 
 
-class getinfoCommand extends BaseCommand {
+class reverseCommand extends BaseCommand {
 
   constructor (client) {
 
