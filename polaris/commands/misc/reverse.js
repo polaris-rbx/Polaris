@@ -8,7 +8,7 @@ class getinfoCommand extends BaseCommand {
   constructor (client) {
     super(client);
     this.description = "Retrieves the Roblox information of a user.";
-    this.aliases = ["whois"];
+    this.aliases = ["discord"];
     this.group = "Roblox";
     this.guildOnly = true;
   }
