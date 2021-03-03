@@ -7,10 +7,10 @@ const { getLink } = require("../../util/linkManager");
 class getinfoCommand extends BaseCommand {
   constructor (client) {
     super(client);
-    this.description = "Retrieves the Roblox information of a user.";
-    this.aliases = ["discord"];
+    this.description = "Retrieves the Roblox information of a user from a Roblox id.";
+    this.aliases = ["robloxid"];
     this.group = "Roblox";
-    this.guildOnly = true;
+    this.guildOnly = false;
   }
 
   async execute (msg, args) {
