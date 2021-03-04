@@ -16,41 +16,31 @@ class getinfoCommand extends BaseCommand {
   async execute (msg, args) {
     let robloxUser;
 
-    let mentionedUser;
-
     if (msg.mentions.length === 0) {
       // Isn't a mention
       if (args.length !== 0) {
         const findStr = args.join(" ").toLowerCase();
         const user = msg.channel.guild.members.find(member => member.username.toLowerCase().startsWith(findStr));
         const userTwo = msg.channel.guild.members.get(args[0]);
-        if (user) {
-          mentionedUser = user;
-        } else if (userTwo) {
-          mentionedUser = userTwo;
-        } else if (args[0]) {
-          robloxUser = await this.client.roblox.getUserFromName(args[0]);
+        if (args[0]) {
+          robloxUser = await this.client.roblox.getUser(parseInt(args[0]))
+        } else{
+          return msg.channel.sendError(msg.author, "I couldn't find that user's info. Is it a valid user id?");
         }
       }
-    } else {
-      mentionedUser = msg.mentions[0];
+    }else{
+      return msg.channel.sendError(msg.author, "I couldn't find that user's info. Is it a valid user id?");
     }
 
     if (!robloxUser) {
-      mentionedUser = mentionedUser || msg.author;
-      if (mentionedUser.bot) return msg.channel.sendError(msg.author, "Do you really think a bot has linked their account?! **Please mention a normal user!**");
-      const rbxId = await getLink(mentionedUser.id);
-      if (!rbxId) {
-        return msg.channel.sendError(msg.author, "I couldn't find that user's info. Have they linked their account?");
-      }
-      robloxUser = await this.client.roblox.getUser(rbxId);
+      return msg.channel.sendError(msg.author, "I couldn't find that user's info. Is it a valid user id?");
     }
 
     if (robloxUser.error) {
       if (robloxUser.error.status === 404) {
         return msg.channel.sendError(msg.author, {
           title: `I couldn't find that user on Roblox.`,
-          description: `I couldn't find user \`${args[0]}\` on Roblox.`
+          description: `I couldn't find user with the id of \`${args[0]}\` on Roblox..`
         });
       }
       await msg.channel.sendError(msg.author, {
