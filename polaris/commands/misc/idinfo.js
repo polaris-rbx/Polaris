@@ -19,9 +19,6 @@ class getinfoCommand extends BaseCommand {
     if (msg.mentions.length === 0) {
       // Isn't a mention
       if (args.length !== 0) {
-        const findStr = args.join(" ").toLowerCase();
-        const user = msg.channel.guild.members.find(member => member.username.toLowerCase().startsWith(findStr));
-        const userTwo = msg.channel.guild.members.get(args[0]);
         if (args[0]) {
           robloxUser = await this.client.roblox.getUser(parseInt(args[0]))
         } else{
