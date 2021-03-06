@@ -8,7 +8,7 @@ class getinfoCommand extends BaseCommand {
   constructor (client) {
     super(client);
     this.description = "Retrieves the Roblox information of a user.";
-    this.aliases = ["whois"];
+    this.aliases = ["whois", "who"];
     this.group = "Roblox";
     this.guildOnly = true;
   }
@@ -24,20 +24,25 @@ class getinfoCommand extends BaseCommand {
         const findStr = args.join(" ").toLowerCase();
         const user = msg.channel.guild.members.find(member => member.username.toLowerCase().startsWith(findStr));
         const userTwo = msg.channel.guild.members.get(args[0]);
-        if (user) {
-          mentionedUser = user;
-        } else if (userTwo) {
-          mentionedUser = userTwo;
-        } else if (!isNaN(Number(args[0]))){
-          let tempUser = await this.client.roblox.getUser(Number(args[0]));
-          if (!tempUser.error){
-            robloxUser = tempUser
+        try{
+          if (user) {
+            mentionedUser = user;
+          } else if (userTwo) {
+            mentionedUser = userTwo;
+          } else if (!isNaN(Number(args[0]))){
+            let tempUser = await this.client.roblox.getUser(Number(args[0]));
+            if (!tempUser.error){
+              robloxUser = tempUser
+            } else if (args[0]) {
+              robloxUser = await this.client.roblox.getUserFromName(args[0]);
+            }
           } else if (args[0]) {
             robloxUser = await this.client.roblox.getUserFromName(args[0]);
           }
-        } else if (args[0]) {
-          robloxUser = await this.client.roblox.getUserFromName(args[0]);
+        } catch (e) {
+          return msg.channel.sendError(msg.author, "Invalid argument: Please try again.");
         }
+
       }
     } else {
       mentionedUser = msg.mentions[0];
