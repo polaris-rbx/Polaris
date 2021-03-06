@@ -28,6 +28,13 @@ class getinfoCommand extends BaseCommand {
           mentionedUser = user;
         } else if (userTwo) {
           mentionedUser = userTwo;
+        } else if (!isNaN(Number(args[0]))){
+          let tempUser = await this.client.roblox.getUser(Number(args[0]));
+          if (!tempUser.error){
+            robloxUser = tempUser
+          } else if (args[0]) {
+            robloxUser = await this.client.roblox.getUserFromName(args[0]);
+          }
         } else if (args[0]) {
           robloxUser = await this.client.roblox.getUserFromName(args[0]);
         }
