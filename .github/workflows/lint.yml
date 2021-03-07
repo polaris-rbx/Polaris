@@ -3,12 +3,15 @@ name: Eslint check
 
 on:
   push:
-    branches: [ v4 ]
+    branches:
+    - v4
   pull_request:
-    branches: [ v4 ]
+    branches:
+    - v4
+  workflow_dispatch:
 
 jobs:
-  build:
+  lint:
 
     runs-on: ubuntu-latest
 
