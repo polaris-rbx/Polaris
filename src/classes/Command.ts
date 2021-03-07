@@ -3,10 +3,12 @@ import { Constants, Message } from "eris";
 
 const { Permissions: permissions } = Constants;
 
+// not sure why this triggers the shadow rule: it isn't defined in the upper scope
+// eslint-disable-next-line no-shadow
 export enum CommandGroups {
-  verification,
-  misc,
-  admin
+  verification= 0,
+  misc= 1,
+  admin = 2
 }
 
 export interface Command {

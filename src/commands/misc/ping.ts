@@ -15,7 +15,7 @@ export default class PingCommand implements Command {
 
   permissions: []
 
-  run (msg: Message, args: string[]): Promise<any> {
+  run (_msg: Message, _args: string[]): Promise<any> {
     return Promise.resolve(undefined);
   }
 }

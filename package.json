@@ -7,7 +7,8 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "rimraf dist && tsc -p tsconfig.production.json",
     "dev": "ts-node-dev --no-notify --respawn --files --transpile-only -r dotenv/config index.ts",
-    "start": "node dist"
+    "start": "node dist",
+    "lint": "eslint 'src/**' index.ts"
   },
   "repository": {
     "type": "git",
@@ -29,7 +30,7 @@
     "@sentry/node": "^5.29.2",
     "@sentry/tracing": "^5.29.2",
     "dotenv": "^8.2.0",
-    "eris": "^0.14.0",
+    "eris": "github:polaris-rbx/PolarisEris",
     "node-fetch": "^2.6.1",
     "pg": "^8.5.1",
     "polaris-quote-engine": "^1.0.2",
@@ -39,8 +40,8 @@
   "devDependencies": {
     "@types/node-fetch": "^2.5.7",
     "@types/pg": "^7.14.7",
-    "@typescript-eslint/eslint-plugin": "^4.11.1",
-    "@typescript-eslint/parser": "^4.11.1",
+    "@typescript-eslint/eslint-plugin": "^4.16.1",
+    "@typescript-eslint/parser": "^4.16.1",
     "eslint": "^7.16.0",
     "eslint-config-airbnb": "^18.2.1",
     "eslint-import-resolver-typescript": "^2.3.0",

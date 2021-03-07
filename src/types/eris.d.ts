@@ -1,11 +1,12 @@
-import eris, { Message } from "eris";
+import eris from "eris";
 
 declare module "eris" {
-  class TextChannel extends eris.TextChannel {
-    send(msg: string): Promise<Message>
+  class Message extends eris.Message {
+    reply(msg: string): Promise<eris.Message>
   }
 }
 
-eris.TextChannel.prototype.send = function send (msg: string) {
-  return new Message();
+// note: is this a good idea? 'reply' might be used by an upstream method in future.
+eris.Message.prototype.reply() = function reply () {
+  return undefined;
 };

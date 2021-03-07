@@ -1,7 +1,6 @@
 import * as Sentry from "@sentry/node";
-import {
-  ClientOptions, Client as ErisClient, Message
-} from "eris";
+import { ClientOptions, Client as ErisClient, Message } from "eris";
+
 export default class Client extends ErisClient {
   constructor (opt: ClientOptions) {
     const { token } = process.env;
@@ -18,27 +17,7 @@ export default class Client extends ErisClient {
   }
 
   async handleMessage (message: Message) {
+    // eslint-disable-next-line no-useless-return
     if (message.author.bot || !message.author) return;
-
-    // Work out prefix
-    let prefix = ".";
-    let prefixMsg = prefix;
-
-    if ("guild" in message.channel) { // Handle Custom Prefix - It's in a guild.
-      const { guild } = message.channel;
-      let guildSettings = await this.client.db.getSettings(guild.id);
-      if (!guildSettings) {
-        console.log(`Guild ${guild.id} has no settings. Resolving.`);
-        await this.client.db.setupGuild(guild);
-        guildSettings = await this.client.db.getSettings(guild.id);
-      }
-      if (guildSettings.autoVerify) {
-        this.client.autoRole(message.member);
-      }
-      if (guildSettings.prefix && guildSettings.prefix !== "") {
-        prefix = guildSettings.prefix;
-        prefixMsg = prefix;
-      }
-    }
   }
 }

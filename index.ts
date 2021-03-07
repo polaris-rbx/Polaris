@@ -1,8 +1,6 @@
 import * as Sentry from "@sentry/node";
 import * as Tracing from "@sentry/tracing";
 
-import database from "./src/util/database";
-
 const { sentryToken } = process.env;
 
 if (sentryToken) {
