@@ -1,6 +1,8 @@
 import * as Sentry from "@sentry/node";
 import * as Tracing from "@sentry/tracing";
 
+import Client from "./src/Client";
+
 const { sentryToken } = process.env;
 
 if (sentryToken) {
@@ -17,3 +19,11 @@ if (sentryToken) {
 } else {
   console.log("No sentry token: Sentry is not active.");
 }
+
+const { token } = process.env;
+if (!token) throw new Error("No bot token provided");
+const client = new Client(`Bot ${token}`, { restMode: true });
+client.connect().catch(e => {
+  console.log(e);
+  Sentry.captureException(e);
+});

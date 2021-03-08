@@ -1,13 +1,11 @@
 import * as Sentry from "@sentry/node";
 import { ClientOptions, Client as ErisClient, Message } from "eris";
+import "./util/erisExtensions";
 
 export default class Client extends ErisClient {
-  constructor (opt: ClientOptions) {
-    const { token } = process.env;
-    if (!token) throw new Error("No bot token provided");
+  constructor (token: string, opt?: ClientOptions) {
     super(token, opt);
-
-    this.on("MessageCreate", this.handleMessage);
+    this.on("messageCreate", this.handleMessage);
     this.on("error", this.handleError);
   }
 
@@ -17,7 +15,9 @@ export default class Client extends ErisClient {
   }
 
   async handleMessage (message: Message) {
-    // eslint-disable-next-line no-useless-return
     if (message.author.bot || !message.author) return;
+    if (message.content.toLowerCase() === "aaa") {
+      await message.reply("Hello :)");
+    }
   }
 }
