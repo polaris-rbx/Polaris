@@ -30,7 +30,7 @@
     "@sentry/node": "^5.29.2",
     "@sentry/tracing": "^5.29.2",
     "dotenv": "^8.2.0",
-    "eris": "github:polaris-rbx/PolarisEris",
+    "eris": "^0.15.1",
     "node-fetch": "^2.6.1",
     "pg": "^8.5.1",
     "polaris-quote-engine": "^1.0.2",

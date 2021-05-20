@@ -1,14 +1,13 @@
-import { Message } from "eris";
-
 import { Command, CommandGroups, CommandInfo } from "../../classes/Command";
 
-export default class PingCommand extends Command {
+export class PingCommand extends Command {
   info = pingInfo;
 
-  async run (msg: Message): Promise<any> {
+  async run (): Promise<any> {
+    const originalMessage = this.getMessage();
     const m = await this.reply("Pong...");
     if (m) {
-      await m.edit(`:ping_pong: Pong! Latency is ${m.timestamp - msg.timestamp}ms.`);
+      await m.edit(`:ping_pong: Pong! Latency is ${m.timestamp - originalMessage.timestamp}ms.`);
     }
   }
 }

@@ -1,12 +1,13 @@
 import * as Sentry from "@sentry/node";
 import { ClientOptions, Client as ErisClient, Message } from "eris";
 
-import { Command } from "./classes/Command";
-import commands from "./commands";
+import InputError from "./classes/Errors";
+import mappedCommands from "./commands";
 
 export default class Client extends ErisClient {
   constructor (token: string, opt?: ClientOptions) {
     super(token, opt);
+
     this.on("messageCreate", this.handleMessage);
     this.on("error", this.handleError);
   }
@@ -22,17 +23,26 @@ export default class Client extends ErisClient {
     const prefix = ".";
 
     // Parse arguments etc.
-    const parts = message.content.toLowerCase().split(" ");
-    const command = parts.splice(1)[0].substr(prefix.length).toLowerCase();
+    const parts = message.content.slice(prefix.length).trim().split(/ +/g);
+    const rawCommand = parts.shift();
+    if (!rawCommand) return;
 
-    let cmdClass: typeof Command;
-    for (const commandInfo of commands) {
-      if (commandInfo.name === command) {
-        cmdClass = commandInfo.command;
-        break;
-      } else if (commandInfo.aliases.includes(command)) {
-        new commandInfo.command();
-        break;
+    const command = rawCommand.toLowerCase();
+
+    // Check if it is a command
+    if (mappedCommands[command]) {
+      // Run the command
+      try {
+        const cmd = new mappedCommands[command](this, message);
+        const resp = await cmd.run();
+
+        if (resp) {
+          await cmd.reply(resp);
+        }
+      } catch (err) {
+        if (err instanceof InputError) {
+          await message.channel.createMessage(`Error! (todo: refine this error): ${err.message}`);
+        }
       }
     }
   }

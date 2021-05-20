@@ -9,8 +9,8 @@ const { Permissions: permissions } = Constants;
 // not sure why this triggers the shadow rule: it isn't defined in the upper scope
 // eslint-disable-next-line no-shadow
 export enum CommandGroups {
-  verification= 0,
-  misc= 1,
+  verification = 0,
+  misc = 1,
   admin = 2
 }
 
@@ -28,15 +28,15 @@ export interface CommandInfo {
 
   guildOnly: boolean;
 
-  command: CommandDerived
+  command: typeof Command
 }
-interface CommandDerived extends Command { }
+
 export abstract class Command {
   client: Client
 
   channel: TextableChannel;
 
-  readonly info: CommandInfo;
+  abstract readonly info: CommandInfo;
 
   /**
    * The user that ran the command
@@ -52,7 +52,9 @@ export abstract class Command {
    */
   member?: Member
 
-  constructor (client: Client, message: Message) {
+  args: string[]
+
+  constructor (client: Client, message: Message, args: string[]) {
     this.client = client;
     this.channel = message.channel;
     this.message = message;
@@ -62,9 +64,10 @@ export abstract class Command {
       this.member = message.member;
     }
     this.guildId = message.guildID;
+    this.args = args;
   }
 
-  abstract run (msg: Message, args: String[]): Promise<any>;
+  abstract run (): Promise<MessageContent | void>;
 
   /**
    * Returns either the member of the user that ran this command, or the member of the user with id that you pass.
@@ -105,12 +108,17 @@ export abstract class Command {
     return this.client.getRESTUser(id);
   }
 
+  getMessage (): Message {
+    return this.message;
+  }
+
   async reply (content: MessageContent) {
     const replyContent: MessageContent = typeof content === "string" ? { content } : content;
-    // TODO: change this to messageReferenceID once we're using the dev branch.
-    // @ts-ignore
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    replyContent.message_reference = { message_id: this.id };
+
+    replyContent.messageReference = {
+      messageID: this.message.id,
+      failIfNotExists: false
+    };
 
     return this.client.createMessage(this.channel.id, replyContent);
   }
