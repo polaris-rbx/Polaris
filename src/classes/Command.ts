@@ -9,7 +9,7 @@ const { Permissions: permissions } = Constants;
 // not sure why this triggers the shadow rule: it isn't defined in the upper scope
 // eslint-disable-next-line no-shadow
 export enum CommandGroups {
-  verification = 0,
+  roblox = 0,
   misc = 1,
   admin = 2
 }

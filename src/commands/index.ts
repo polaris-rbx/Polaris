@@ -3,8 +3,12 @@
 
 import { CommandInfo } from "../classes/Command";
 import { eightballInfo } from "./misc/8ball";
+import { helpInfo } from "./misc/help";
+import { infoInfo } from "./misc/info";
 import { pingInfo } from "./misc/ping";
 import { quoteInfo } from "./misc/quote";
+import { groupInfo } from "./roblox/group";
+import { whoisInfo } from "./roblox/whois";
 
 // maps command names/aliases to the command classes
 // tried to avoid 'any' but i could not get around the fact Command is technically abstract, so can't be instantiated -
@@ -14,7 +18,7 @@ export interface CommandMapping {
 }
 
 // Main commands list
-const commands: CommandInfo[] = [pingInfo, eightballInfo, quoteInfo];
+const commands: CommandInfo[] = [pingInfo, eightballInfo, quoteInfo, helpInfo, groupInfo, whoisInfo, infoInfo];
 
 const mappedCommands: CommandMapping = {};
 
